@@ -23,8 +23,7 @@ const systemInstruction = `You are Crimson, the Ancient Dragon Sentinel of Spect
       * Free Fire Tournament: ₹400 per squad (4 members). Mobile only. ₹4,000 first prize, ₹2,000 second prize.
     
     COORDINATORS:
-    - Faculty: Dr. Nagraj R.G (+91 9448585396)
-    - Students: Armaandeep Singh, Jaspreet Singh, Md Roohullah.
+    - Student Coordinators: Rishikesh Deshmukh (+91 9035896633), Siddalinga (+91 9902664144), Sangmesh (+91 9353142522), Akshbir Singh Seehra (+91 9833337788).
     
     REGISTRATION:
     - Users can register directly on the website via the in-app Individual or Team registration modals with online payment gateway!
