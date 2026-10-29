@@ -1,11 +1,13 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+﻿import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from '../ui/GlassCard';
 import NeonButton from '../ui/NeonButton';
+import IndividualRegModal from './IndividualRegModal';
+import TeamRegModal from './TeamRegModal';
 
 const RegistrationSection = () => {
-  const individualFormLink = "https://forms.gle/MddTGhVQbCHa5uwt7";
-  const teamFormLink = "https://docs.google.com/forms/d/e/1FAIpQLScCYPeiP1WrssaluwouvOGz7cAcHQTTshBHDHFPXwt8rgI6ag/viewform?usp=send_form";
+  const [showModal, setShowModal] = useState(false);
+  const [showTeamModal, setShowTeamModal] = useState(false);
 
   return (
     <section id="registration" className="section-container reg-section">
@@ -42,11 +44,14 @@ const RegistrationSection = () => {
                 Register for individual events and solo participation
               </p>
               
-              <a href={individualFormLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', width: '100%' }}>
-                <NeonButton type="button" style={{ width: '100%' }}>
-                  Register Individual
-                </NeonButton>
-              </a>
+              <NeonButton
+                id="individual-register-btn"
+                type="button"
+                style={{ width: '100%' }}
+                onClick={() => setShowModal(true)}
+              >
+                Register Individual
+              </NeonButton>
             </GlassCard>
           </motion.div>
 
@@ -66,35 +71,45 @@ const RegistrationSection = () => {
                 Register for team-based events and group participation
               </p>
               
-              <a href={teamFormLink} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', width: '100%' }}>
-                <button 
-                  type="button" 
-                  className="transition-all duration-300"
-                  style={{
-                    width: '100%',
-                    padding: '1rem 2.5rem',
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: '800',
-                    color: 'var(--color-space-black)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.15em',
-                    backgroundColor: 'var(--color-star-white)',
-                    border: '2px solid var(--color-star-white)',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    boxShadow: '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'
-                  }}
-                  onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)'; e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(244, 234, 204, 0.5)'; }}
-                  onMouseOut={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'; }}
-                >
-                  Register Team
-                </button>
-              </a>
+              <button
+                id="team-register-btn"
+                type="button"
+                className="transition-all duration-300"
+                onClick={() => setShowTeamModal(true)}
+                style={{
+                  width: '100%',
+                  padding: '1rem 2.5rem',
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: '800',
+                  color: 'var(--color-space-black)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.15em',
+                  backgroundColor: 'var(--color-star-white)',
+                  border: '2px solid var(--color-star-white)',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  boxShadow: '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)'; e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(244, 234, 204, 0.5)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'; }}
+              >
+                Register Team
+              </button>
             </GlassCard>
           </motion.div>
 
         </div>
       </div>
+
+      {/* Modals rendered here — at section root, OUTSIDE all CSS-transformed ancestors.
+          A parent with transform creates a new stacking context which breaks position:fixed.
+          AnimatePresence wraps each so exit animations play before unmount (no blinking). */}
+      <AnimatePresence>
+        {showModal && <IndividualRegModal key="ind-modal" onClose={() => setShowModal(false)} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showTeamModal && <TeamRegModal key="team-modal" onClose={() => setShowTeamModal(false)} />}
+      </AnimatePresence>
     </section>
   );
 };

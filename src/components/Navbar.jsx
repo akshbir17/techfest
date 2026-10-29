@@ -44,7 +44,7 @@ const Navbar = () => {
       <div className="navbar-container">
         <Link to="/" className="navbar-logo" style={{ textDecoration: 'none' }} onClick={() => setIsMenuOpen(false)}>
           <span className="text-glow" style={{ color: 'var(--color-neon-cyan)', fontWeight: 'bold', fontSize: '1.5rem', letterSpacing: '0.1em' }}>
-            TECHFEST
+            SPECTRUM 1.0
           </span>
         </Link>
         

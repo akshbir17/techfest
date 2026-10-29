@@ -23,7 +23,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
           transition={{ duration: 1.5, delay: 0.4, ease: "easeOut" }}
         >
-          <span className="text-gradient">TECHFEST</span> 2026
+          <span className="text-gradient">SPECTRUM</span> 1.0
         </motion.h1>
         
         <motion.div 
@@ -39,7 +39,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.2 }}
         >
-          APRIL 2026 | BIDAR, KARNATAKA
+          DECEMBER 2026 | BIDAR, KARNATAKA
         </motion.p>
 
         <motion.div

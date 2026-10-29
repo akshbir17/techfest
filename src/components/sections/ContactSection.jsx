@@ -34,7 +34,7 @@ const ContactSection = () => {
             
             <div className="info-block">
               <h3 className="info-label">EMAIL</h3>
-              <p className="info-text">techfest@gndecb.ac.in</p>
+              <p className="info-text">spectrum@gndecb.ac.in</p>
             </div>
             
             <div className="info-block">
@@ -69,7 +69,7 @@ const ContactSection = () => {
         </div>
 
         <footer className="footer">
-          TECHFEST 2026 © THE AWAKENING
+          SPECTRUM 1.0 © DECEMBER 2026 THE AWAKENING
         </footer>
       </div>
     </section>

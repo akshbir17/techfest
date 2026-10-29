@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Background from './components/Background';
 import HomePage from './pages/HomePage';
 import EventsPage from './pages/EventsPage';
+import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
 import CrimsonChat from './components/CrimsonChat';
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/events" element={<EventsPage />} />
+            <Route path="/registration-success" element={<RegistrationSuccessPage />} />
           </Routes>
 
           <CrimsonChat />
