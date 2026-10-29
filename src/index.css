@@ -375,6 +375,85 @@ html.lenis { height: auto; }
   letter-spacing: 0.1em;
 }
 
+.hero-organized-by {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  color: rgba(244, 234, 204, 0.7);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.hero-departments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 900px) {
+  .hero-departments {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 2.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.hero-dept-item {
+  text-align: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.hero-dept-title {
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-star-white);
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+@media (min-width: 900px) {
+  .hero-dept-title {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+}
+
+.hero-dept-sub {
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--color-neon-cyan);
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+}
+
+@media (min-width: 900px) {
+  .hero-dept-sub {
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+}
+
+.hero-dept-amp {
+  color: var(--color-neon-cyan);
+  font-weight: 800;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
 .rules-content, .reg-content, .contact-content {
   width: 100%;
   max-width: 1200px;
