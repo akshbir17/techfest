@@ -34,7 +34,11 @@ const ContactSection = () => {
             
             <div className="info-block">
               <h3 className="info-label">EMAIL</h3>
-              <p className="info-text">spectrum@gndecb.ac.in</p>
+              <p className="info-text">
+                <a href="mailto:Spectrum101213@gmail.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+                  Spectrum101213@gmail.com
+                </a>
+              </p>
             </div>
             
             <div className="info-block">
