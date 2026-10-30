@@ -119,7 +119,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       date: '18th – 19th Dec 2026',
       venue: 'CSE Advanced Computing Lab',
       prize: '₹30,000 First Prize, ₹14,000 Second Prize + Trophies',
-      description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Solve challenges across AI, Web3, FinTech, and Open Innovation.',
+      description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Solve challenges across AI, Web3, FinTech, and Open Innovation. Dinner will be provided for all participants.',
       rules: [
         'Teams must consist of 2 to 4 members. Inter-college and inter-branch teams are fully permitted.',
         'All development, coding, and design must be executed strictly within the 24-hour hackathon window. Pre-built code is strictly prohibited (boilerplates, standard libraries, APIs, and frameworks are allowed).',
