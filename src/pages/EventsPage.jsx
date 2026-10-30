@@ -301,7 +301,7 @@ const EventsPage = ({ isEmbedded = false }) => {
   const ContainerTag = isEmbedded ? 'section' : 'main';
 
   return (
-    <ContainerTag id="events" className={isEmbedded ? 'section-container' : 'content-layer'}>
+    <ContainerTag id="events" className={isEmbedded ? 'section-container' : 'content-layer'} style={!isEmbedded ? { paddingTop: 'calc(var(--nav-height) + 2rem)' } : undefined}>
       
       {!isEmbedded && (
         <motion.div
@@ -309,6 +309,7 @@ const EventsPage = ({ isEmbedded = false }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-16"
+          style={{ padding: '0 1rem' }}
         >
           <h1 className="hero-title responsive-hero-title" style={{ marginBottom: '1rem' }}>
             THE <span className="text-gradient">GRAND</span> TRIALS
