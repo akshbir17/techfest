@@ -76,6 +76,13 @@ const Navbar = () => {
           >
             HOME
           </Link>
+
+          <button 
+            className="nav-link"
+            onClick={() => scrollTo('about')}
+          >
+            ABOUT
+          </button>
           
           <Link 
             to="/events" 
