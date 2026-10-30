@@ -31,7 +31,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7, ease: "easeOut" }}
-          style={{ marginBottom: '2.5rem', width: '100%', padding: '0 1rem' }}
+          style={{ marginBottom: '2rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
           <p className="hero-organized-by">
             Organized By
@@ -63,9 +63,9 @@ const HeroSection = () => {
         </motion.div>
 
         <motion.div 
-          style={{ height: '4px', width: '8rem', backgroundColor: 'var(--color-neon-cyan)', margin: '0 auto 2rem auto' }}
+          style={{ height: '3px', width: '6rem', backgroundColor: 'var(--color-neon-cyan)', margin: '0 auto 1.5rem auto' }}
           initial={{ width: 0 }}
-          animate={{ width: 128 }}
+          animate={{ width: 96 }}
           transition={{ duration: 1, delay: 1 }}
         ></motion.div>
 
@@ -83,7 +83,16 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.5, ease: "easeOut" }}
         >
-          <NeonButton onClick={() => document.getElementById('registration').scrollIntoView({ behavior: 'smooth' })}>
+          <NeonButton onClick={() => {
+            const el = document.getElementById('registration');
+            if (el) {
+              if (window.lenis) {
+                window.lenis.scrollTo(el);
+              } else {
+                el.scrollIntoView({ behavior: 'smooth' });
+              }
+            }
+          }}>
             ENTER THE REALM
           </NeonButton>
         </motion.div>

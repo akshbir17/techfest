@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useScrollLock } from '../../hooks/useScrollLock';
 import { motion } from 'framer-motion';
 import { X, ChevronDown, Loader2, AlertCircle, Users } from 'lucide-react';
 
@@ -24,6 +25,18 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState('');
+
+  useScrollLock(true);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !loading) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [loading, onClose]);
 
   const hasEvents = TEAM_EVENTS.length > 0;
 
@@ -122,17 +135,20 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
         onClick={loading ? undefined : onClose}
+        data-lenis-prevent="true"
         style={{
           position: 'fixed',
           inset: 0,
           backgroundColor: 'rgba(8, 8, 8, 0.92)',
           backdropFilter: 'blur(6px)',
-          zIndex: 2000,
+          WebkitBackdropFilter: 'blur(6px)',
+          zIndex: 99999,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '1rem',
+          padding: '1.5rem 1rem',
           overflowY: 'auto',
+          overscrollBehavior: 'contain',
         }}
       >
         {/* Modal */}
@@ -143,22 +159,24 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
           exit={{ opacity: 0, scale: 0.92, y: 30 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           onClick={(e) => e.stopPropagation()}
+          data-lenis-prevent="true"
           style={{
             width: '100%',
             maxWidth: '560px',
+            maxHeight: 'calc(100dvh - 1.5rem)',
             background: 'var(--color-space-black)',
             border: '1px solid var(--color-star-white)',
             boxShadow: '6px 6px 0px 0px rgba(244, 234, 204, 0.4), 0 0 40px rgba(211, 47, 47, 0.12)',
             borderRadius: '4px',
             position: 'relative',
-            overflow: 'hidden',
+            overflowY: 'auto',
             margin: 'auto',
           }}
         >
           {/* Top accent bar — white/cream for team (vs red for individual) */}
           <div style={{ height: '3px', background: 'linear-gradient(90deg, var(--color-star-white), var(--color-neon-cyan), transparent)', width: '100%' }} />
 
-          <div style={{ padding: '2rem' }}>
+          <div style={{ padding: 'clamp(1.1rem, 4vw, 2rem)' }}>
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -259,7 +277,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
             <div style={{ height: '1px', background: 'rgba(244,234,204,0.1)', marginBottom: '1.5rem' }} />
 
             {/* Form Fields */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+            <div className="modal-form-grid">
               {/* Team Name — full width */}
               <div style={{ gridColumn: '1 / -1' }}>
                 <FieldInput

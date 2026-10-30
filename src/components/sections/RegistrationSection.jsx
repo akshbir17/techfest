@@ -1,4 +1,5 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from '../ui/GlassCard';
 import NeonButton from '../ui/NeonButton';
@@ -36,7 +37,7 @@ const RegistrationSection = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
             style={{ height: '100%' }}
           >
-            <GlassCard style={{ height: '100%', textAlign: 'center', padding: '3rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <GlassCard style={{ height: '100%', textAlign: 'center', padding: 'clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <h3 className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-star-white)' }}>
                 Individual Participation
               </h3>
@@ -63,7 +64,7 @@ const RegistrationSection = () => {
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             style={{ height: '100%' }}
           >
-            <GlassCard style={{ height: '100%', textAlign: 'center', padding: '3rem 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'var(--color-star-white)' }}>
+            <GlassCard style={{ height: '100%', textAlign: 'center', padding: 'clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'var(--color-star-white)' }}>
               <h3 className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-star-white)' }}>
                 Team Participation
               </h3>
@@ -101,15 +102,20 @@ const RegistrationSection = () => {
         </div>
       </div>
 
-      {/* Modals rendered here — at section root, OUTSIDE all CSS-transformed ancestors.
-          A parent with transform creates a new stacking context which breaks position:fixed.
-          AnimatePresence wraps each so exit animations play before unmount (no blinking). */}
-      <AnimatePresence>
-        {showModal && <IndividualRegModal key="ind-modal" onClose={() => setShowModal(false)} />}
-      </AnimatePresence>
-      <AnimatePresence>
-        {showTeamModal && <TeamRegModal key="team-modal" onClose={() => setShowTeamModal(false)} />}
-      </AnimatePresence>
+      {/* Portalled directly into document.body so the modal is completely outside
+          all section containers and stacking contexts, preventing sibling sections
+          (like the Contact section & Google map) from overlapping or showing through. */}
+      {typeof document !== 'undefined' && createPortal(
+        <>
+          <AnimatePresence>
+            {showModal && <IndividualRegModal key="ind-modal" onClose={() => setShowModal(false)} />}
+          </AnimatePresence>
+          <AnimatePresence>
+            {showTeamModal && <TeamRegModal key="team-modal" onClose={() => setShowTeamModal(false)} />}
+          </AnimatePresence>
+        </>,
+        document.body
+      )}
     </section>
   );
 };

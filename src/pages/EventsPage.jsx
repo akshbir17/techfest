@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from '../components/ui/GlassCard';
 import { Calendar, Users, Eye } from 'lucide-react';
@@ -31,12 +32,12 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
             transition={{ duration: 0.5, delay: delay + (idx * 0.1) }}
             style={{ height: '100%' }}
           >
-            <GlassCard style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: '2rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3 className="text-xl font-bold uppercase" style={{ color: 'var(--color-star-white)', letterSpacing: '0.05em' }}>
+            <GlassCard style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: 'clamp(1.25rem, 4vw, 2rem)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <h3 className="text-xl font-bold uppercase" style={{ color: 'var(--color-star-white)', letterSpacing: '0.05em', wordBreak: 'break-word', flex: '1 1 180px' }}>
                   {event.name}
                 </h3>
-                <span style={{ border: '1px solid var(--color-neon-cyan)', backgroundColor: 'transparent', color: 'var(--color-neon-cyan)', fontWeight: 'bold', padding: '0.2rem 0.8rem', borderRadius: '4px', fontSize: '0.875rem' }}>
+                <span style={{ border: '1px solid var(--color-neon-cyan)', backgroundColor: 'transparent', color: 'var(--color-neon-cyan)', fontWeight: 'bold', padding: '0.2rem 0.8rem', borderRadius: '4px', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>
                   ₹{event.price}
                 </span>
               </div>
@@ -98,6 +99,7 @@ const EventsPage = ({ isEmbedded = false }) => {
   }, [isEmbedded]);
 
   const handleRegisterFromRules = (event) => {
+    setSelectedRuleEvent(null);
     setTargetEventId(event.id);
     if (event.type === 'team') {
       setShowTeamModal(true);
@@ -336,44 +338,50 @@ const EventsPage = ({ isEmbedded = false }) => {
         onOpenRules={(event) => setSelectedRuleEvent(event)}
       />
 
-      {/* Event Rules Modal */}
-      <AnimatePresence>
-        {selectedRuleEvent && (
-          <EventRulesModal
-            key="rules-modal"
-            event={selectedRuleEvent}
-            onClose={() => setSelectedRuleEvent(null)}
-            onRegister={handleRegisterFromRules}
-          />
-        )}
-      </AnimatePresence>
+      {/* Modals portalled to document.body so they stay above all stacking contexts */}
+      {typeof document !== 'undefined' && createPortal(
+        <>
+          {/* Event Rules Modal */}
+          <AnimatePresence>
+            {selectedRuleEvent && (
+              <EventRulesModal
+                key="rules-modal"
+                event={selectedRuleEvent}
+                onClose={() => setSelectedRuleEvent(null)}
+                onRegister={handleRegisterFromRules}
+              />
+            )}
+          </AnimatePresence>
 
-      {/* Registration Modals triggered from Rules */}
-      <AnimatePresence>
-        {showIndividualModal && (
-          <IndividualRegModal
-            key="ind-reg-modal"
-            initialEventId={targetEventId}
-            onClose={() => {
-              setShowIndividualModal(false);
-              setTargetEventId(null);
-            }}
-          />
-        )}
-      </AnimatePresence>
+          {/* Registration Modals triggered from Rules */}
+          <AnimatePresence>
+            {showIndividualModal && (
+              <IndividualRegModal
+                key="ind-reg-modal"
+                initialEventId={targetEventId}
+                onClose={() => {
+                  setShowIndividualModal(false);
+                  setTargetEventId(null);
+                }}
+              />
+            )}
+          </AnimatePresence>
 
-      <AnimatePresence>
-        {showTeamModal && (
-          <TeamRegModal
-            key="team-reg-modal"
-            initialEventId={targetEventId}
-            onClose={() => {
-              setShowTeamModal(false);
-              setTargetEventId(null);
-            }}
-          />
-        )}
-      </AnimatePresence>
+          <AnimatePresence>
+            {showTeamModal && (
+              <TeamRegModal
+                key="team-reg-modal"
+                initialEventId={targetEventId}
+                onClose={() => {
+                  setShowTeamModal(false);
+                  setTargetEventId(null);
+                }}
+              />
+            )}
+          </AnimatePresence>
+        </>,
+        document.body
+      )}
       
     </ContainerTag>
   );

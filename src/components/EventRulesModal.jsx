@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Calendar, MapPin, Users, Award, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 const EventRulesModal = ({ event, onClose, onRegister }) => {
+  useScrollLock(true);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
     };
-    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
@@ -19,14 +20,17 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
 
   return (
     <div
+      data-lenis-prevent="true"
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 9999,
+        zIndex: 99999,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '1rem',
+        padding: '0.75rem 0.5rem',
+        overflowY: 'auto',
+        overscrollBehavior: 'contain',
       }}
     >
       {/* Backdrop */}
@@ -35,11 +39,13 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
+        data-lenis-prevent="true"
         style={{
           position: 'fixed',
           inset: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
+          backgroundColor: 'rgba(0, 0, 0, 0.88)',
           backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
         }}
       />
 
@@ -53,7 +59,8 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
           position: 'relative',
           width: '100%',
           maxWidth: '720px',
-          maxHeight: '90vh',
+          maxHeight: 'calc(100dvh - 1.25rem)',
+          margin: 'auto',
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: '#0a0a0c',
@@ -67,16 +74,17 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
         {/* Header */}
         <div
           style={{
-            padding: '1.5rem 1.75rem',
+            padding: '1.1rem 1.25rem',
             borderBottom: '1px solid rgba(211, 47, 47, 0.25)',
             display: 'flex',
             alignItems: 'flex-start',
             justifyContent: 'space-between',
             background: 'linear-gradient(180deg, rgba(211, 47, 47, 0.08) 0%, transparent 100%)',
+            gap: '0.75rem',
           }}
         >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
               <span
                 style={{
                   fontSize: '0.7rem',
@@ -91,17 +99,19 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
               >
                 {event.category || 'EVENT'}
               </span>
-              <span style={{ fontSize: '0.8rem', color: 'rgba(244, 234, 204, 0.5)' }}>✦ Official Rulebook</span>
+              <span style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.5)' }}>✦ Official Rulebook</span>
             </div>
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: '1.65rem',
+                fontSize: 'clamp(1.2rem, 4.5vw, 1.65rem)',
                 fontWeight: '900',
                 color: 'var(--color-star-white)',
                 letterSpacing: '0.04em',
                 textTransform: 'uppercase',
                 margin: 0,
+                wordBreak: 'break-word',
+                lineHeight: 1.25,
               }}
             >
               {event.name}
@@ -308,17 +318,7 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
         </div>
 
         {/* Footer Actions */}
-        <div
-          style={{
-            padding: '1.25rem 1.75rem',
-            borderTop: '1px solid rgba(211, 47, 47, 0.25)',
-            background: 'rgba(5, 5, 7, 0.95)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '1rem',
-          }}
-        >
+        <div className="rules-modal-footer">
           <div>
             <div style={{ fontSize: '0.72rem', color: 'rgba(244, 234, 204, 0.5)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               Registration Fee
@@ -328,7 +328,7 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <div className="rules-modal-actions">
             <button
               onClick={onClose}
               style={{
@@ -342,6 +342,7 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
                 fontSize: '0.85rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
+                whiteSpace: 'nowrap',
               }}
               onMouseOver={(e) => { e.currentTarget.style.borderColor = 'rgba(244, 234, 204, 0.6)'; }}
               onMouseOut={(e) => { e.currentTarget.style.borderColor = 'rgba(244, 234, 204, 0.25)'; }}
@@ -356,7 +357,7 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
                 if (onRegister) onRegister(event);
               }}
               style={{
-                padding: '0.75rem 1.75rem',
+                padding: '0.75rem 1.4rem',
                 background: 'var(--color-neon-cyan)',
                 border: '1px solid var(--color-neon-cyan)',
                 color: 'var(--color-space-black)',
@@ -365,13 +366,15 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
                 fontWeight: '800',
                 fontSize: '0.85rem',
                 textTransform: 'uppercase',
-                letterSpacing: '0.1em',
+                letterSpacing: '0.08em',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.5rem',
+                justifyContent: 'center',
+                gap: '0.4rem',
                 boxShadow: '3px 3px 0px 0px rgba(244, 234, 204, 0.4)',
                 transition: 'all 0.2s',
+                whiteSpace: 'nowrap',
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = 'translateY(-1px) translateX(-1px)';

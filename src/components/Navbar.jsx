@@ -29,11 +29,23 @@ const Navbar = () => {
       navigate('/');
       setTimeout(() => {
         const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        if (el) {
+          if (window.lenis) {
+            window.lenis.scrollTo(el);
+          } else {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
       }, 100);
     } else {
       const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      if (el) {
+        if (window.lenis) {
+          window.lenis.scrollTo(el);
+        } else {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
     }
   };
 
