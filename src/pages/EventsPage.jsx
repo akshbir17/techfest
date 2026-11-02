@@ -296,6 +296,31 @@ const EventsPage = ({ isEmbedded = false }) => {
         'Tiebreaker 2: Best Single Match Placement'
       ]
     },
+    {
+      id: 'treasure_hunt',
+      name: 'Treasure Hunt',
+      category: 'Games & Fun',
+      type: 'team',
+      price: '800 per team',
+      teamSize: '1–4 Members',
+      date: '19th Dec 2026',
+      venue: 'GNDEC Campus Grounds',
+      prize: 'Exciting Cash Prizes + Trophies',
+      description: 'An exhilarating campus-wide mystery quest! Crack cryptic clues, solve riddles, navigate hidden checkpoints, and race against fellow seekers to unearth the grand treasure.',
+      rules: [
+        'Teams must consist of 1 to 4 members. Inter-college and inter-branch teams are permitted.',
+        'All teams must report to the starting point together for briefing and collecting their initial clue.',
+        'Clues must be discovered and solved strictly in sequential order. Checkpoint marshals will verify each step before handing out the next clue.',
+        'Physical tampering with clues, sabotaging other squads, or accessing restricted campus areas will result in instant disqualification.',
+        'Motorized vehicles of any kind are strictly prohibited during the hunt.',
+        'The first squad to crack the final puzzle and deliver the treasure to the finish desk claims victory.'
+      ],
+      judging: [
+        'Order of completion with all verified checkpoints',
+        'Total completion time',
+        'Strict adherence to game boundaries and fair play'
+      ]
+    },
   ];
 
   const ContainerTag = isEmbedded ? 'section' : 'main';

@@ -5,10 +5,11 @@ import { X, ChevronDown, Loader2, AlertCircle, Users } from 'lucide-react';
 
 // Team events — update here to add/remove events
 const TEAM_EVENTS = [
-  { id: 'hackathon',  name: '24-Hour Hackathon',   fee: 800, teamSize: '2–4', description: 'Flagship event — build something amazing in 24 hours. ₹30,000 first prize, ₹14,000 second prize.' },
-  { id: 'bgmi',       name: 'BGMI Tournament',      fee: 400, teamSize: '4',   description: 'Squad-based competitive BGMI. ₹4,000 first prize, ₹2,000 second prize.' },
-  { id: 'free_fire',  name: 'Free Fire Tournament', fee: 400, teamSize: '4',   description: 'Squad-based Free Fire battle. ₹4,000 first prize, ₹2,000 second prize.' },
-  { id: 'tech_quiz',  name: 'TechQuiz',             fee: 300, teamSize: '1–3', description: 'Test your technical knowledge. ₹3,000 first prize, ₹1,500 second prize.' },
+  { id: 'hackathon',     name: '24-Hour Hackathon',      fee: 800, teamSize: '2–4', description: 'Flagship event — build something amazing in 24 hours. ₹30,000 first prize, ₹14,000 second prize.' },
+  { id: 'treasure_hunt', name: 'Treasure Hunt',          fee: 800, teamSize: '1–4', description: 'Campus-wide mystery quest solving clues & riddles. Exciting cash prizes + trophies.' },
+  { id: 'bgmi',          name: 'BGMI Tournament',         fee: 400, teamSize: '4',   description: 'Squad-based competitive BGMI. ₹4,000 first prize, ₹2,000 second prize.' },
+  { id: 'free_fire',     name: 'Free Fire Tournament',    fee: 400, teamSize: '4',   description: 'Squad-based Free Fire battle. ₹4,000 first prize, ₹2,000 second prize.' },
+  { id: 'tech_quiz',     name: 'TechQuiz',                fee: 300, teamSize: '1–3', description: 'Test your technical knowledge. ₹3,000 first prize, ₹1,500 second prize.' },
 ];
 
 const TeamRegModal = ({ onClose, initialEventId }) => {
