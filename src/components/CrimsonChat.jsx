@@ -7,7 +7,7 @@ import GlassCard from './ui/GlassCard';
 const CrimsonChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { id: 1, text: "Welcome, traveler. I am Crimson, the Sentinel of this digital shrine. How may I assist your quest for knowledge about Spectrum 1.0?", sender: 'crimson' }
+    { id: 1, text: "Welcome! I am Crimson, your digital assistant for Spectrum 1.0. How may I assist you with events, rules, or registration details?", sender: 'crimson' }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
