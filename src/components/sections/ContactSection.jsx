@@ -14,7 +14,7 @@ const ContactSection = () => {
           className="rules-header"
         >
           <h2 className="rules-title">
-            <span className="text-gradient">SHRINE</span> OF ASCENSION
+            <span className="text-gradient">CONTACT</span> US
           </h2>
           <div className="rules-divider"></div>
         </motion.div>

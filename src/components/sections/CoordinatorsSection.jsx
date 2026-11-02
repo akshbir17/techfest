@@ -5,14 +5,13 @@ import { User, Phone, GraduationCap } from 'lucide-react';
 
 const CoordinatorsSection = () => {
   const facultyCoordinators = [
-    { name: 'Dr. Ramesh Patil (Faculty Convener)', dept: 'Computer Science & Engineering', phone: '+91 9448123456' },
-    { name: 'Prof. Sunita Biradar (Faculty Co-Convener)', dept: 'Data Science', phone: '+91 9845987654' },
-    { name: 'Prof. Vijay Kumar (Faculty Coordinator)', dept: 'Artificial Intelligence & ML', phone: '+91 9901234567' },
+    { name: 'Dr. Praveen Reddy', dept: 'Faculty Coordinator', phone: '+91 99165 42332' },
   ];
 
   const studentCoordinators = [
     { name: 'Sangmesh', dept: 'Student Coordinator', phone: '+91 9353142522' },
-    { name: 'Abdul Aziz', dept: 'Student Coordinator', phone: '+91 8296683831' }
+    { name: 'Abdul Aziz', dept: 'Student Coordinator', phone: '+91 8296683831' },
+    { name: 'Armaandeep Singh', dept: 'Student Coordinator', phone: '+91 8427027540' },
   ];
 
   return (
