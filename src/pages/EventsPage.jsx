@@ -49,7 +49,7 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
               <div className="text-sm mb-6" style={{ color: 'var(--color-star-white)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <Calendar size={18} color="var(--color-neon-cyan)" />
-                  <span style={{ opacity: 0.8 }}>{event.date || 'Dec 18 - 20, 2026'}</span>
+                  <span style={{ opacity: 0.8 }}>{event.date || 'Dec 7 - 9, 2026'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <Users size={18} color="var(--color-neon-cyan)" />
@@ -116,7 +116,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '800 per team',
       teamSize: '2–4 Members',
-      date: '18th – 19th Dec 2026',
+      date: '8th – 9th Dec 2026',
       venue: 'CSE Advanced Computing Lab',
       prize: '₹30,000 First Prize, ₹14,000 Second Prize + Trophies',
       description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Solve challenges across AI, Web3, FinTech, and Open Innovation. Dinner will be provided for all participants.',
@@ -143,7 +143,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '300 per team',
       teamSize: '1–3 Members',
-      date: '19th Dec 2026',
+      date: '7th Dec 2026',
       venue: 'Seminar Hall 1',
       prize: '₹3,000 First Prize, ₹1,500 Second Prize + Certificates',
       description: 'Test your technical acumen, algorithmic thinking, and tech trivia against the sharpest minds across the region.',
@@ -172,7 +172,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'individual',
       price: '120 per individual',
       teamSize: 'Individual',
-      date: '19th Dec 2026',
+      date: '7th Dec 2026',
       venue: 'Training & Placement Cell, GNDEC',
       prize: '₹1,000 Cash Prize + Industry Feedback Scorecard & Certificate',
       description: 'Simulate high-stakes corporate HR and Technical interviews conducted by seasoned tech recruiters and corporate evaluators.',
@@ -198,16 +198,16 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'individual',
       price: '79 per entry',
       teamSize: 'Max 3 entries / person',
-      date: '18th – 20th Dec 2026',
+      date: '7th – 9th Dec 2026',
       venue: 'Spectrum Photo Booth & GNDEC Campus',
       prize: '₹1,000 Prize Pool + Feature in Official Fest Aftermovie & Exhibition',
       description: 'Capture the essence, aesthetics, and energy of Spectrum 1.0 through your lens. Showcase framing, perspective, and visual storytelling.',
       rules: [
         'Each registration allows submission of 1 photograph (participants may register up to 3 entries at ₹79 each).',
-        'All photographs must be captured during the days of Spectrum 1.0 (Dec 18–20, 2026) within the GNDEC campus or at the official themed photo booth.',
+        'All photographs must be captured during the days of Spectrum 1.0 (Dec 7–9, 2026) within the GNDEC campus or at the official themed photo booth.',
         'Submissions from both smartphones and DSLRs / Mirrorless cameras are welcome.',
         'Basic adjustments (contrast, brightness, cropping, color grading) are permitted. Generative AI fills, excessive filters, or digital manipulation are strictly prohibited.',
-        'Photographs must be submitted in high-resolution JPG/PNG format with EXIF metadata intact via the submission portal before Dec 20, 3:00 PM.',
+        'Photographs must be submitted in high-resolution JPG/PNG format with EXIF metadata intact via the submission portal before Dec 9, 3:00 PM.',
         'Entries will be showcased in the Spectrum Art Gallery and judged by professional guest photographers.'
       ],
       judging: [
@@ -227,7 +227,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '400 per squad',
       teamSize: '4 Members (Squad)',
-      date: '19th Dec 2026',
+      date: '7th Dec 2026',
       venue: 'Esports Arena / CC Lab 2',
       prize: '₹4,000 First Prize, ₹2,000 Second Prize + Trophies',
       description: 'Squad-based competitive Battlegrounds Mobile India showdown. Strategize, survive, and dominate the battlegrounds.',
@@ -252,7 +252,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '400 per squad',
       teamSize: '4 Members (Squad)',
-      date: '19th Dec 2026',
+      date: '7th Dec 2026',
       venue: 'Esports Arena / CC Lab 3',
       prize: '₹4,000 First Prize, ₹2,000 Second Prize + Trophies',
       description: 'High-octane mobile battle royale. Fast-paced squad combat where reflex, team coordination, and survival instincts crown the ultimate champions.',
@@ -277,7 +277,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '800 per team',
       teamSize: '1–4 Members',
-      date: '19th Dec 2026',
+      date: '7th Dec 2026',
       venue: 'GNDEC Campus Grounds',
       prize: 'Exciting Cash Prizes + Trophies',
       description: 'An exhilarating campus-wide mystery quest! Crack cryptic clues, solve riddles, navigate hidden checkpoints, and race against fellow seekers to unearth the grand treasure.',

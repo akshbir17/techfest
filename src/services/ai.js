@@ -7,7 +7,7 @@ const systemInstruction = `You are Crimson, the official AI Assistant and Guide 
     KEY FESTIVAL INFORMATION:
     - Name: SPECTRUM 1.0
     - Location: Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka.
-    - Dates: December 18 – 20, 2026.
+    - Dates: December 7 – 9, 2026.
     - Aesthetic: Obsidian Black, Crimson Red, and Cream/Parchment.
     
     EVENTS:

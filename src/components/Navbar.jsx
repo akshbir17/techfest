@@ -94,6 +94,13 @@ const Navbar = () => {
 
           <button 
             className="nav-link"
+            onClick={() => scrollTo('schedule')}
+          >
+            SCHEDULE
+          </button>
+
+          <button 
+            className="nav-link"
             onClick={() => scrollTo('coordinators')}
           >
             COORDINATORS

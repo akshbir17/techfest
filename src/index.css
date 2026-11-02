@@ -1078,3 +1078,12 @@ body.modal-open .chat-window {
     white-space: nowrap;
   }
 }
+
+/* Timetable Row Mobile Optimization */
+@media (max-width: 680px) {
+  .timetable-row {
+    grid-template-columns: 1fr !important;
+    gap: 0.65rem !important;
+    padding: 1rem 0.85rem !important;
+  }
+}
