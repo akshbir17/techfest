@@ -5,7 +5,6 @@ import { useScrollLock } from '../../hooks/useScrollLock';
 
 // List of individual events
 const INDIVIDUAL_EVENTS = [
-  { id: 'open_mic',       name: 'Open Mic',                  fee: 200, description: 'Showcase your talent on stage — poetry, comedy, music & more. Trophy or recognition for winner.' },
   { id: 'mock_interview', name: 'Mock Interview',            fee: 120, description: 'Simulate a real interview and get evaluated — ₹1,000 cash prize for top participant.' },
   { id: 'photo_booth',   name: 'Photo Booth Photo Contest',  fee: 79,  description: 'Submit your best shot — max 3 entries per person at ₹79 each. ₹1,000 prize pool.' },
 ];

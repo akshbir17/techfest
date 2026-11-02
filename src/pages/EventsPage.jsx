@@ -166,32 +166,6 @@ const EventsPage = ({ isEmbedded = false }) => {
 
   const creativeEvents = [
     {
-      id: 'open_mic',
-      name: 'Open Mic',
-      category: 'Creative',
-      type: 'individual',
-      price: '200 per individual',
-      teamSize: 'Individual',
-      date: '20th Dec 2026',
-      venue: 'Open Air Amphitheatre',
-      prize: 'Trophy, Certificate of Excellence & Spotlight Feature',
-      description: 'Unleash your creativity and command the stage with spoken word, stand-up comedy, singing, poetry, beatboxing, or music.',
-      rules: [
-        'Individual solo performance only.',
-        'Genres permitted: Poetry, Stand-up Comedy, Vocal/Instrumental Music, Beatboxing, Storytelling, or Monologue.',
-        'Performance time limit is 4 to 6 minutes. A warning bell rings at 4 minutes; overtime beyond 6 minutes leads to deduction of marks.',
-        'Backing tracks or accompaniment audio must be submitted to the stage coordinator on a USB drive 45 minutes prior to the event.',
-        'Performers must bring their own instruments (standard acoustic guitar cable connection and mic provided).',
-        'Strict adherence to decency: Content must not contain hate speech, discriminatory remarks, or vulgar language. Violators will be disqualified immediately.'
-      ],
-      judging: [
-        'Stage Presence & Confidence (25%)',
-        'Originality & Depth of Content (35%)',
-        'Delivery, Voice Modulation & Rhythm (20%)',
-        'Audience Impact & Engagement (20%)'
-      ]
-    },
-    {
       id: 'mock_interview',
       name: 'Mock Interview',
       category: 'Creative',

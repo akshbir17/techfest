@@ -15,7 +15,6 @@ const systemInstruction = `You are Crimson, the official AI Assistant and Guide 
       * 24-Hour Hackathon: ₹800 per team (2–4 members). Flagship 24-hour coding sprint. Dinner will be provided for all participants. ₹30,000 first prize, ₹14,000 second prize + trophies.
       * TechQuiz: ₹300 per team (1–3 members). Prelims + buzzer quiz on tech trivia and logic. ₹3,000 first prize.
     - Creative:
-      * Open Mic: ₹200 per individual. Poetry, comedy, singing, or music. Trophy & honors for the champion.
       * Mock Interview: ₹120 per individual. Real-world corporate HR & tech simulation. ₹1,000 cash prize.
       * Photo Booth Photo Contest: ₹79 per entry (max 3 submissions). ₹1,000 prize pool.
     - Games & Esports:
