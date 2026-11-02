@@ -275,11 +275,11 @@ const EventsPage = ({ isEmbedded = false }) => {
       name: 'Treasure Hunt',
       category: 'Games & Fun',
       type: 'team',
-      price: '800 per team',
+      price: '400 per team',
       teamSize: '1–4 Members',
       date: '7th Dec 2026',
       venue: 'GNDEC Campus Grounds',
-      prize: 'Exciting Cash Prizes + Trophies',
+      prize: '₹3,000 First Prize + Trophies',
       description: 'An exhilarating campus-wide mystery quest! Crack cryptic clues, solve riddles, navigate hidden checkpoints, and race against fellow seekers to unearth the grand treasure.',
       rules: [
         'Teams must consist of 1 to 4 members. Inter-college and inter-branch teams are permitted.',
