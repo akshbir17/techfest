@@ -11,10 +11,8 @@ const CoordinatorsSection = () => {
   ];
 
   const studentCoordinators = [
-    { name: 'RISHIKESH DESHMUKH (Overall Lead)', dept: 'Data Science', phone: '+91 9035896633' },
-    { name: 'Siddalinga (Co-Coordinator)', dept: 'Data Science', phone: '+91 9902664144' },
-    { name: 'Sangmesh (Co-Coordinator)', dept: 'Data Science', phone: '+91 9353142522' },
-    { name: 'Akshbir Singh Seehra (Co-Coordinator)', dept: 'Data Science', phone: '+91 9833337788' }
+    { name: 'Sangmesh', dept: 'Student Coordinator', phone: '+91 9353142522' },
+    { name: 'Abdul Aziz', dept: 'Student Coordinator', phone: '+91 8296683831' }
   ];
 
   return (

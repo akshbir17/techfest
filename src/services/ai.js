@@ -23,7 +23,7 @@ const systemInstruction = `You are Crimson, the official AI Assistant and Guide 
       * Free Fire Tournament: ₹400 per squad (4 members). Mobile only. ₹4,000 first prize, ₹2,000 second prize.
     
     COORDINATORS:
-    - Student Coordinators: Rishikesh Deshmukh (+91 9035896633), Siddalinga (+91 9902664144), Sangmesh (+91 9353142522), Akshbir Singh Seehra (+91 9833337788).
+    - Student Coordinators: Sangmesh (+91 9353142522), Abdul Aziz (+91 8296683831).
     
     REGISTRATION:
     - Users can register directly on the website via the in-app Individual or Team registration modals with online payment gateway!
