@@ -38,7 +38,7 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
                   {event.name}
                 </h3>
                 <span style={{ border: '1px solid var(--color-neon-cyan)', backgroundColor: 'transparent', color: 'var(--color-neon-cyan)', fontWeight: 'bold', padding: '0.2rem 0.8rem', borderRadius: '4px', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>
-                  ₹{event.price}
+                  {event.price ? (event.price.startsWith('₹') ? event.price : (event.price.toLowerCase().includes('free') ? event.price : `₹${event.price}`)) : 'Free'}
                 </span>
               </div>
               
@@ -119,13 +119,15 @@ const EventsPage = ({ isEmbedded = false }) => {
       date: '8th – 9th Dec 2026',
       venue: 'CSE Advanced Computing Lab',
       prize: '₹30,000 First Prize, ₹14,000 Second Prize + Trophies',
-      description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Solve challenges across AI, Web3, FinTech, and Open Innovation. Dinner will be provided for all participants.',
+      description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Kickoff at 12:00 PM on 8 Dec, Evaluation at 12:30 PM on 9 Dec. College-provided lunch, dinner, breakfast & accommodation included.',
       rules: [
         'Teams must consist of 2 to 4 members. Inter-college and inter-branch teams are fully permitted.',
-        'All development, coding, and design must be executed strictly within the 24-hour hackathon window. Pre-built code is strictly prohibited (boilerplates, standard libraries, APIs, and frameworks are allowed).',
+        'Mandatory Day 2 Deadlines: ID card distribution closes at 11:00 AM sharp. Problem statement submission window is 11:00 AM – 1:00 PM (no submissions accepted after 1:00 PM).',
+        'Official 24-hour hackathon begins at 12:00 PM on 8 December 2026. All code and design must be created within this window (standard libraries, APIs & boilerplates allowed).',
         'Teams must maintain a public GitHub repository and commit code regularly throughout the hackathon.',
         'Mentors will conduct 2 mandatory checkpoint evaluations (Checkpoint 1: Architecture & Progress at 8 hours; Checkpoint 2: Feature Freeze & Polish at 18 hours).',
-        'Final presentations will consist of a 5-minute live working demo followed by a 3-minute Q&A with the industry jury panel.',
+        'Final presentations & parallel theme project evaluation will be conducted at 12:30 PM on 9 December before the Grand Closing Ceremony.',
+        'Complimentary meals (Lunch & Dinner on 8 Dec, Breakfast on 9 Dec) and accommodation are arranged by the college.',
         'Plagiarism, pre-packaged templates, or unethical conduct will result in immediate disqualification without refund.'
       ],
       judging: [
@@ -143,14 +145,14 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '300 per team',
       teamSize: '1–3 Members',
-      date: '7th Dec 2026',
+      date: '7th Dec 2026 (R1: 1:00 PM | R2: 4:00 PM)',
       venue: 'Seminar Hall 1',
       prize: '₹3,000 First Prize, ₹1,500 Second Prize + Certificates',
       description: 'Test your technical acumen, algorithmic thinking, and tech trivia against the sharpest minds across the region.',
       rules: [
         'Teams can consist of 1 to 3 participants.',
-        'Round 1 (Written Prelims): 30 questions in 30 minutes covering CS fundamentals, tech history, algorithms, emerging tech, and logical reasoning. Top 6 teams qualify for finals.',
-        'Round 2 (Stage Finals): Includes Audio-Visual rounds, Code Snippet Debugging, Buzzer rounds, and a Rapid Fire round.',
+        'Round 1 (Written Prelims): 1:00 PM – 2:00 PM on 7 Dec. 30 questions covering CS fundamentals, logic, algorithms, and emerging tech. Top teams qualify for stage finals.',
+        'Round 2 (Stage Finals): 4:00 PM – 5:00 PM on 7 Dec. Live buzzer rounds, audio-visual rounds, code debugging, and rapid fire on the main stage.',
         'Negative marking applies during the Buzzer round (-5 points for each incorrect answer).',
         'Electronic devices (smartphones, smartwatches, calculators) are strictly prohibited during the competition.',
         'Quizmaster\'s decisions are final and incontrovertible.'
@@ -205,9 +207,9 @@ const EventsPage = ({ isEmbedded = false }) => {
       rules: [
         'Each registration allows submission of 1 photograph (participants may register up to 3 entries at ₹79 each).',
         'All photographs must be captured during the days of Spectrum 1.0 (Dec 7–9, 2026) within the GNDEC campus or at the official themed photo booth.',
+        'Special Announcement: The official Google Drive submission link will be shared on 9 December 2026 at 12:00 PM. Participants must submit their photographs using the provided link.',
         'Submissions from both smartphones and DSLRs / Mirrorless cameras are welcome.',
-        'Basic adjustments (contrast, brightness, cropping, color grading) are permitted. Generative AI fills, excessive filters, or digital manipulation are strictly prohibited.',
-        'Photographs must be submitted in high-resolution JPG/PNG format with EXIF metadata intact via the submission portal before Dec 9, 3:00 PM.',
+        'Basic adjustments (contrast, brightness, cropping, color grading) are permitted. Generative AI fills or manipulative digital filters are prohibited.',
         'Entries will be showcased in the Spectrum Art Gallery and judged by professional guest photographers.'
       ],
       judging: [
@@ -215,6 +217,31 @@ const EventsPage = ({ isEmbedded = false }) => {
         'Creativity & Originality (25%)',
         'Lighting & Technical Quality (25%)',
         'Theme Relevance & Storytelling (20%)'
+      ]
+    },
+    {
+      id: 'impossible_to_sell',
+      name: 'Impossible to Sell',
+      category: 'Creative',
+      type: 'individual',
+      price: '100 per entry',
+      teamSize: 'Individual or Duo',
+      date: '7th Dec 2026 (2:00 PM – 4:00 PM)',
+      venue: 'Main Stage / Seminar Hall 2',
+      prize: '₹2,000 First Prize + Trophies',
+      description: 'A high-voltage creative selling challenge where participants put their persuasion, wit, and salesmanship to the test by pitching an unusual, absurd, or notoriously difficult-to-sell product or concept.',
+      rules: [
+        'Participants may compete solo or as a duo (2 members).',
+        'Each participant or team will be given an unusual, absurd, or difficult-to-sell item or concept on the spot.',
+        'Preparation time: 3 minutes. Live pitch duration: 3 to 4 minutes on stage.',
+        'Humor, creative storytelling, innovative value propositions, and sharp persuasion tactics are highly encouraged.',
+        'Vulgar, offensive, or disparaging language will result in immediate disqualification.'
+      ],
+      judging: [
+        'Creativity & Originality of the Pitch (30%)',
+        'Persuasiveness & Storytelling (25%)',
+        'Humor, Wit & Audience Engagement (25%)',
+        'Spontaneous Objection Handling (20%)'
       ]
     },
   ];
@@ -227,12 +254,13 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '400 per squad',
       teamSize: '4 Members (Squad)',
-      date: '7th Dec 2026',
+      date: '7th Dec 2026 (9:00 AM – 11:00 AM)',
       venue: 'Esports Arena / CC Lab 2',
       prize: '₹4,000 First Prize, ₹2,000 Second Prize + Trophies',
-      description: 'Squad-based competitive Battlegrounds Mobile India showdown. Strategize, survive, and dominate the battlegrounds.',
+      description: 'Competitive squad-based Battlegrounds Mobile India showdown. Runs in parallel with the Free Fire Tournament from 9:00 AM to 11:00 AM on Day 1.',
       rules: [
         'Squad format (4 players per team; 1 optional substitute registered in advance).',
+        'Runs in parallel with Free Fire Tournament (9:00 AM – 11:00 AM on 7 Dec).',
         'Strictly Mobile Devices Only: Tablets, iPads, triggers, emulators, or Bluetooth controllers are strictly barred. Devices will be physically inspected before matches.',
         'Tournament maps: Erangel, Miramar, and Sanhok (Classic Battle Royale mode).',
         'Official BGIS Scoring Matrix: 1 point per kill + placement points (1st: 10 pts, 2nd: 6 pts, 3rd: 5 pts, 4th: 4 pts, 5th: 3 pts, 6th: 2 pts, 7th-8th: 1 pt).',
@@ -252,12 +280,13 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '400 per squad',
       teamSize: '4 Members (Squad)',
-      date: '7th Dec 2026',
+      date: '7th Dec 2026 (9:00 AM – 11:00 AM)',
       venue: 'Esports Arena / CC Lab 3',
       prize: '₹4,000 First Prize, ₹2,000 Second Prize + Trophies',
-      description: 'High-octane mobile battle royale. Fast-paced squad combat where reflex, team coordination, and survival instincts crown the ultimate champions.',
+      description: 'High-octane mobile squad battle royale. Runs in parallel with the BGMI Tournament from 9:00 AM to 11:00 AM on Day 1.',
       rules: [
         'Squad format (4 players per squad).',
+        'Runs in parallel with BGMI Tournament (9:00 AM – 11:00 AM on 7 Dec).',
         'Mobile phones only: No PC, emulators, iPad, macros, or external hardware triggers permitted.',
         'Maps: Bermuda, Purgatory, and Kalahari.',
         'Standard competitive settings: Gun attributes ON/OFF as per official FFIC esports guidelines. Character skills allowed.',
@@ -277,12 +306,13 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '400 per team',
       teamSize: '1–4 Members',
-      date: '7th Dec 2026',
+      date: '7th Dec 2026 (11:30 AM – 1:00 PM)',
       venue: 'GNDEC Campus Grounds',
       prize: '₹3,000 First Prize + Trophies',
-      description: 'An exhilarating campus-wide mystery quest! Crack cryptic clues, solve riddles, navigate hidden checkpoints, and race against fellow seekers to unearth the grand treasure.',
+      description: 'An exhilarating campus-wide mystery quest! Crack cryptic clues, solve riddles, navigate hidden checkpoints, and race against fellow seekers. Strictly ends at 1:00 PM.',
       rules: [
         'Teams must consist of 1 to 4 members. Inter-college and inter-branch teams are permitted.',
+        'Scheduled on Day 1 from 11:30 AM to 1:00 PM sharp.',
         'All teams must report to the starting point together for briefing and collecting their initial clue.',
         'Clues must be discovered and solved strictly in sequential order. Checkpoint marshals will verify each step before handing out the next clue.',
         'Physical tampering with clues, sabotaging other squads, or accessing restricted campus areas will result in instant disqualification.',
@@ -293,6 +323,30 @@ const EventsPage = ({ isEmbedded = false }) => {
         'Order of completion with all verified checkpoints',
         'Total completion time',
         'Strict adherence to game boundaries and fair play'
+      ]
+    },
+    {
+      id: 'killer_game',
+      name: 'Killer Game',
+      category: 'Games & Fun',
+      type: 'individual',
+      price: '50 per player',
+      teamSize: 'Individual',
+      date: '7th Dec 2026 (1:00 PM – 2:00 PM)',
+      venue: 'Campus Ground / Open Lawn',
+      prize: 'Trophies & Exclusive Fest Merch',
+      description: 'An exhilarating social deduction and stealth mystery elimination challenge of strategy, deception, and razor-sharp survival instincts. Runs in parallel with TechQuiz Round 1.',
+      rules: [
+        'Individual solo participation.',
+        'Runs during the 1:00 PM – 2:00 PM time slot on Day 1.',
+        'Each player secretly receives a target identity and a secret elimination condition.',
+        'Eliminations must be performed stealthily without any third-party witnesses.',
+        'Physical aggression, foul play, or trespassing in restricted college areas is strictly prohibited.',
+        'Players with the highest number of confirmed eliminations and surviving finalists claim victory.'
+      ],
+      judging: [
+        'Total Confirmed Eliminations',
+        'Survival Time & Stealth Execution'
       ]
     },
   ];

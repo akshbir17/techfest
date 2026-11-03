@@ -12,15 +12,22 @@ const systemInstruction = `You are Crimson, the official AI Assistant and Guide 
     
     EVENTS:
     - Technical:
-      * 24-Hour Hackathon: ₹800 per team (2–4 members). Flagship 24-hour coding sprint. Dinner will be provided for all participants. ₹30,000 first prize, ₹14,000 second prize + trophies.
-      * TechQuiz: ₹300 per team (1–3 members). Prelims + buzzer quiz on tech trivia and logic. ₹3,000 first prize.
+      * 24-Hour Hackathon: ₹800 per team (2–4 members). Flagship 24-hour sprint (8 Dec 12 PM to 9 Dec 12:30 PM). College lunch, dinner, breakfast & accommodation provided. ₹30,000 first prize, ₹14,000 second prize + trophies.
+      * TechQuiz: ₹300 per team (1–3 members). Day 1 (Round 1: 1:00 PM – 2:00 PM | Round 2: 4:00 PM – 5:00 PM). ₹3,000 first prize.
     - Creative:
-      * Mock Interview: ₹120 per individual. Real-world corporate HR & tech simulation. ₹1,000 cash prize.
-      * Photo Booth Photo Contest: ₹79 per entry (max 3 submissions). ₹1,000 prize pool.
+      * Impossible to Sell: ₹100 per entry (1–2 members). Day 1 (2:00 PM – 4:00 PM). Creative selling & pitching challenge. ₹2,000 first prize + trophies.
+      * Mock Interview: ₹120 per individual. Day 1. Real-world corporate HR & tech simulation. ₹1,000 cash prize.
+      * Photo Booth Photo Contest: ₹79 per entry (max 3 submissions). Google Drive submission link shared on 9 Dec at 12:00 PM. ₹1,000 prize pool.
     - Games & Esports:
-      * Treasure Hunt: ₹400 per team (1–4 members). ₹3,000 first prize + trophies. Campus-wide quest solving clues and riddles to uncover the grand treasure.
-      * BGMI Tournament: ₹400 per squad (4 members). Mobile only. ₹4,000 first prize, ₹2,000 second prize.
-      * Free Fire Tournament: ₹400 per squad (4 members). Mobile only. ₹4,000 first prize, ₹2,000 second prize.
+      * BGMI Tournament: ₹400 per squad (4 members). Day 1 (9:00 AM – 11:00 AM, runs in parallel with Free Fire). ₹4,000 first prize, ₹2,000 second prize.
+      * Free Fire Tournament: ₹400 per squad (4 members). Day 1 (9:00 AM – 11:00 AM, runs in parallel with BGMI). ₹4,000 first prize, ₹2,000 second prize.
+      * Treasure Hunt: ₹400 per team (1–4 members). Day 1 (11:30 AM – 1:00 PM). ₹3,000 first prize + trophies.
+      * Killer Game: ₹50 per player. Day 1 (1:00 PM – 2:00 PM, parallel with TechQuiz Round 1). Social deduction & stealth elimination.
+
+    SCHEDULE HIGHLIGHTS:
+    - Day 1 (7 Dec): BGMI & Free Fire (9-11 AM), Poster Reveal (11-11:30 AM), Treasure Hunt (11:30 AM - 1 PM), TechQuiz R1 & Killer Game (1-2 PM), Impossible to Sell (2-4 PM), TechQuiz R2 (4-5 PM).
+    - Day 2 (8 Dec): ID Cards (9-11 AM cutoff), Problem Statements (11 AM - 1 PM cutoff), Hackathon Starts (12 PM), College Lunch (2-3 PM), College Dinner (8-9:30 PM), Entertainment (10-11 PM).
+    - Day 3 (9 Dec): College Breakfast (8-9 AM), Photo Link Shared (12 PM), Project Evaluations (12:30-1:30 PM), Closing Ceremony & Speeches (2-4 PM), Prize Distribution (4-5 PM).
     
     COORDINATORS:
     - Faculty Coordinator: Dr. Praveen Reddy (+91 99165 42332).

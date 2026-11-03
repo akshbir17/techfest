@@ -5,8 +5,10 @@ import { useScrollLock } from '../../hooks/useScrollLock';
 
 // List of individual events
 const INDIVIDUAL_EVENTS = [
-  { id: 'mock_interview', name: 'Mock Interview',            fee: 120, description: 'Simulate a real interview and get evaluated — ₹1,000 cash prize for top participant.' },
-  { id: 'photo_booth',   name: 'Photo Booth Photo Contest',  fee: 79,  description: 'Submit your best shot — max 3 entries per person at ₹79 each. ₹1,000 prize pool.' },
+  { id: 'impossible_to_sell', name: 'Impossible to Sell',          fee: 100, description: 'Creative selling challenge — pitch an unusual or bizarre product. ₹2,000 first prize + trophies.' },
+  { id: 'mock_interview',     name: 'Mock Interview',              fee: 120, description: 'Simulate a real interview and get evaluated — ₹1,000 cash prize for top participant.' },
+  { id: 'killer_game',        name: 'Killer Game',                 fee: 50,  description: 'Social deduction & stealth elimination challenge on Day 1. Trophies & fest merch.' },
+  { id: 'photo_booth',       name: 'Photo Booth Photo Contest',    fee: 79,  description: 'Submit your best shot — Google Drive link shared on 9 Dec at 12 PM. ₹1,000 prize pool.' },
 ];
 
 const IndividualRegModal = ({ onClose, initialEventId }) => {

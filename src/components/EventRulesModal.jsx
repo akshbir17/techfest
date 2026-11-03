@@ -324,7 +324,7 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
               Registration Fee
             </div>
             <div style={{ fontSize: '1.35rem', fontWeight: '800', color: 'var(--color-neon-cyan)', fontFamily: 'var(--font-heading)' }}>
-              ₹{event.price}
+              {event.price ? (event.price.startsWith('₹') ? event.price : (event.price.toLowerCase().includes('free') ? event.price : `₹${event.price}`)) : 'Free'}
             </div>
           </div>
 
