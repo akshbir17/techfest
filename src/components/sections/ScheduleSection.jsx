@@ -23,6 +23,7 @@ import {
   Share2
 } from 'lucide-react';
 import GlassCard from '../ui/GlassCard';
+import AddToCalendarButton from '../AddToCalendarButton';
 
 const scheduleData = [
   {
@@ -320,6 +321,9 @@ const ScheduleSection = () => {
           <p style={{ color: 'rgba(244, 234, 204, 0.75)', fontSize: 'clamp(0.9rem, 2.5vw, 1.05rem)', maxWidth: '780px', margin: '0.75rem auto 0 auto', lineHeight: 1.6 }}>
             Organized by the Departments of <strong style={{ color: 'var(--color-star-white)' }}>CSE (Data Science)</strong> and <strong style={{ color: 'var(--color-star-white)' }}>CSE (AI & ML)</strong>, Guru Nanak Dev Engineering College (GNDEC), Bidar.
           </p>
+          <div style={{ marginTop: '1.25rem', display: 'flex', justifyContent: 'center' }}>
+            <AddToCalendarButton event={{ id: 'full_fest', name: 'Spectrum 1.0 (All 3 Days)' }} variant="modal" />
+          </div>
         </motion.div>
 
         {/* Interactive Tab Controls */}

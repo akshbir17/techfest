@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { X, Calendar, MapPin, Users, Award, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useScrollLock } from '../hooks/useScrollLock';
+import AddToCalendarButton from './AddToCalendarButton';
 
 const EventRulesModal = ({ event, onClose, onRegister }) => {
   useScrollLock(true);
@@ -329,6 +330,7 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
           </div>
 
           <div className="rules-modal-actions">
+            <AddToCalendarButton event={event} variant="modal" />
             <button
               onClick={onClose}
               style={{

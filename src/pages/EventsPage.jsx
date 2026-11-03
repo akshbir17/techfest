@@ -6,6 +6,7 @@ import { Calendar, Users, Eye } from 'lucide-react';
 import EventRulesModal from '../components/EventRulesModal';
 import IndividualRegModal from '../components/sections/IndividualRegModal';
 import TeamRegModal from '../components/sections/TeamRegModal';
+import AddToCalendarButton from '../components/AddToCalendarButton';
 
 // Robust helper to ensure clean Indian Rupee symbol formatting
 const formatPrice = (price) => {
@@ -67,27 +68,31 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
                 </div>
               </div>
               
-              <button 
-                id={`rules-btn-${event.id}`}
-                onClick={() => onOpenRules(event)}
-                className="w-full py-3 mt-auto transition-all duration-300"
-                style={{ 
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                  border: '1px solid var(--color-neon-cyan)',
-                  borderRadius: '4px',
-                  backgroundColor: 'transparent',
-                  color: 'var(--color-star-white)',
-                  fontFamily: 'var(--font-primary)',
-                  fontWeight: 'bold',
-                  letterSpacing: '0.1em',
-                  cursor: 'pointer'
-                }}
-                onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(211, 47, 47, 0.15)' }}
-                onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent' }}
-              >
-                <Eye size={18} />
-                Rules & Details
-              </button>
+              <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                <button 
+                  id={`rules-btn-${event.id}`}
+                  onClick={() => onOpenRules(event)}
+                  className="w-full py-3 transition-all duration-300"
+                  style={{ 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                    border: '1px solid var(--color-neon-cyan)',
+                    borderRadius: '4px',
+                    backgroundColor: 'transparent',
+                    color: 'var(--color-star-white)',
+                    fontFamily: 'var(--font-primary)',
+                    fontWeight: 'bold',
+                    letterSpacing: '0.1em',
+                    cursor: 'pointer'
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(211, 47, 47, 0.15)' }}
+                  onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent' }}
+                >
+                  <Eye size={18} />
+                  Rules & Details
+                </button>
+
+                <AddToCalendarButton event={event} />
+              </div>
             </GlassCard>
           </motion.div>
         ))}
