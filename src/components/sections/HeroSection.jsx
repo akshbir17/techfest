@@ -1,6 +1,7 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import NeonButton from '../ui/NeonButton';
+import LiveCountdownTracker from '../LiveCountdownTracker';
 
 const HeroSection = () => {
   return (
@@ -96,6 +97,9 @@ const HeroSection = () => {
             ENTER THE REALM
           </NeonButton>
         </motion.div>
+
+        {/* Live Countdown & Happening Now Indicator */}
+        <LiveCountdownTracker />
 
       </div>
     </section>
