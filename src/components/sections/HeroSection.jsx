@@ -44,7 +44,7 @@ const HeroSection = () => {
                 DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING
               </div>
               <div className="hero-dept-sub">
-                (DATA SCIENCE)
+                (ARTIFICIAL INTELLIGENCE & MACHINE LEARNING)
               </div>
             </div>
 
@@ -57,7 +57,7 @@ const HeroSection = () => {
                 DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING
               </div>
               <div className="hero-dept-sub">
-                (ARTIFICIAL INTELLIGENCE & MACHINE LEARNING)
+                (DATA SCIENCE)
               </div>
             </div>
           </div>
