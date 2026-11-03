@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import NeonButton from '../ui/NeonButton';
 
@@ -13,7 +13,7 @@ const HeroSection = () => {
           transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
         >
           <span className="hero-subtitle">
-            GURU NANAK DEV ENGINEERING COLLEGE PRESENTS
+            GURU NANAK DEV ENGINEERING COLLEGE (GNDEC), BIDAR PRESENTS
           </span>
         </motion.div>
 
