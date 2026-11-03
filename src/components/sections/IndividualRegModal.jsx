@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, ChevronDown, Loader2, AlertCircle } from 'lucide-react';
 import { useScrollLock } from '../../hooks/useScrollLock';
@@ -8,7 +8,7 @@ const INDIVIDUAL_EVENTS = [
   { id: 'impossible_to_sell', name: 'Impossible to Sell',          fee: 100, description: 'Creative selling challenge — pitch an unusual or bizarre product. ₹2,000 first prize + trophies.' },
   { id: 'mock_interview',     name: 'Mock Interview',              fee: 120, description: 'Simulate a real interview and get evaluated — ₹1,000 cash prize for top participant.' },
   { id: 'killer_game',        name: 'Killer Game',                 fee: 50,  description: 'Social deduction & stealth elimination challenge on Day 1. Trophies & fest merch.' },
-  { id: 'photo_booth',       name: 'Photo Booth Photo Contest',    fee: 79,  description: 'Submit your best shot — Google Drive link shared on 9 Dec at 12 PM. ₹1,000 prize pool.' },
+  { id: 'photo_booth',       name: 'Photography',                  fee: 100,  description: 'Submit your best shot — Google Drive link shared on 9 Dec at 12 PM. ₹1,000 prize pool.' },
 ];
 
 const IndividualRegModal = ({ onClose, initialEventId }) => {
