@@ -14,7 +14,8 @@ const HomePage = () => {
       <AboutSection />
       {/* Scroll 2nd shows events */}
       <EventsPage isEmbedded={true} />
-      <ScheduleSection />
+      {/* HIDDEN: Schedule section (pending college approval for other events) */}
+      {/* <ScheduleSection /> */}
       <CoordinatorsSection />
       <RegistrationSection />
       <ContactSection />
