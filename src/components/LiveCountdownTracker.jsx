@@ -403,12 +403,12 @@ const LiveCountdownTracker = () => {
                   margin: '0.15rem 0',
                 }}
               >
-                BGMI & Free Fire Tournaments (Parallel Esports Kickoff)
+                Spectrum 1.0 — 24-Hour Hackathon & More
               </h4>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem', color: 'rgba(244, 234, 204, 0.75)' }}>
-                <MapPin size={13} color="var(--color-neon-cyan)" style={{ flexShrink: 0 }} />
-                <span>Esports Arena / Central Computer Center Labs, GNDEC Bidar</span>
+                <Sparkles size={13} color="var(--color-neon-cyan)" style={{ flexShrink: 0 }} />
+                 <span>Full event lineup to be announced — stay tuned!</span>
               </div>
             </motion.div>
           )}
