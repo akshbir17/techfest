@@ -41,7 +41,7 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       {loading && <Loader onLoaded={() => setLoading(false)} />}
       
       {!loading && (

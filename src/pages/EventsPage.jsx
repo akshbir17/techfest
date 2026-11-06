@@ -388,16 +388,24 @@ const EventsPage = ({ isEmbedded = false }) => {
         </motion.div>
       )}
 
-      {/* NOTE: Only Hackathon is shown — other events hidden pending college permission */}
       <EventCategory
         title="Technical Events"
-        events={technicalEvents.filter(e => e.id === 'hackathon')}
+        events={technicalEvents}
         delay={0.2}
         onOpenRules={(event) => setSelectedRuleEvent(event)}
       />
-      {/* HIDDEN: Creative & Games events (pending approval) */}
-      {/* <EventCategory title="Creative Events" events={creativeEvents} delay={0.4} onOpenRules={(event) => setSelectedRuleEvent(event)} /> */}
-      {/* <EventCategory title="Games & Fun" events={gamesEvents} delay={0.6} onOpenRules={(event) => setSelectedRuleEvent(event)} /> */}
+      <EventCategory
+        title="Creative Events"
+        events={creativeEvents}
+        delay={0.4}
+        onOpenRules={(event) => setSelectedRuleEvent(event)}
+      />
+      <EventCategory
+        title="Games & Fun"
+        events={gamesEvents}
+        delay={0.6}
+        onOpenRules={(event) => setSelectedRuleEvent(event)}
+      />
 
       {/* Modals portalled to document.body so they stay above all stacking contexts */}
       {typeof document !== 'undefined' && createPortal(
