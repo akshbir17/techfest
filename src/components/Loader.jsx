@@ -37,7 +37,7 @@ const Loader = ({ onLoaded }) => {
     }, interval);
 
     return () => clearInterval(timer);
-  }, [onLoaded]);
+  }, [onLoaded, loadingTexts.length]);
 
   return (
     <div className="loader-container">

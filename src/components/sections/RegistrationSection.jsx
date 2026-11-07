@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { User, Users, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from '../ui/GlassCard';
@@ -9,25 +8,10 @@ import IndividualRegModal from './IndividualRegModal';
 import TeamRegModal from './TeamRegModal';
 
 const RegistrationSection = () => {
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showTeamModal, setShowTeamModal] = useState(false);
   const [targetEventId, setTargetEventId] = useState('hackathon');
   const [showFestChoice, setShowFestChoice] = useState(false);
-
-  const handleFestEventsClick = () => {
-    const el = document.getElementById('events');
-    if (el) {
-      if (window.lenis) {
-        window.lenis.scrollTo(el);
-      } else {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      navigate('/events');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
 
   return (
     <section id="registration" className="section-container reg-section">

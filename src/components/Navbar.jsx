@@ -19,8 +19,9 @@ const Navbar = () => {
 
   // Close menu when location changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMenuOpen(false);
-  }, [location]);
+  }, [location.pathname, location.search, location.hash]);
 
   const scrollTo = (id) => {
     setIsMenuOpen(false);

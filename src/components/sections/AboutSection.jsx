@@ -101,7 +101,7 @@ const AboutSection = () => {
           whileInView="visible"
           viewport={{ once: true, margin: '-60px' }}
         >
-          {highlights.map((item, i) => {
+          {highlights.map((item) => {
             const Icon = item.icon;
             return (
               <motion.div

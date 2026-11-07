@@ -2,46 +2,58 @@ import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-const Exhaust = ({ scrollProgress }) => {
-  const particlesRef = useRef();
+const PARTICLE_COUNT = 2000;
+
+const generateParticleData = (count) => {
+  const p = new Float32Array(count * 3);
+  const c = new Float32Array(count * 3);
+  const s = new Float32Array(count);
+  const sp = new Float32Array(count);
   
-  const particleCount = 2000;
+  const colorWhite = new THREE.Color(0xffffff);
+  const colorOrange = new THREE.Color(0xff6b35);
+  const colorBlue = new THREE.Color(0x00f0ff);
   
-  const [positions, colors, scales, speeds] = useMemo(() => {
-    const p = new Float32Array(particleCount * 3);
-    const c = new Float32Array(particleCount * 3);
-    const s = new Float32Array(particleCount);
-    const sp = new Float32Array(particleCount);
+  for (let i = 0; i < count; i++) {
+    // Start clustered at origin
+    p[i * 3] = (Math.random() - 0.5) * 0.5;
+    p[i * 3 + 1] = Math.random() * -2; // Y position (downwards)
+    p[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
     
-    const colorWhite = new THREE.Color(0xffffff);
-    const colorOrange = new THREE.Color(0xff6b35);
-    const colorBlue = new THREE.Color(0x00f0ff);
-    
-    for (let i = 0; i < particleCount; i++) {
-      // Start clustered at origin
-      p[i * 3] = (Math.random() - 0.5) * 0.5;
-      p[i * 3 + 1] = Math.random() * -2; // Y position (downwards)
-      p[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
-      
-      // Color interpolation
-      const mixRatio = Math.random();
-      let mixedColor;
-      if (Math.random() > 0.8) {
-        mixedColor = colorBlue; // Core heat
-      } else {
-        mixedColor = colorWhite.clone().lerp(colorOrange, mixRatio);
-      }
-      
-      c[i * 3] = mixedColor.r;
-      c[i * 3 + 1] = mixedColor.g;
-      c[i * 3 + 2] = mixedColor.b;
-      
-      s[i] = Math.random() * 2;
-      sp[i] = 2 + Math.random() * 5; // Speed
+    // Color interpolation
+    const mixRatio = Math.random();
+    let mixedColor;
+    if (Math.random() > 0.8) {
+      mixedColor = colorBlue; // Core heat
+    } else {
+      mixedColor = colorWhite.clone().lerp(colorOrange, mixRatio);
     }
     
-    return [p, c, s, sp];
-  }, [particleCount]);
+    c[i * 3] = mixedColor.r;
+    c[i * 3 + 1] = mixedColor.g;
+    c[i * 3 + 2] = mixedColor.b;
+    
+    s[i] = Math.random() * 2;
+    sp[i] = 2 + Math.random() * 5; // Speed
+  }
+  
+  return [p, c, s, sp];
+};
+
+const INITIAL_PARTICLE_DATA = generateParticleData(PARTICLE_COUNT);
+
+const Exhaust = ({ scrollProgress }) => {
+  const particlesRef = useRef();
+  const particleCount = PARTICLE_COUNT;
+  
+  const [positions, colors, scales, speeds] = useMemo(() => {
+    return [
+      new Float32Array(INITIAL_PARTICLE_DATA[0]),
+      INITIAL_PARTICLE_DATA[1],
+      INITIAL_PARTICLE_DATA[2],
+      INITIAL_PARTICLE_DATA[3]
+    ];
+  }, []);
 
   useFrame((state, delta) => {
     if (!particlesRef.current) return;

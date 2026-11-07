@@ -141,7 +141,7 @@ const FEST_START_TIME = new Date('2026-12-07T09:00:00+05:30').getTime();
 const FEST_END_TIME = new Date('2026-12-09T17:00:00+05:30').getTime();
 
 const LiveCountdownTracker = () => {
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     const timer = setInterval(() => {

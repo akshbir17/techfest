@@ -74,7 +74,7 @@ export default async function handler(req, res) {
       const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
       // Check existing registration
-      const { data: existing, error: fetchErr } = await supabase
+      const { data: existing } = await supabase
         .from('registrations')
         .select('*')
         .eq('razorpay_order_id', razorpay_order_id)
