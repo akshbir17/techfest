@@ -171,6 +171,7 @@ export default async function handler(req, res) {
         const sheetPayload = {
           secret: sheetsSecret,
           registration_id: registrationRecord?.id || razorpay_order_id,
+          order_id: razorpay_order_id,
           participant_name: participantName,
           email: email,
           phone: phone,
