@@ -76,7 +76,7 @@ const RegistrationSection = () => {
             </GlassCard>
           </motion.div>
 
-          {/* Fest Events */}
+          {/* Fest Event Participation */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -86,7 +86,7 @@ const RegistrationSection = () => {
           >
             <GlassCard style={{ height: '100%', textAlign: 'center', padding: 'clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'var(--color-star-white)' }}>
               <h3 className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-star-white)' }}>
-                Fest Events
+                Fest Event Participation
               </h3>
               <p className="mb-8 font-light leading-relaxed flex-grow" style={{ color: 'rgba(244, 234, 204, 0.7)' }}>
                 Register for technical, creative, and gaming competitions
