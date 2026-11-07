@@ -1,8 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const Background = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  // Lock viewport height once on mount to prevent mobile address bar show/hide from zooming the background video
+  const [fixedHeight] = useState(() => (
+    typeof window !== 'undefined'
+      ? `${Math.max(window.innerHeight, window.screen?.height || window.innerHeight)}px`
+      : '100vh'
+  ));
 
   useEffect(() => {
     // Ensure video plays smoothly across all browsers
@@ -103,15 +109,16 @@ const Background = () => {
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
+        right: 0,
+        width: '100vw',
+        height: fixedHeight,
         zIndex: -1,
         backgroundColor: '#080808',
         overflow: 'hidden',
         pointerEvents: 'none',
       }}
     >
-      {/* Background Video (optimized with metadata preload and instant poster) */}
+      {/* Background Video (no dragon poster, locked scale to prevent scroll zoom) */}
       <video
         ref={videoRef}
         autoPlay
@@ -119,16 +126,12 @@ const Background = () => {
         muted
         playsInline
         preload="metadata"
-        poster="/dragon_bg.png"
         style={{
           position: 'absolute',
-          top: '50%',
-          left: '50%',
+          top: 0,
+          left: 0,
           width: '100%',
           height: '100%',
-          minWidth: '100%',
-          minHeight: '100%',
-          transform: 'translate(-50%, -50%)',
           objectFit: 'cover',
           opacity: 0.82,
           filter: 'contrast(1.05) saturate(1.1) brightness(0.92)',
