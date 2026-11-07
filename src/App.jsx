@@ -43,12 +43,12 @@ function App() {
   return (
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       {loading && <Loader onLoaded={() => setLoading(false)} />}
-      
+
       {!loading && (
         <div className="app-container">
           <Background />
           <Navbar />
-          
+
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/events" element={<EventsPage />} />

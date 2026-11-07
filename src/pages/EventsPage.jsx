@@ -52,11 +52,11 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
                   {formatPrice(event.price)}
                 </span>
               </div>
-              
+
               <p className="text-sm leading-relaxed mb-6 flex-grow" style={{ color: 'rgba(244, 234, 204, 0.7)' }}>
                 {event.description}
               </p>
-              
+
               <div className="text-sm mb-6" style={{ color: 'var(--color-star-white)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <Calendar size={18} color="var(--color-neon-cyan)" />
@@ -67,13 +67,13 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
                   <span style={{ opacity: 0.8 }}>Team Size: {event.teamSize}</span>
                 </div>
               </div>
-              
+
               <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                <button 
+                <button
                   id={`rules-btn-${event.id}`}
                   onClick={() => onOpenRules(event)}
                   className="w-full py-3 transition-all duration-300"
-                  style={{ 
+                  style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
                     border: '1px solid var(--color-neon-cyan)',
                     borderRadius: '4px',
@@ -370,7 +370,7 @@ const EventsPage = ({ isEmbedded = false }) => {
 
   return (
     <ContainerTag id="events" className={isEmbedded ? 'section-container' : 'content-layer'} style={!isEmbedded ? { paddingTop: 'calc(var(--nav-height) + 2rem)' } : undefined}>
-      
+
       {!isEmbedded && (
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -451,7 +451,7 @@ const EventsPage = ({ isEmbedded = false }) => {
         </>,
         document.body
       )}
-      
+
     </ContainerTag>
   );
 };

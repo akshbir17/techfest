@@ -92,7 +92,12 @@ const Navbar = () => {
             EVENTS
           </Link>
 
-          {/* HIDDEN: Schedule nav link (pending approval) */}
+          <button 
+            className="nav-link"
+            onClick={() => scrollTo('schedule')}
+          >
+            SCHEDULE
+          </button>
 
           <button 
             className="nav-link"
