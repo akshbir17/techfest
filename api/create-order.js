@@ -122,7 +122,6 @@ export default async function handler(req, res) {
 
         const recordPayload = {
           participant_name: trimmedName,
-          name: trimmedName, // compatibility with existing column
           email: trimmedEmail,
           phone: trimmedPhone,
           college: trimmedCollege,
@@ -131,7 +130,6 @@ export default async function handler(req, res) {
           team_name: teamName ? String(teamName).trim() : null,
           team_members: cleanMembers.length > 0 ? cleanMembers : null,
           amount: verifiedFee,
-          fee: verifiedFee, // compatibility
           razorpay_order_id: order.id,
           razorpay_payment_id: null,
           payment_status: 'pending',

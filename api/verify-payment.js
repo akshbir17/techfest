@@ -117,7 +117,6 @@ export default async function handler(req, res) {
           .insert([
             {
               participant_name: registrationData.name,
-              name: registrationData.name,
               email: registrationData.email,
               phone: registrationData.phone,
               college: registrationData.college,
@@ -126,7 +125,6 @@ export default async function handler(req, res) {
               team_name: registrationData.teamName || null,
               team_members: registrationData.members || null,
               amount: registrationData.fee || 0,
-              fee: registrationData.fee || 0,
               razorpay_order_id: razorpay_order_id,
               razorpay_payment_id: razorpay_payment_id,
               payment_status: 'paid',
