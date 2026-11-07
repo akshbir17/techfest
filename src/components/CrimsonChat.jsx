@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Bird } from 'lucide-react';
+import { X, Send, Bird } from 'lucide-react';
 import { getCrimsonResponse } from '../services/ai';
 import GlassCard from './ui/GlassCard';
 
@@ -43,8 +43,9 @@ const CrimsonChat = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle Crimson Assistant"
       >
-        {isOpen ? <X size={24} /> : <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}><Bird size={24} /><span style={{ fontSize: '0.6rem', fontWeight: 'bold' }}>CRIMSON</span></div>}
+        {isOpen ? <X size={24} /> : <Bird size={26} strokeWidth={2.2} />}
       </motion.div>
 
       {/* Chat Window */}
