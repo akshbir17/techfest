@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from '../ui/GlassCard';
@@ -7,8 +8,24 @@ import IndividualRegModal from './IndividualRegModal';
 import TeamRegModal from './TeamRegModal';
 
 const RegistrationSection = () => {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [showTeamModal, setShowTeamModal] = useState(false);
+  const [targetEventId, setTargetEventId] = useState('hackathon');
+
+  const handleFestEventsClick = () => {
+    const el = document.getElementById('events');
+    if (el) {
+      if (window.lenis) {
+        window.lenis.scrollTo(el);
+      } else {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      navigate('/events');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return (
     <section id="registration" className="section-container reg-section">
@@ -29,7 +46,7 @@ const RegistrationSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto" style={{ gap: '2rem' }}>
           
-          {/* Individual Participation */}
+          {/* Hackathon Participation */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -39,24 +56,27 @@ const RegistrationSection = () => {
           >
             <GlassCard style={{ height: '100%', textAlign: 'center', padding: 'clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <h3 className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-star-white)' }}>
-                Individual Participation
+                Hackathon Participation
               </h3>
               <p className="mb-8 font-light leading-relaxed flex-grow" style={{ color: 'rgba(244, 234, 204, 0.7)' }}>
-                Register for individual events and solo participation
+                Register your team for the flagship 24-Hour Hackathon
               </p>
               
               <NeonButton
-                id="individual-register-btn"
+                id="hackathon-register-btn"
                 type="button"
                 style={{ width: '100%' }}
-                onClick={() => setShowModal(true)}
+                onClick={() => {
+                  setTargetEventId('hackathon');
+                  setShowTeamModal(true);
+                }}
               >
-                Register Individual
+                Register for Hackathon
               </NeonButton>
             </GlassCard>
           </motion.div>
 
-          {/* Team Participation */}
+          {/* Fest Events */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -66,17 +86,17 @@ const RegistrationSection = () => {
           >
             <GlassCard style={{ height: '100%', textAlign: 'center', padding: 'clamp(2rem, 5vw, 3rem) clamp(1rem, 3vw, 2rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'var(--color-star-white)' }}>
               <h3 className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-star-white)' }}>
-                Team Participation
+                Fest Events
               </h3>
               <p className="mb-8 font-light leading-relaxed flex-grow" style={{ color: 'rgba(244, 234, 204, 0.7)' }}>
-                Register for team-based events and group participation
+                Register for technical, creative, and gaming competitions
               </p>
               
               <button
-                id="team-register-btn"
+                id="fest-events-register-btn"
                 type="button"
                 className="transition-all duration-300"
-                onClick={() => setShowTeamModal(true)}
+                onClick={handleFestEventsClick}
                 style={{
                   width: '100%',
                   padding: '1rem 2.5rem',
@@ -94,7 +114,7 @@ const RegistrationSection = () => {
                 onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)'; e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(244, 234, 204, 0.5)'; }}
                 onMouseOut={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'; }}
               >
-                Register Team
+                Register Fest Events
               </button>
             </GlassCard>
           </motion.div>
@@ -111,7 +131,7 @@ const RegistrationSection = () => {
             {showModal && <IndividualRegModal key="ind-modal" onClose={() => setShowModal(false)} />}
           </AnimatePresence>
           <AnimatePresence>
-            {showTeamModal && <TeamRegModal key="team-modal" onClose={() => setShowTeamModal(false)} />}
+            {showTeamModal && <TeamRegModal key="team-modal" initialEventId={targetEventId} onClose={() => setShowTeamModal(false)} />}
           </AnimatePresence>
         </>,
         document.body
