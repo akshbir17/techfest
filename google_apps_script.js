@@ -305,38 +305,59 @@ function sendConfirmationEmail(data) {
 
 // ==============================================================================
 // TEST HELPER
-// You can select 'testSheet' and click 'Run' to test your sheet and email directly!
-// It will attempt to send a test confirmation pass to your active Google email.
+// Select 'testSheet' and click 'Run' to test your sheet and email dispatch immediately!
+// Configured to test: davindersingh.seehr@gmail.com and akshbirsingh.seehra@gmail.com
 // ==============================================================================
 function testSheet() {
-  var activeUserEmail = "";
-  try {
-    activeUserEmail = Session.getActiveUser().getEmail();
-  } catch (e) {
-    activeUserEmail = "";
-  }
-
-  var targetEmail = activeUserEmail || "test@spectrum.com";
-
-  var fakeEvent = {
-    postData: {
-      contents: JSON.stringify({
-        registration_id: "REG-" + Math.floor(100000 + Math.random() * 900000),
-        order_id: "order_test_999",
-        participant_name: "Test Participant",
-        email: targetEmail,
-        phone: "9876543210",
-        college: "GNDEC Bidar",
-        event_name: "CYBER QUEST (TEST)",
-        team_name: "Cyber Knights",
-        team_members: "Member Two (+91 9123456780)",
-        amount_paid: 200,
-        razorpay_payment_id: "pay_test_" + Math.floor(100000 + Math.random() * 900000),
-        payment_status: "PAID"
-      })
+  var testUsers = [
+    {
+      name: "Davinder Singh",
+      email: "davindersingh.seehr@gmail.com",
+      event: "CYBER QUEST (TECHNICAL CHALLENGE)",
+      team: "Tech Titans",
+      members: "Davinder Singh (Lead), Partner (+91 9876543210)",
+      amount: 250
+    },
+    {
+      name: "Davinder Singh (Fallback)",
+      email: "davindersingh.seehra@gmail.com", // In case seehr was a typo
+      event: "CYBER QUEST (TECHNICAL CHALLENGE)",
+      team: "Tech Titans",
+      members: "Davinder Singh (Lead), Partner (+91 9876543210)",
+      amount: 250
+    },
+    {
+      name: "Akshbir Singh Seehra",
+      email: "akshbirsingh.seehra@gmail.com",
+      event: "CODE MUTANTS / HACKATHON",
+      team: "Crimson Alpha",
+      members: "Akshbir Singh (Lead), Dev 2, Dev 3",
+      amount: 300
     }
-  };
+  ];
 
-  var res = doPost(fakeEvent);
-  Logger.log("Result: " + res.getContent());
+  testUsers.forEach(function(user, idx) {
+    Logger.log("Dispatching test confirmation pass to: " + user.email);
+    var fakeEvent = {
+      postData: {
+        contents: JSON.stringify({
+          registration_id: "REG-TEST-" + (1001 + idx),
+          order_id: "order_test_pass_" + (7700 + idx),
+          participant_name: user.name,
+          email: user.email,
+          phone: "9876543210",
+          college: "Guru Nanak Dev Engineering College (GNDEC), Bidar",
+          event_name: user.event,
+          team_name: user.team,
+          team_members: user.members,
+          amount_paid: user.amount,
+          razorpay_payment_id: "pay_test_" + Math.floor(100000 + Math.random() * 900000),
+          payment_status: "PAID"
+        })
+      }
+    };
+
+    var res = doPost(fakeEvent);
+    Logger.log("Result for [" + user.email + "]: " + res.getContent());
+  });
 }
