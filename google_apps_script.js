@@ -118,6 +118,32 @@ function sendConfirmationEmail(data) {
 
   var subject = "🎟️ Registration Confirmed: SPECTRUM 1.0 - " + eventName;
 
+  // Plain text fallback (MANDATORY for email deliverability and Google Apps Script)
+  var plainText = "SPECTRUM 1.0 — REGISTRATION CONFIRMED\n\n"
+    + "Dear " + participantName + ",\n\n"
+    + "Your registration for SPECTRUM 1.0 has been successfully confirmed!\n\n"
+    + "Event: " + eventName + "\n"
+    + "Participant: " + participantName + "\n"
+    + (teamName ? ("Team: " + teamName + "\n") : "")
+    + (teamMembers && teamMembers !== "N/A" ? ("Members: " + teamMembers + "\n") : "")
+    + "College / Institution: " + college + "\n"
+    + "Registration Fee: INR " + amount + "/-\n"
+    + "Confirmation / Order ID: " + orderId + "\n"
+    + "Razorpay Payment ID: " + paymentId + "\n"
+    + "Payment Status: PAID & VERIFIED\n\n"
+    + "VENUE & REPORTING INSTRUCTIONS:\n"
+    + "• Venue: Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka\n"
+    + "• Dates: December 7 – 9, 2026 (Reporting starts at 8:30 AM on Day 1)\n"
+    + "• Mandatory: Carry your valid College / Institution ID card\n"
+    + "• Hackathon: Overnight campus accommodation and meals provided\n\n"
+    + "OFFICIAL COORDINATORS (HELP DESK):\n"
+    + "• Armaandeep Singh: +91 8427027540 (Student Coordinator)\n"
+    + "• Sangmesh: +91 9353142522 (Student Coordinator)\n"
+    + "• Abdul Aziz: +91 8296683831 (Student Coordinator)\n"
+    + "• Dr. Praveen Reddy: +91 99165 42332 (Faculty Coordinator)\n\n"
+    + "Official Portal: https://spectrum10.vercel.app\n"
+    + "Help Desk Email: Spectrum101213@gmail.com\n";
+
   var htmlBody = `
 <!DOCTYPE html>
 <html>
@@ -294,21 +320,71 @@ function sendConfirmationEmail(data) {
 </html>
   `;
 
-  // Send the email via native Google Apps Script MailApp
-  MailApp.sendEmail({
+  // Send the email with BOTH plainText body AND htmlBody (ensures 100% compatibility & delivery)
+  var mailOptions = {
     to: recipientEmail,
     subject: subject,
+    body: plainText,
     htmlBody: htmlBody,
     name: "SPECTRUM 1.0 (GNDEC Bidar)"
+  };
+
+  try {
+    GmailApp.sendEmail(recipientEmail, subject, plainText, {
+      htmlBody: htmlBody,
+      name: "SPECTRUM 1.0 (GNDEC Bidar)"
+    });
+  } catch (gmailErr) {
+    Logger.log("GmailApp send failed (" + gmailErr + "), falling back to MailApp...");
+    MailApp.sendEmail(mailOptions);
+  }
+}
+
+// ==============================================================================
+// TEST HELPER 1: DIRECT EMAIL TEST
+// Select 'testDirectEmail' and click 'Run'.
+// If Google needs permission, it will prompt you. If there is an error, it will show immediately!
+// ==============================================================================
+function testDirectEmail() {
+  var remainingQuota = MailApp.getRemainingDailyQuota();
+  Logger.log("Current remaining daily email quota: " + remainingQuota);
+
+  if (remainingQuota <= 0) {
+    throw new Error("Daily email quota reached (0 remaining). Please try again tomorrow or use another Google account.");
+  }
+
+  var targets = [
+    { name: "Davinder Singh", email: "davindersingh.seehr@gmail.com" },
+    { name: "Akshbir Singh Seehra", email: "akshbirsingh.seehra@gmail.com" }
+  ];
+
+  targets.forEach(function(target) {
+    Logger.log(">>> Sending directly to: " + target.email);
+    sendConfirmationEmail({
+      registration_id: "TEST-" + Math.floor(1000 + Math.random() * 9000),
+      order_id: "order_direct_test_99",
+      participant_name: target.name,
+      email: target.email,
+      phone: "+91 9876543210",
+      college: "Guru Nanak Dev Engineering College (GNDEC), Bidar",
+      event_name: "CYBER QUEST (TECHPASS)",
+      team_name: "Cyber Squad",
+      team_members: target.name + " (Lead), Member 2",
+      amount_paid: 250,
+      razorpay_payment_id: "pay_test_" + Math.floor(100000 + Math.random() * 900000),
+      payment_status: "PAID"
+    });
+    Logger.log(">>> Dispatched successfully to: " + target.email);
   });
 }
 
 // ==============================================================================
-// TEST HELPER
-// Select 'testSheet' and click 'Run' to test your sheet and email dispatch immediately!
-// Configured to test: davindersingh.seehr@gmail.com and akshbirsingh.seehra@gmail.com
+// TEST HELPER 2: FULL WEBHOOK TEST (Logs to Sheet & Dispatches Email)
+// Select 'testSheet' and click 'Run'.
 // ==============================================================================
 function testSheet() {
+  Logger.log("Remaining daily email quota: " + MailApp.getRemainingDailyQuota());
+
   var testUsers = [
     {
       name: "Davinder Singh",
@@ -320,7 +396,7 @@ function testSheet() {
     },
     {
       name: "Davinder Singh (Fallback)",
-      email: "davindersingh.seehra@gmail.com", // In case seehr was a typo
+      email: "davindersingh.seehra@gmail.com",
       event: "CYBER QUEST (TECHNICAL CHALLENGE)",
       team: "Tech Titans",
       members: "Davinder Singh (Lead), Partner (+91 9876543210)",
@@ -337,7 +413,7 @@ function testSheet() {
   ];
 
   testUsers.forEach(function(user, idx) {
-    Logger.log("Dispatching test confirmation pass to: " + user.email);
+    Logger.log("Testing doPost for: " + user.email);
     var fakeEvent = {
       postData: {
         contents: JSON.stringify({
@@ -358,6 +434,6 @@ function testSheet() {
     };
 
     var res = doPost(fakeEvent);
-    Logger.log("Result for [" + user.email + "]: " + res.getContent());
+    Logger.log("Response for [" + user.email + "]: " + res.getContent());
   });
 }
