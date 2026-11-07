@@ -12,9 +12,9 @@ const Loader = ({ onLoaded }) => {
   ];
 
   useEffect(() => {
-    // Simulate loading progress
-    const duration = 3000;
-    const interval = 50;
+    // Fast, snappy simulated loading progress (~850ms total)
+    const duration = 750;
+    const interval = 25;
     const steps = duration / interval;
     let step = 0;
 
@@ -32,7 +32,7 @@ const Loader = ({ onLoaded }) => {
         clearInterval(timer);
         setTimeout(() => {
           onLoaded();
-        }, 500);
+        }, 120);
       }
     }, interval);
 

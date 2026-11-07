@@ -30,8 +30,9 @@ const Background = () => {
 
     window.addEventListener('resize', handleResize);
 
-    // Subtle floating ember particles over the video
-    const particleCount = Math.min(Math.floor((width * height) / 30000), 35);
+    // Subtle floating ember particles over the video (optimized for high FPS on mobile)
+    const isMobile = width < 768;
+    const particleCount = isMobile ? 12 : Math.min(Math.floor((width * height) / 35000), 25);
     const particles = [];
     const colors = [
       'rgba(211, 47, 47, ',   // Crimson
@@ -110,13 +111,15 @@ const Background = () => {
         pointerEvents: 'none',
       }}
     >
-      {/* Background Video */}
+      {/* Background Video (optimized with metadata preload and instant poster) */}
       <video
         ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
+        preload="metadata"
+        poster="/dragon_bg.png"
         style={{
           position: 'absolute',
           top: '50%',
