@@ -1,11 +1,14 @@
 ﻿import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Calendar, MapPin, Users, Award, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
-import { useScrollLock } from '../hooks/useScrollLock';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useScrollLock, unlockScroll } from '../hooks/useScrollLock';
 import AddToCalendarButton from './AddToCalendarButton';
 
 const EventRulesModal = ({ event, onClose }) => {
   useScrollLock(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -18,19 +21,31 @@ const EventRulesModal = ({ event, onClose }) => {
   }, [onClose]);
 
   const handleGoToRegistration = () => {
+    // 1. Immediately unlock scroll and Lenis so smooth scrolling can occur
+    unlockScroll();
     onClose();
-    setTimeout(() => {
+
+    const doScroll = () => {
       const el = document.getElementById('registration');
       if (el) {
         if (window.lenis) {
-          window.lenis.scrollTo(el);
+          window.lenis.start();
+          window.lenis.scrollTo(el, { offset: -70, immediate: false });
         } else {
-          el.scrollIntoView({ behavior: 'smooth' });
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      } else {
-        window.location.hash = 'registration';
       }
-    }, 150);
+    };
+
+    // 2. If not on HomePage, navigate home with #registration hash
+    if (location.pathname !== '/') {
+      navigate('/#registration');
+      setTimeout(doScroll, 120);
+      setTimeout(doScroll, 350);
+    } else {
+      setTimeout(doScroll, 80);
+      setTimeout(doScroll, 250);
+    }
   };
 
   if (!event) return null;

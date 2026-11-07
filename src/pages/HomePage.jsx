@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import HeroSection from '../components/sections/HeroSection';
 import AboutSection from '../components/sections/AboutSection';
 import EventsPage from './EventsPage';
@@ -8,6 +9,26 @@ import RegistrationSection from '../components/sections/RegistrationSection';
 import ContactSection from '../components/sections/ContactSection';
 
 const HomePage = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const targetId = location.hash.replace('#', '');
+      const timer = setTimeout(() => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          if (window.lenis) {
+            window.lenis.start();
+            window.lenis.scrollTo(el, { offset: -70 });
+          } else {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      }, 120);
+      return () => clearTimeout(timer);
+    }
+  }, [location.hash, location.pathname]);
+
   return (
     <main className="content-layer">
       <HeroSection />
