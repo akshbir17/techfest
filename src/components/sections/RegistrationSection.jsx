@@ -203,7 +203,6 @@ const RegistrationSection = () => {
                           Solo skill & creative competitions:
                         </p>
                         <ul style={{ fontSize: '0.78rem', color: 'rgba(244, 234, 204, 0.55)', paddingLeft: '1.1rem', marginBottom: '1.25rem', lineHeight: '1.5' }}>
-                          <li>Test Event (₹1 Live Test)</li>
                           <li>Photography (₹100)</li>
                           <li>Mock Interview (₹120)</li>
                           <li>Impossible to Sell (₹100)</li>
