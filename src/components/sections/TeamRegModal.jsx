@@ -1,23 +1,72 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { motion } from 'framer-motion';
-import { X, ChevronDown, Loader2, AlertCircle, Users } from 'lucide-react';
+import { X, ChevronDown, Loader2, AlertCircle, Users, Plus, Trash2 } from 'lucide-react';
 
-// Team events — update here to add/remove events
+// Team events configuration
 const TEAM_EVENTS = [
-  { id: 'hackathon',     name: '24-Hour Hackathon',      fee: 800, teamSize: '2 to 4', description: 'Flagship event — build something amazing in 24 hours. ₹30,000 first prize, ₹14,000 second prize.' },
-  { id: 'treasure_hunt', name: 'Treasure Hunt',          fee: 400, teamSize: '1 to 4', description: 'Campus-wide mystery quest solving clues & riddles. ₹3,000 first prize + trophies.' },
-  { id: 'bgmi',          name: 'BGMI Tournament',         fee: 400, teamSize: '4',   description: 'Squad-based competitive BGMI. ₹4,000 first prize, ₹2,000 second prize.' },
-  { id: 'free_fire',     name: 'Free Fire Tournament',    fee: 400, teamSize: '4',   description: 'Squad-based Free Fire battle. ₹4,000 first prize, ₹2,000 second prize.' },
-  { id: 'tech_quiz',     name: 'TechQuiz',                fee: 300, teamSize: '1 to 3', description: 'Test your technical knowledge. ₹3,000 first prize, ₹1,500 second prize.' },
+  {
+    id: 'hackathon',
+    name: '24-Hour Hackathon',
+    fee: 800,
+    min: 2,
+    max: 4,
+    teamSize: '2 to 4 members',
+    description: 'Flagship event — build something amazing in 24 hours. ₹30,000 first prize, ₹14,000 second prize.',
+    memberLabel: 'Team Member',
+  },
+  {
+    id: 'tech_quiz',
+    name: 'TechQuiz',
+    fee: 300,
+    min: 1,
+    max: 3,
+    teamSize: '1 to 3 members',
+    description: 'Test your technical knowledge. ₹3,000 first prize, ₹1,500 second prize.',
+    memberLabel: 'Quiz Partner',
+  },
+  {
+    id: 'bgmi',
+    name: 'BGMI Tournament',
+    fee: 400,
+    min: 4,
+    max: 4,
+    teamSize: '4 squad members',
+    description: 'Squad-based competitive BGMI. ₹4,000 first prize, ₹2,000 second prize.',
+    memberLabel: 'Squad Player',
+  },
+  {
+    id: 'free_fire',
+    name: 'Free Fire Tournament',
+    fee: 400,
+    min: 4,
+    max: 4,
+    teamSize: '4 squad members',
+    description: 'Squad-based Free Fire battle. ₹4,000 first prize, ₹2,000 second prize.',
+    memberLabel: 'Squad Player',
+  },
+  {
+    id: 'treasure_hunt',
+    name: 'Treasure Hunt',
+    fee: 400,
+    min: 1,
+    max: 4,
+    teamSize: '1 to 4 members',
+    description: 'Campus-wide mystery quest solving clues & riddles. ₹3,000 first prize + trophies.',
+    memberLabel: 'Team Member',
+  },
 ];
+
+const getMinAdditional = (ev) => Math.max(0, (ev?.min || 1) - 1);
+const getMaxAdditional = (ev) => Math.max(0, (ev?.max || 4) - 1);
 
 const TeamRegModal = ({ onClose, initialEventId }) => {
   const navigate = useNavigate();
   const [selectedEvent, setSelectedEvent] = useState(
     TEAM_EVENTS.find((e) => e.id === initialEventId) || TEAM_EVENTS[0] || null
   );
+
   const [form, setForm] = useState({
     teamName: '',
     leaderName: '',
@@ -25,6 +74,13 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
     leaderPhone: '',
     college: '',
   });
+
+  // Dynamic additional members (Member 2, Member 3, etc.)
+  const [members, setMembers] = useState(() => {
+    const minAdd = getMinAdditional(TEAM_EVENTS.find((e) => e.id === initialEventId) || TEAM_EVENTS[0]);
+    return Array.from({ length: minAdd }, () => ({ name: '', phone: '' }));
+  });
+
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState('');
@@ -46,13 +102,32 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
   const validate = () => {
     const errs = {};
     if (!form.teamName.trim()) errs.teamName = 'Team name is required';
-    if (!form.leaderName.trim()) errs.leaderName = 'Leader name is required';
+    if (!form.leaderName.trim()) errs.leaderName = "Leader's full name is required";
     if (!form.leaderEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.leaderEmail))
-      errs.leaderEmail = 'Valid email is required';
+      errs.leaderEmail = 'Valid leader email is required';
     if (!form.leaderPhone.trim() || !/^[6-9]\d{9}$/.test(form.leaderPhone.replace(/\s/g, '')))
-      errs.leaderPhone = 'Valid 10-digit phone number is required';
-    if (!form.college.trim()) errs.college = 'College name is required';
-    if (!selectedEvent) errs.event = 'Please select an event';
+      errs.leaderPhone = 'Valid 10-digit mobile number is required';
+    if (!form.college.trim()) errs.college = 'College / Institution name is required';
+
+    // Validate additional members
+    const minAdd = getMinAdditional(selectedEvent);
+    if (members.length < minAdd) {
+      errs.members = `${selectedEvent.name} requires at least ${selectedEvent.min} total team members.`;
+    }
+
+    members.forEach((m, idx) => {
+      const memberNum = idx + 2;
+      const isRequired = idx < minAdd;
+      if (isRequired || m.name.trim() || m.phone.trim()) {
+        if (!m.name.trim()) {
+          errs[`member_${idx}_name`] = `Member ${memberNum} name is required`;
+        }
+        if (!m.phone.trim()) {
+          errs[`member_${idx}_phone`] = `Member ${memberNum} contact is required`;
+        }
+      }
+    });
+
     return errs;
   };
 
@@ -63,10 +138,57 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
   };
 
   const handleEventChange = (e) => {
-    const ev = TEAM_EVENTS.find((ev) => ev.id === e.target.value);
+    const ev = TEAM_EVENTS.find((item) => item.id === e.target.value);
     if (ev) {
       setSelectedEvent(ev);
-      setErrors((prev) => ({ ...prev, event: '' }));
+      setErrors({});
+      const minAdd = getMinAdditional(ev);
+      const maxAdd = getMaxAdditional(ev);
+      setMembers((prev) => {
+        let updated = [...prev];
+        if (updated.length < minAdd) {
+          while (updated.length < minAdd) {
+            updated.push({ name: '', phone: '' });
+          }
+        } else if (updated.length > maxAdd) {
+          updated = updated.slice(0, maxAdd);
+        }
+        return updated;
+      });
+    }
+  };
+
+  const handleMemberChange = (index, field, value) => {
+    setMembers((prev) => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+    setErrors((prev) => {
+      const copy = { ...prev };
+      delete copy[`member_${index}_${field}`];
+      delete copy.members;
+      return copy;
+    });
+  };
+
+  const handleAddMember = () => {
+    const maxAdd = getMaxAdditional(selectedEvent);
+    if (members.length < maxAdd) {
+      setMembers((prev) => [...prev, { name: '', phone: '' }]);
+    }
+  };
+
+  const handleRemoveMember = (index) => {
+    const minAdd = getMinAdditional(selectedEvent);
+    if (members.length > minAdd) {
+      setMembers((prev) => prev.filter((_, i) => i !== index));
+      setErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[`member_${index}_name`];
+        delete copy[`member_${index}_phone`];
+        return copy;
+      });
     }
   };
 
@@ -80,6 +202,10 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
     setLoading(true);
     setServerError('');
 
+    const activeMembers = members
+      .filter((m) => m.name.trim())
+      .map((m) => ({ name: m.name.trim(), phone: m.phone.trim() }));
+
     try {
       const res = await fetch('/api/create-order', {
         method: 'POST',
@@ -89,11 +215,12 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
           email: form.leaderEmail.trim(),
           phone: form.leaderPhone.trim(),
           college: form.college.trim(),
+          teamName: form.teamName.trim(),
+          members: activeMembers,
           eventId: selectedEvent.id,
           eventName: selectedEvent.name,
           fee: selectedEvent.fee,
-          // Extra team metadata (stored in Cashfree order_note via api/create-order)
-          teamName: form.teamName.trim(),
+          type: 'team',
         }),
       });
 
@@ -105,13 +232,78 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
         return;
       }
 
-      // Trigger Cashfree checkout
-      const cashfree = window.Cashfree({ mode: 'sandbox' }); // → 'production' when live
-      cashfree.checkout({
-        paymentSessionId: data.payment_session_id,
-        redirectTarget: '_self',
+      if (!window.Razorpay) {
+        setServerError('Razorpay SDK failed to load. Please check your internet connection.');
+        setLoading(false);
+        return;
+      }
+
+      const options = {
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency || 'INR',
+        name: 'SPECTRUM 1.0',
+        description: `${selectedEvent.name} - Team: ${form.teamName}`,
+        order_id: data.orderId,
+        prefill: {
+          name: form.leaderName.trim(),
+          email: form.leaderEmail.trim(),
+          contact: form.leaderPhone.trim(),
+        },
+        theme: {
+          color: '#d32f2f',
+        },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+          },
+        },
+        handler: async function (response) {
+          try {
+            const verifyRes = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                registrationData: {
+                  name: form.leaderName.trim(),
+                  email: form.leaderEmail.trim(),
+                  phone: form.leaderPhone.trim(),
+                  college: form.college.trim(),
+                  teamName: form.teamName.trim(),
+                  members: activeMembers,
+                  eventId: selectedEvent.id,
+                  eventName: selectedEvent.name,
+                  fee: selectedEvent.fee,
+                  type: 'team',
+                },
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok && verifyData.success) {
+              onClose();
+              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}`);
+            } else {
+              setServerError(verifyData.error || `Payment verification failed. Payment ID: ${response.razorpay_payment_id}`);
+              setLoading(false);
+            }
+          } catch (verErr) {
+            console.error('Verify error:', verErr);
+            setServerError(`Payment recorded, but network verification failed. Payment ID: ${response.razorpay_payment_id}`);
+            setLoading(false);
+          }
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (resp) {
+        setServerError(resp.error?.description || 'Payment was declined or cancelled.');
+        setLoading(false);
       });
-      // Loading stays true — user is redirected by Cashfree
+      rzp.open();
     } catch (err) {
       console.error(err);
       setServerError('Network error. Please check your connection and try again.');
@@ -119,6 +311,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
     }
   };
 
+  const minAdd = getMinAdditional(selectedEvent);
   const isFormComplete =
     hasEvents &&
     selectedEvent &&
@@ -126,7 +319,15 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
     form.leaderName.trim() &&
     form.leaderEmail.trim() &&
     form.leaderPhone.trim() &&
-    form.college.trim();
+    form.college.trim() &&
+    members.every((m, idx) => {
+      const isReq = idx < minAdd;
+      if (isReq) return m.name.trim() && m.phone.trim();
+      if (m.name.trim() || m.phone.trim()) {
+        return m.name.trim() && m.phone.trim();
+      }
+      return true;
+    });
 
   return (
     <>
@@ -165,7 +366,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
           data-lenis-prevent="true"
           style={{
             width: '100%',
-            maxWidth: '560px',
+            maxWidth: '580px',
             maxHeight: 'calc(100dvh - 1.5rem)',
             background: 'var(--color-space-black)',
             border: '1px solid var(--color-star-white)',
@@ -176,30 +377,30 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
             margin: 'auto',
           }}
         >
-          {/* Top accent bar — white/cream for team (vs red for individual) */}
+          {/* Top accent bar */}
           <div style={{ height: '3px', background: 'linear-gradient(90deg, var(--color-star-white), var(--color-neon-cyan), transparent)', width: '100%' }} />
 
           <div style={{ padding: 'clamp(1.1rem, 4vw, 2rem)' }}>
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div style={{ width: '36px', height: '36px', borderRadius: '4px', background: 'rgba(244,234,204,0.08)', border: '1px solid var(--color-star-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Users size={18} color="var(--color-star-white)" />
+                <div style={{ width: '40px', height: '40px', border: '1px solid var(--color-star-white)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(244,234,204,0.05)', flexShrink: 0 }}>
+                  <Users size={20} color="var(--color-star-white)" />
                 </div>
                 <div>
-                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: '800', color: 'var(--color-star-white)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: '800', color: 'var(--color-star-white)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
                     Team <span style={{ color: 'var(--color-neon-cyan)' }}>Registration</span>
                   </h2>
-                  <p style={{ color: 'rgba(244,234,204,0.5)', fontSize: '0.8rem', marginTop: '0.3rem', letterSpacing: '0.05em' }}>
-                    Secure payment via Cashfree
+                  <p style={{ color: 'rgba(244,234,204,0.5)', fontSize: '0.75rem', marginTop: '0.2rem', letterSpacing: '0.05em' }}>
+                    Secure payment via Razorpay
                   </p>
                 </div>
               </div>
               {!loading && (
                 <button
-                  onClick={onClose}
                   id="team-modal-close-btn"
-                  style={{ background: 'transparent', border: 'none', color: 'rgba(244,234,204,0.5)', cursor: 'pointer', padding: '0.25rem', transition: 'color 0.2s', flexShrink: 0 }}
+                  onClick={onClose}
+                  style={{ background: 'transparent', border: 'none', color: 'rgba(244,234,204,0.5)', cursor: 'pointer', padding: '0.25rem', transition: 'color 0.2s' }}
                   onMouseOver={(e) => (e.currentTarget.style.color = 'var(--color-star-white)')}
                   onMouseOut={(e) => (e.currentTarget.style.color = 'rgba(244,234,204,0.5)')}
                 >
@@ -209,107 +410,80 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
             </div>
 
             {/* Event Selector */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.75rem', color: errors.event ? 'var(--color-neon-cyan)' : 'rgba(244,234,204,0.6)', marginBottom: '0.5rem', letterSpacing: '0.15em', fontWeight: 'bold', textTransform: 'uppercase' }}>
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--color-star-white)', marginBottom: '0.5rem', letterSpacing: '0.15em', fontWeight: 'bold', textTransform: 'uppercase' }}>
                 Select Team Event
               </label>
 
-              {!hasEvents ? (
-                /* ── No Events Placeholder ── */
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                  background: 'rgba(244,234,204,0.03)',
-                  border: '1px dashed rgba(244,234,204,0.2)',
-                  borderRadius: '4px',
-                  padding: '1rem',
-                }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: 'rgba(244,234,204,0.2)', transform: 'rotate(45deg)', flexShrink: 0 }} />
-                  <p style={{ color: 'rgba(244,234,204,0.4)', fontSize: '0.875rem', fontStyle: 'italic' }}>
-                    Team events coming soon — check back later!
-                  </p>
-                </div>
-              ) : (
-                /* ── Dropdown ── */
-                <div style={{ position: 'relative' }}>
-                  <select
-                    id="team-event-select"
-                    value={selectedEvent?.id || ''}
-                    onChange={handleEventChange}
-                    disabled={loading}
-                    style={{
-                      width: '100%',
-                      background: 'var(--color-deep-blue)',
-                      border: '1px solid',
-                      borderColor: errors.event ? 'var(--color-neon-cyan)' : '#333',
-                      borderBottom: `2px solid ${errors.event ? 'var(--color-neon-cyan)' : 'var(--color-star-white)'}`,
-                      color: 'var(--color-star-white)',
-                      padding: '0.9rem 2.5rem 0.9rem 1rem',
-                      fontFamily: 'var(--font-primary)',
-                      fontSize: '1rem',
-                      cursor: 'pointer',
-                      appearance: 'none',
-                      WebkitAppearance: 'none',
-                      outline: 'none',
-                    }}
-                  >
-                    <option value="" disabled style={{ background: '#121212' }}>— Choose an event —</option>
-                    {TEAM_EVENTS.map((ev) => (
-                      <option key={ev.id} value={ev.id} style={{ background: '#121212' }}>
-                        {ev.name} — ₹{ev.fee} {ev.teamSize ? `(${ev.teamSize} members)` : ''}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown size={16} style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-star-white)', pointerEvents: 'none' }} />
-                </div>
-              )}
+              <div style={{ position: 'relative' }}>
+                <select
+                  id="team-event-select"
+                  value={selectedEvent?.id || ''}
+                  onChange={handleEventChange}
+                  disabled={loading}
+                  style={{
+                    width: '100%',
+                    background: 'var(--color-deep-blue)',
+                    border: '1px solid #333',
+                    borderBottom: '2px solid var(--color-star-white)',
+                    color: 'var(--color-star-white)',
+                    padding: '0.85rem 2.5rem 0.85rem 1rem',
+                    fontFamily: 'var(--font-primary)',
+                    fontSize: '0.95rem',
+                    cursor: 'pointer',
+                    appearance: 'none',
+                    WebkitAppearance: 'none',
+                    outline: 'none',
+                  }}
+                >
+                  {TEAM_EVENTS.map((ev) => (
+                    <option key={ev.id} value={ev.id} style={{ background: '#121212' }}>
+                      {ev.name} — ₹{ev.fee} ({ev.teamSize})
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={16} style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-star-white)', pointerEvents: 'none' }} />
+              </div>
 
               {selectedEvent?.description && (
-                <p style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'rgba(244,234,204,0.5)', fontStyle: 'italic' }}>
+                <p style={{ marginTop: '0.45rem', fontSize: '0.78rem', color: 'rgba(244,234,204,0.55)', fontStyle: 'italic' }}>
                   {selectedEvent.description}
-                  {selectedEvent.teamSize && (
-                    <span style={{ marginLeft: '0.5rem', color: 'rgba(244,234,204,0.35)' }}>· Team size: {selectedEvent.teamSize}</span>
-                  )}
+                  <span style={{ marginLeft: '0.4rem', color: 'var(--color-neon-cyan)' }}>· Team size: {selectedEvent.teamSize}</span>
                 </p>
               )}
-              {errors.event && <p style={{ marginTop: '0.25rem', fontSize: '0.72rem', color: 'var(--color-neon-cyan)', opacity: 0.8 }}>{errors.event}</p>}
             </div>
 
             {/* Divider */}
-            <div style={{ height: '1px', background: 'rgba(244,234,204,0.1)', marginBottom: '1.5rem' }} />
+            <div style={{ height: '1px', background: 'rgba(244,234,204,0.1)', marginBottom: '1.25rem' }} />
 
-            {/* Form Fields */}
-            <div className="modal-form-grid">
-              {/* Team Name — full width */}
+            {/* Leader & Team Form Fields */}
+            <div className="modal-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.9rem' }}>
               <div style={{ gridColumn: '1 / -1' }}>
                 <FieldInput
                   id="team-reg-teamname"
-                  label="Team Name"
+                  label="Team / Squad Name"
                   name="teamName"
                   type="text"
-                  placeholder="e.g. Team Phoenix"
+                  placeholder="e.g. CyberKnights"
                   value={form.teamName}
                   onChange={handleChange}
                   error={errors.teamName}
                   disabled={loading}
                 />
               </div>
-              {/* Leader Name — full width */}
               <div style={{ gridColumn: '1 / -1' }}>
                 <FieldInput
                   id="team-reg-leadername"
-                  label="Team Leader's Full Name"
+                  label="Team Leader (Member 1) Full Name"
                   name="leaderName"
                   type="text"
-                  placeholder="Leader's name"
+                  placeholder="Leader's Name"
                   value={form.leaderName}
                   onChange={handleChange}
                   error={errors.leaderName}
                   disabled={loading}
                 />
               </div>
-              {/* Leader Email */}
               <div>
                 <FieldInput
                   id="team-reg-email"
@@ -323,11 +497,10 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                   disabled={loading}
                 />
               </div>
-              {/* Leader Phone */}
               <div>
                 <FieldInput
                   id="team-reg-phone"
-                  label="Leader Phone"
+                  label="Leader Mobile Phone"
                   name="leaderPhone"
                   type="tel"
                   placeholder="10-digit number"
@@ -337,14 +510,13 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                   disabled={loading}
                 />
               </div>
-              {/* College — full width */}
               <div style={{ gridColumn: '1 / -1' }}>
                 <FieldInput
                   id="team-reg-college"
                   label="College / Institution"
                   name="college"
                   type="text"
-                  placeholder="Your college name"
+                  placeholder="College Name"
                   value={form.college}
                   onChange={handleChange}
                   error={errors.college}
@@ -353,7 +525,140 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
               </div>
             </div>
 
-            {/* Server Error */}
+            {/* Additional Squad / Team Members Section */}
+            <div style={{ marginTop: '1.5rem', marginBottom: '1rem', borderTop: '1px solid rgba(244,234,204,0.1)', paddingTop: '1.25rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <div>
+                  <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '0.92rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <Users size={16} />
+                    Team Members ({members.length + 1} of {selectedEvent.max})
+                  </h4>
+                  <p style={{ fontSize: '0.74rem', color: 'rgba(244,234,204,0.5)', marginTop: '0.15rem' }}>
+                    Leader is Member 1. Add remaining squad details:
+                  </p>
+                </div>
+
+                {members.length < getMaxAdditional(selectedEvent) && (
+                  <button
+                    type="button"
+                    id="add-team-member-btn"
+                    onClick={handleAddMember}
+                    disabled={loading}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      padding: '0.45rem 0.85rem',
+                      background: 'rgba(211,47,47,0.15)',
+                      border: '1px solid var(--color-neon-cyan)',
+                      borderRadius: '4px',
+                      color: 'var(--color-star-white)',
+                      fontSize: '0.78rem',
+                      fontWeight: '700',
+                      letterSpacing: '0.05em',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(211,47,47,0.3)'; }}
+                    onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(211,47,47,0.15)'; }}
+                  >
+                    <Plus size={14} color="var(--color-neon-cyan)" />
+                    Add Member
+                  </button>
+                )}
+              </div>
+
+              {errors.members && (
+                <p style={{ color: 'var(--color-neon-cyan)', fontSize: '0.75rem', marginBottom: '0.65rem' }}>
+                  {errors.members}
+                </p>
+              )}
+
+              {members.length === 0 ? (
+                <div style={{ padding: '0.85rem', background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(244,234,204,0.15)', borderRadius: '4px', textAlign: 'center' }}>
+                  <p style={{ fontSize: '0.78rem', color: 'rgba(244,234,204,0.55)', margin: 0 }}>
+                    Solo registration selected. Click "+ Add Member" above to add teammates (Max {selectedEvent.max} members).
+                  </p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {members.map((member, idx) => {
+                    const memberNum = idx + 2;
+                    const isRequired = idx < minAdd;
+                    const label = selectedEvent.memberLabel || 'Member';
+
+                    return (
+                      <div
+                        key={idx}
+                        style={{
+                          padding: '0.85rem',
+                          background: 'rgba(255,255,255,0.02)',
+                          border: '1px solid rgba(244,234,204,0.12)',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                          <span style={{ fontSize: '0.74rem', fontWeight: 'bold', letterSpacing: '0.08em', color: 'var(--color-star-white)', textTransform: 'uppercase' }}>
+                            {label} {memberNum} {isRequired ? <span style={{ color: 'var(--color-neon-cyan)', fontSize: '0.68rem' }}>(Required)</span> : <span style={{ color: 'rgba(244,234,204,0.4)', fontSize: '0.68rem' }}>(Optional)</span>}
+                          </span>
+
+                          {!isRequired && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveMember(idx)}
+                              disabled={loading}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: 'rgba(244,234,204,0.5)',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.2rem',
+                                fontSize: '0.72rem',
+                                padding: '0.2rem',
+                              }}
+                              onMouseOver={(e) => { e.currentTarget.style.color = 'var(--color-neon-cyan)'; }}
+                              onMouseOut={(e) => { e.currentTarget.style.color = 'rgba(244,234,204,0.5)'; }}
+                            >
+                              <Trash2 size={13} />
+                              Remove
+                            </button>
+                          )}
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '0.65rem' }}>
+                          <FieldInput
+                            id={`member-${idx}-name`}
+                            label="Full Name"
+                            name={`member_${idx}_name`}
+                            type="text"
+                            placeholder={`${label} ${memberNum} name`}
+                            value={member.name}
+                            onChange={(e) => handleMemberChange(idx, 'name', e.target.value)}
+                            error={errors[`member_${idx}_name`]}
+                            disabled={loading}
+                          />
+                          <FieldInput
+                            id={`member-${idx}-phone`}
+                            label={selectedEvent.id === 'bgmi' || selectedEvent.id === 'free_fire' ? "In-Game ID / Phone" : "Phone / Contact"}
+                            name={`member_${idx}_phone`}
+                            type="tel"
+                            placeholder={selectedEvent.id === 'bgmi' || selectedEvent.id === 'free_fire' ? "In-game ID or Phone" : "10-digit number"}
+                            value={member.phone}
+                            onChange={(e) => handleMemberChange(idx, 'phone', e.target.value)}
+                            error={errors[`member_${idx}_phone`]}
+                            disabled={loading}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Server Error Notice */}
             {serverError && (
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
@@ -370,32 +675,31 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
               <div>
                 <p style={{ fontSize: '0.75rem', color: 'rgba(244,234,204,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Registration Fee</p>
                 <p style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: '800', color: 'var(--color-star-white)' }}>
-                  {selectedEvent
-                    ? <>₹<span style={{ color: 'var(--color-neon-cyan)' }}>{selectedEvent.fee}</span></>
-                    : <span style={{ fontSize: '1rem', opacity: 0.3 }}>— Select event —</span>
-                  }
+                  ₹{selectedEvent?.fee || 0}
                 </p>
               </div>
+
               <button
-                id="team-pay-now-btn"
+                id="team-pay-btn"
+                type="button"
                 onClick={handlePay}
                 disabled={!isFormComplete || loading}
                 style={{
-                  flex: '1',
+                  flex: 1,
                   minWidth: '160px',
                   padding: '1rem 1.5rem',
                   fontFamily: 'var(--font-heading)',
                   fontWeight: '800',
-                  fontSize: '0.95rem',
-                  color: isFormComplete && !loading ? 'var(--color-space-black)' : 'rgba(244,234,204,0.3)',
+                  fontSize: '1rem',
+                  letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.15em',
-                  background: isFormComplete && !loading ? 'var(--color-star-white)' : 'rgba(244,234,204,0.05)',
+                  color: isFormComplete && !loading ? 'var(--color-space-black)' : 'rgba(244,234,204,0.3)',
+                  background: isFormComplete && !loading ? 'var(--color-star-white)' : 'rgba(255,255,255,0.05)',
                   border: '2px solid',
-                  borderColor: isFormComplete && !loading ? 'var(--color-star-white)' : 'rgba(244,234,204,0.15)',
+                  borderColor: isFormComplete && !loading ? 'var(--color-star-white)' : 'rgba(255,255,255,0.15)',
                   borderRadius: '4px',
                   cursor: isFormComplete && !loading ? 'pointer' : 'not-allowed',
-                  boxShadow: isFormComplete && !loading ? '4px 4px 0px 0px rgba(211,47,47,0.5)' : 'none',
+                  boxShadow: isFormComplete && !loading ? '4px 4px 0px 0px rgba(244,234,204,0.5)' : 'none',
                   transition: 'all 0.3s ease',
                   display: 'flex',
                   alignItems: 'center',
@@ -405,12 +709,12 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                 onMouseOver={(e) => {
                   if (isFormComplete && !loading) {
                     e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)';
-                    e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(211,47,47,0.5)';
+                    e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(244,234,204,0.5)';
                   }
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.transform = 'none';
-                  e.currentTarget.style.boxShadow = isFormComplete && !loading ? '4px 4px 0px 0px rgba(211,47,47,0.5)' : 'none';
+                  e.currentTarget.style.boxShadow = isFormComplete && !loading ? '4px 4px 0px 0px rgba(244,234,204,0.5)' : 'none';
                 }}
               >
                 {loading ? (
@@ -418,25 +722,23 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                     <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
                     Processing...
                   </>
-                ) : selectedEvent ? (
-                  `Pay ₹${selectedEvent.fee}`
                 ) : (
-                  'Pay Now'
+                  `Pay ₹${selectedEvent?.fee || 0}`
                 )}
               </button>
             </div>
 
             <p style={{ marginTop: '1rem', fontSize: '0.7rem', color: 'rgba(244,234,204,0.3)', textAlign: 'center', letterSpacing: '0.05em' }}>
-              🔒 Secured by Cashfree · UPI · Cards · Net Banking supported
+              🔒 Secured by Razorpay · UPI · Cards · Net Banking supported
             </p>
           </div>
         </motion.div>
       </motion.div>
-  </>
+    </>
   );
 };
 
-// Reusable field component (same as IndividualRegModal)
+// Reusable field component
 const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error, disabled }) => (
   <div>
     <label htmlFor={id} style={{ display: 'block', fontSize: '0.75rem', color: error ? 'var(--color-neon-cyan)' : 'rgba(244,234,204,0.6)', marginBottom: '0.4rem', letterSpacing: '0.1em', fontWeight: 'bold', textTransform: 'uppercase', transition: 'color 0.2s' }}>
@@ -464,12 +766,15 @@ const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error
         transition: 'all 0.2s ease',
         opacity: disabled ? 0.6 : 1,
       }}
-      onFocus={(e) => { e.currentTarget.style.background = '#1a1a1a'; e.currentTarget.style.borderColor = 'var(--color-star-white)'; }}
-      onBlur={(e) => { e.currentTarget.style.background = 'var(--color-deep-blue)'; if (!error) e.currentTarget.style.borderColor = '#333'; }}
+      onFocus={(e) => { e.target.style.borderColor = 'var(--color-star-white)'; }}
+      onBlur={(e) => { e.target.style.borderColor = error ? 'var(--color-neon-cyan)' : '#333'; }}
     />
-    {error && <p style={{ marginTop: '0.25rem', fontSize: '0.72rem', color: 'var(--color-neon-cyan)', opacity: 0.8 }}>{error}</p>}
+    {error && (
+      <p style={{ marginTop: '0.3rem', fontSize: '0.75rem', color: 'var(--color-neon-cyan)' }}>
+        {error}
+      </p>
+    )}
   </div>
 );
 
 export default TeamRegModal;
-

@@ -32,3 +32,4 @@ create policy "Allow update for all" on public.registrations
 
 create policy "Allow read for all" on public.registrations
     for select using (true);
+

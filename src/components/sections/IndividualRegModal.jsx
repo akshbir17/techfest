@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { X, ChevronDown, Loader2, AlertCircle } from 'lucide-react';
@@ -9,7 +9,7 @@ const INDIVIDUAL_EVENTS = [
   { id: 'impossible_to_sell', name: 'Impossible to Sell',          fee: 100, description: 'Creative selling challenge — pitch an unusual or bizarre product. ₹2,000 first prize + trophies.' },
   { id: 'mock_interview',     name: 'Mock Interview',              fee: 120, description: 'Simulate a real interview and get evaluated — ₹1,000 cash prize for top participant.' },
   { id: 'killer_game',        name: 'Killer Game',                 fee: 50,  description: 'Social deduction & stealth elimination challenge on Day 1. Trophies & fest merch.' },
-  { id: 'photo_booth',       name: 'Photography',                  fee: 100,  description: 'Submit your best shot — Google Drive link shared on 9 Dec at 12 PM. ₹1,000 prize pool.' },
+  { id: 'photo_booth',        name: 'Photography',                  fee: 100, description: 'Submit your best shot — Google Drive link shared on 9 Dec at 12 PM. ₹1,000 prize pool.' },
 ];
 
 const IndividualRegModal = ({ onClose, initialEventId }) => {
@@ -78,6 +78,7 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
           eventId: selectedEvent.id,
           eventName: selectedEvent.name,
           fee: selectedEvent.fee,
+          type: 'individual',
         }),
       });
 
@@ -89,13 +90,76 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
         return;
       }
 
-      // Trigger Cashfree checkout (SDK loaded via <script> in index.html)
-      const cashfree = window.Cashfree({ mode: 'sandbox' }); // → 'production' when live
-      cashfree.checkout({
-        paymentSessionId: data.payment_session_id,
-        redirectTarget: '_self',
+      if (!window.Razorpay) {
+        setServerError('Razorpay SDK failed to load. Please check your internet connection.');
+        setLoading(false);
+        return;
+      }
+
+      const options = {
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency || 'INR',
+        name: 'SPECTRUM 1.0',
+        description: `${selectedEvent.name} Registration`,
+        order_id: data.orderId,
+        prefill: {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          contact: form.phone.trim(),
+        },
+        theme: {
+          color: '#d32f2f',
+        },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+          },
+        },
+        handler: async function (response) {
+          try {
+            const verifyRes = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                registrationData: {
+                  name: form.name.trim(),
+                  email: form.email.trim(),
+                  phone: form.phone.trim(),
+                  college: form.college.trim(),
+                  eventId: selectedEvent.id,
+                  eventName: selectedEvent.name,
+                  fee: selectedEvent.fee,
+                  type: 'individual',
+                },
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyRes.ok && verifyData.success) {
+              onClose();
+              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}`);
+            } else {
+              setServerError(verifyData.error || `Payment verification failed. Payment ID: ${response.razorpay_payment_id}`);
+              setLoading(false);
+            }
+          } catch (verErr) {
+            console.error('Verify error:', verErr);
+            setServerError(`Payment recorded, but network verification failed. Payment ID: ${response.razorpay_payment_id}`);
+            setLoading(false);
+          }
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (resp) {
+        setServerError(resp.error?.description || 'Payment was declined or cancelled.');
+        setLoading(false);
       });
-      // Loading stays true — user is redirected by Cashfree
+      rzp.open();
     } catch (err) {
       console.error(err);
       setServerError('Network error. Please check your connection and try again.');
@@ -132,7 +196,7 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
           overscrollBehavior: 'contain',
         }}
       >
-        {/* Modal */}
+        {/* Modal Window */}
         <motion.div
           key="modal"
           initial={{ opacity: 0, scale: 0.92, y: 30 }}
@@ -165,7 +229,7 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
                   Individual <span style={{ color: 'var(--color-neon-cyan)' }}>Registration</span>
                 </h2>
                 <p style={{ color: 'rgba(244,234,204,0.5)', fontSize: '0.8rem', marginTop: '0.3rem', letterSpacing: '0.05em' }}>
-                  Secure payment via Cashfree
+                  Secure payment via Razorpay
                 </p>
               </div>
               {!loading && (
@@ -198,9 +262,9 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
                     border: '1px solid #333',
                     borderBottom: '2px solid var(--color-neon-cyan)',
                     color: 'var(--color-star-white)',
-                    padding: '0.9rem 2.5rem 0.9rem 1rem',
+                    padding: '0.75rem 2.5rem 0.75rem 1rem',
                     fontFamily: 'var(--font-primary)',
-                    fontSize: '1rem',
+                    fontSize: '0.95rem',
                     cursor: 'pointer',
                     appearance: 'none',
                     WebkitAppearance: 'none',
@@ -220,30 +284,55 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
               </p>
             </div>
 
-            {/* Divider */}
-            <div style={{ height: '1px', background: 'rgba(211,47,47,0.2)', marginBottom: '1.5rem' }} />
-
             {/* Form Fields */}
-            <div className="modal-form-grid">
-              {/* Name */}
-              <div style={{ gridColumn: '1 / -1' }}>
-                <FieldInput id="reg-name" label="Full Name" name="name" type="text" placeholder="Enter your full name" value={form.name} onChange={handleChange} error={errors.name} disabled={loading} />
-              </div>
-              {/* Email */}
-              <div>
-                <FieldInput id="reg-email" label="Email" name="email" type="email" placeholder="you@email.com" value={form.email} onChange={handleChange} error={errors.email} disabled={loading} />
-              </div>
-              {/* Phone */}
-              <div>
-                <FieldInput id="reg-phone" label="Phone" name="phone" type="tel" placeholder="10-digit number" value={form.phone} onChange={handleChange} error={errors.phone} disabled={loading} />
-              </div>
-              {/* College */}
-              <div style={{ gridColumn: '1 / -1' }}>
-                <FieldInput id="reg-college" label="College / Institution" name="college" type="text" placeholder="Your college name" value={form.college} onChange={handleChange} error={errors.college} disabled={loading} />
-              </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+              <FieldInput
+                id="reg-name"
+                label="Full Name"
+                name="name"
+                type="text"
+                placeholder="Participant Name"
+                value={form.name}
+                onChange={handleChange}
+                error={errors.name}
+                disabled={loading}
+              />
+              <FieldInput
+                id="reg-email"
+                label="Email Address"
+                name="email"
+                type="email"
+                placeholder="you@email.com"
+                value={form.email}
+                onChange={handleChange}
+                error={errors.email}
+                disabled={loading}
+              />
+              <FieldInput
+                id="reg-phone"
+                label="Phone Number"
+                name="phone"
+                type="tel"
+                placeholder="10-digit mobile number"
+                value={form.phone}
+                onChange={handleChange}
+                error={errors.phone}
+                disabled={loading}
+              />
+              <FieldInput
+                id="reg-college"
+                label="College / Institution"
+                name="college"
+                type="text"
+                placeholder="College Name"
+                value={form.college}
+                onChange={handleChange}
+                error={errors.college}
+                disabled={loading}
+              />
             </div>
 
-            {/* Server Error */}
+            {/* Server Error Notice */}
             {serverError && (
               <motion.div
                 initial={{ opacity: 0, y: -8 }}
@@ -259,24 +348,26 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
               <div>
                 <p style={{ fontSize: '0.75rem', color: 'rgba(244,234,204,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Registration Fee</p>
-                <p style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: '800', color: 'var(--color-star-white)' }}>
-                  ₹<span style={{ color: 'var(--color-neon-cyan)' }}>{selectedEvent.fee}</span>
+                <p style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: '800', color: 'var(--color-neon-cyan)' }}>
+                  ₹{selectedEvent.fee}
                 </p>
               </div>
+
               <button
-                id="pay-now-btn"
+                id="pay-button"
+                type="button"
                 onClick={handlePay}
                 disabled={!isFormComplete || loading}
                 style={{
-                  flex: '1',
+                  flex: 1,
                   minWidth: '160px',
                   padding: '1rem 1.5rem',
                   fontFamily: 'var(--font-heading)',
                   fontWeight: '800',
-                  fontSize: '0.95rem',
-                  color: isFormComplete && !loading ? 'var(--color-space-black)' : 'rgba(244,234,204,0.3)',
+                  fontSize: '1rem',
+                  letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.15em',
+                  color: isFormComplete && !loading ? 'var(--color-space-black)' : 'rgba(244,234,204,0.3)',
                   background: isFormComplete && !loading ? 'var(--color-neon-cyan)' : 'rgba(211,47,47,0.1)',
                   border: '2px solid',
                   borderColor: isFormComplete && !loading ? 'var(--color-neon-cyan)' : 'rgba(211,47,47,0.3)',
@@ -312,7 +403,7 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
             </div>
 
             <p style={{ marginTop: '1rem', fontSize: '0.7rem', color: 'rgba(244,234,204,0.3)', textAlign: 'center', letterSpacing: '0.05em' }}>
-              🔒 Secured by Cashfree · UPI · Cards · Net Banking supported
+              🔒 Secured by Razorpay · UPI · Cards · Net Banking supported
             </p>
           </div>
         </motion.div>
@@ -349,12 +440,15 @@ const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error
         transition: 'all 0.2s ease',
         opacity: disabled ? 0.6 : 1,
       }}
-      onFocus={(e) => { e.currentTarget.style.background = '#1a1a1a'; e.currentTarget.style.borderColor = 'var(--color-neon-cyan)'; }}
-      onBlur={(e) => { e.currentTarget.style.background = 'var(--color-deep-blue)'; if (!error) e.currentTarget.style.borderColor = '#333'; }}
+      onFocus={(e) => { e.target.style.borderColor = 'var(--color-neon-cyan)'; }}
+      onBlur={(e) => { e.target.style.borderColor = error ? 'var(--color-neon-cyan)' : '#333'; }}
     />
-    {error && <p style={{ marginTop: '0.25rem', fontSize: '0.72rem', color: 'var(--color-neon-cyan)', opacity: 0.8 }}>{error}</p>}
+    {error && (
+      <p style={{ marginTop: '0.3rem', fontSize: '0.75rem', color: 'var(--color-neon-cyan)' }}>
+        {error}
+      </p>
+    )}
   </div>
 );
 
 export default IndividualRegModal;
-
