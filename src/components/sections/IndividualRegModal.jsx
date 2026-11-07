@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { X, ChevronDown, Loader2, AlertCircle } from 'lucide-react';
 import { useScrollLock } from '../../hooks/useScrollLock';
@@ -12,6 +13,7 @@ const INDIVIDUAL_EVENTS = [
 ];
 
 const IndividualRegModal = ({ onClose, initialEventId }) => {
+  const navigate = useNavigate();
   const [selectedEvent, setSelectedEvent] = useState(
     INDIVIDUAL_EVENTS.find((e) => e.id === initialEventId) || INDIVIDUAL_EVENTS[0]
   );

@@ -1,7 +1,8 @@
-import { randomUUID } from 'crypto';
+import Razorpay from 'razorpay';
+import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
-  // Allow CORS for local dev
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -14,68 +15,99 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, phone, college, eventId, eventName, fee } = req.body;
-
-  // Validate required fields
-  if (!name || !email || !phone || !college || !eventId || !fee) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  const appId = process.env.CASHFREE_APP_ID;
-  const secretKey = process.env.CASHFREE_SECRET_KEY;
-  const siteUrl = process.env.VITE_SITE_URL || 'http://localhost:5173';
-  const isProduction = process.env.NODE_ENV === 'production';
-  const cashfreeBase = isProduction
-    ? 'https://api.cashfree.com'
-    : 'https://sandbox.cashfree.com';
-
-  if (!appId || !secretKey) {
-    return res.status(500).json({ error: 'Payment gateway not configured' });
-  }
-
-  // Generate a unique order ID
-  const orderId = `SPEC_${eventId.toUpperCase()}_${randomUUID().slice(0, 8).toUpperCase()}`;
-
   try {
-    const response = await fetch(`${cashfreeBase}/pg/orders`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-version': '2023-08-01',
-        'x-client-id': appId,
-        'x-client-secret': secretKey,
-      },
-      body: JSON.stringify({
-        order_id: orderId,
-        order_amount: fee,
-        order_currency: 'INR',
-        customer_details: {
-          customer_id: email.replace(/[^a-zA-Z0-9_]/g, '_').slice(0, 50),
-          customer_name: name,
-          customer_email: email,
-          customer_phone: phone,
-        },
-        order_meta: {
-          return_url: `${siteUrl}/registration-success?order_id={order_id}&event=${encodeURIComponent(eventName)}`,
-          notify_url: `${siteUrl}/api/cashfree-webhook`,
-        },
-        order_note: `Spectrum 1.0 Registration - ${eventName} | College: ${college}`,
-      }),
+    const {
+      name,
+      email,
+      phone,
+      college,
+      eventId,
+      eventName,
+      fee,
+      type = 'individual',
+      teamName = null,
+      members = [],
+    } = req.body || {};
+
+    if (!name || !email || !phone || !college || !eventId || fee === undefined) {
+      return res.status(400).json({ error: 'Missing required participant fields' });
+    }
+
+    const keyId = process.env.RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keyId || !keySecret) {
+      return res.status(500).json({
+        error: 'Razorpay keys not configured on server. Please add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in environment variables.',
+      });
+    }
+
+    const razorpay = new Razorpay({
+      key_id: keyId,
+      key_secret: keySecret,
     });
 
-    const data = await response.json();
+    const amountInPaise = Math.round(Number(fee) * 100);
+    const shortReceipt = `rcpt_${Date.now().toString().slice(-6)}_${Math.floor(Math.random() * 1000)}`;
 
-    if (!response.ok) {
-      console.error('Cashfree error:', data);
-      return res.status(response.status).json({ error: data.message || 'Payment order creation failed' });
+    const orderOptions = {
+      amount: amountInPaise,
+      currency: 'INR',
+      receipt: shortReceipt,
+      notes: {
+        eventId: String(eventId),
+        eventName: String(eventName),
+        name: String(name),
+        email: String(email),
+        phone: String(phone),
+        college: String(college),
+        type: String(type),
+        teamName: teamName ? String(teamName) : '',
+      },
+    };
+
+    const order = await razorpay.orders.create(orderOptions);
+
+    // If Supabase is configured, record pending registration
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        await supabase.from('registrations').insert([
+          {
+            event_id: eventId,
+            event_name: eventName,
+            participation_type: type,
+            name: name,
+            email: email,
+            phone: phone,
+            college: college,
+            team_name: teamName || null,
+            team_members: members && members.length > 0 ? members : null,
+            fee: Number(fee),
+            razorpay_order_id: order.id,
+            payment_status: 'pending',
+            created_at: new Date().toISOString(),
+          },
+        ]);
+      } catch (dbErr) {
+        console.warn('Supabase insert warning:', dbErr?.message || dbErr);
+        // Do not block checkout if DB insert fails; verified record will be handled in verify-payment
+      }
     }
 
     return res.status(200).json({
-      payment_session_id: data.payment_session_id,
-      order_id: data.order_id,
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: keyId,
     });
-  } catch (err) {
-    console.error('Server error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+  } catch (error) {
+    console.error('Create order error:', error);
+    return res.status(500).json({
+      error: error.message || 'Failed to create payment order',
+    });
   }
 }

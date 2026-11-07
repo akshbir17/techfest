@@ -1,4 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { motion } from 'framer-motion';
 import { X, ChevronDown, Loader2, AlertCircle, Users } from 'lucide-react';
@@ -13,6 +14,7 @@ const TEAM_EVENTS = [
 ];
 
 const TeamRegModal = ({ onClose, initialEventId }) => {
+  const navigate = useNavigate();
   const [selectedEvent, setSelectedEvent] = useState(
     TEAM_EVENTS.find((e) => e.id === initialEventId) || TEAM_EVENTS[0] || null
   );

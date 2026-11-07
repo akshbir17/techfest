@@ -7,6 +7,7 @@ const RegistrationSuccessPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const orderId = searchParams.get('order_id') || 'N/A';
+  const paymentId = searchParams.get('payment_id');
   const eventName = searchParams.get('event') || 'Event';
 
   useEffect(() => {
@@ -143,8 +144,18 @@ const RegistrationSuccessPage = () => {
           >
             {orderId}
           </p>
+          {paymentId && (
+            <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px dashed rgba(244,234,204,0.15)' }}>
+              <p style={{ fontSize: '0.72rem', color: 'rgba(244,234,204,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                Razorpay Payment ID
+              </p>
+              <p style={{ fontFamily: 'monospace', fontSize: '0.95rem', color: 'var(--color-star-white)', marginTop: '0.2rem' }}>
+                {paymentId}
+              </p>
+            </div>
+          )}
           <p style={{ marginTop: '0.75rem', fontSize: '0.75rem', color: 'rgba(244,234,204,0.4)' }}>
-            Please save this ID for your records. A confirmation will be sent to your registered email.
+            Please save this reference for your records. Present this during verification at the fest venue.
           </p>
         </motion.div>
 
