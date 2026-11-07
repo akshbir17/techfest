@@ -4,8 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from '../components/ui/GlassCard';
 import { Calendar, Users, Eye } from 'lucide-react';
 import EventRulesModal from '../components/EventRulesModal';
-import IndividualRegModal from '../components/sections/IndividualRegModal';
-import TeamRegModal from '../components/sections/TeamRegModal';
 import AddToCalendarButton from '../components/AddToCalendarButton';
 
 // Robust helper to ensure clean Indian Rupee symbol formatting
@@ -103,9 +101,7 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
 
 const EventsPage = ({ isEmbedded = false }) => {
   const [selectedRuleEvent, setSelectedRuleEvent] = useState(null);
-  const [showIndividualModal, setShowIndividualModal] = useState(false);
-  const [showTeamModal, setShowTeamModal] = useState(false);
-  const [targetEventId, setTargetEventId] = useState(null);
+  
 
   useEffect(() => {
     if (!isEmbedded) {
@@ -113,16 +109,7 @@ const EventsPage = ({ isEmbedded = false }) => {
     }
   }, [isEmbedded]);
 
-  const handleRegisterFromRules = (event) => {
-    setSelectedRuleEvent(null);
-    setTargetEventId(event.id);
-    if (event.type === 'team') {
-      setShowTeamModal(true);
-    } else {
-      setShowIndividualModal(true);
-    }
-  };
-
+  
   const technicalEvents = [
     {
       id: 'hackathon',
@@ -409,46 +396,15 @@ const EventsPage = ({ isEmbedded = false }) => {
 
       {/* Modals portalled to document.body so they stay above all stacking contexts */}
       {typeof document !== 'undefined' && createPortal(
-        <>
-          {/* Event Rules Modal */}
-          <AnimatePresence>
-            {selectedRuleEvent && (
-              <EventRulesModal
-                key="rules-modal"
-                event={selectedRuleEvent}
-                onClose={() => setSelectedRuleEvent(null)}
-                onRegister={handleRegisterFromRules}
-              />
-            )}
-          </AnimatePresence>
-
-          {/* Registration Modals triggered from Rules */}
-          <AnimatePresence>
-            {showIndividualModal && (
-              <IndividualRegModal
-                key="ind-reg-modal"
-                initialEventId={targetEventId}
-                onClose={() => {
-                  setShowIndividualModal(false);
-                  setTargetEventId(null);
-                }}
-              />
-            )}
-          </AnimatePresence>
-
-          <AnimatePresence>
-            {showTeamModal && (
-              <TeamRegModal
-                key="team-reg-modal"
-                initialEventId={targetEventId}
-                onClose={() => {
-                  setShowTeamModal(false);
-                  setTargetEventId(null);
-                }}
-              />
-            )}
-          </AnimatePresence>
-        </>,
+        <AnimatePresence>
+          {selectedRuleEvent && (
+            <EventRulesModal
+              key="rules-modal"
+              event={selectedRuleEvent}
+              onClose={() => setSelectedRuleEvent(null)}
+            />
+          )}
+        </AnimatePresence>,
         document.body
       )}
 

@@ -4,7 +4,7 @@ import { X, Calendar, MapPin, Users, Award, ShieldCheck, CheckCircle2, ArrowRigh
 import { useScrollLock } from '../hooks/useScrollLock';
 import AddToCalendarButton from './AddToCalendarButton';
 
-const EventRulesModal = ({ event, onClose, onRegister }) => {
+const EventRulesModal = ({ event, onClose }) => {
   useScrollLock(true);
 
   useEffect(() => {
@@ -16,6 +16,22 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [onClose]);
+
+  const handleGoToRegistration = () => {
+    onClose();
+    setTimeout(() => {
+      const el = document.getElementById('registration');
+      if (el) {
+        if (window.lenis) {
+          window.lenis.scrollTo(el);
+        } else {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        window.location.hash = 'registration';
+      }
+    }, 150);
+  };
 
   if (!event) return null;
 
@@ -353,11 +369,8 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
             </button>
 
             <button
-              id={`rules-register-btn-${event.id || 'btn'}`}
-              onClick={() => {
-                onClose();
-                if (onRegister) onRegister(event);
-              }}
+              id={`rules-goto-reg-btn-${event.id || 'btn'}`}
+              onClick={handleGoToRegistration}
               style={{
                 padding: '0.75rem 1.4rem',
                 background: 'var(--color-neon-cyan)',
@@ -387,7 +400,7 @@ const EventRulesModal = ({ event, onClose, onRegister }) => {
                 e.currentTarget.style.boxShadow = '3px 3px 0px 0px rgba(244, 234, 204, 0.4)';
               }}
             >
-              Register Now
+              Go to Registration
               <ArrowRight size={16} />
             </button>
           </div>

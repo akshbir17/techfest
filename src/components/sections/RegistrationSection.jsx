@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { User, Users, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,6 +13,7 @@ const RegistrationSection = () => {
   const [showModal, setShowModal] = useState(false);
   const [showTeamModal, setShowTeamModal] = useState(false);
   const [targetEventId, setTargetEventId] = useState('hackathon');
+  const [showFestChoice, setShowFestChoice] = useState(false);
 
   const handleFestEventsClick = () => {
     const el = document.getElementById('events');
@@ -96,7 +98,7 @@ const RegistrationSection = () => {
                 id="fest-events-register-btn"
                 type="button"
                 className="transition-all duration-300"
-                onClick={handleFestEventsClick}
+                onClick={() => setShowFestChoice(true)}
                 style={{
                   width: '100%',
                   padding: '1rem 2.5rem',
@@ -127,6 +129,187 @@ const RegistrationSection = () => {
           (like the Contact section & Google map) from overlapping or showing through. */}
       {typeof document !== 'undefined' && createPortal(
         <>
+          {/* Fest Event Type Selection Modal */}
+          <AnimatePresence>
+            {showFestChoice && (
+              <motion.div
+                key="fest-choice-backdrop"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                style={{
+                  position: 'fixed',
+                  inset: 0,
+                  backgroundColor: 'rgba(8, 8, 8, 0.92)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  zIndex: 99999,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '1.5rem 1rem',
+                  overflowY: 'auto',
+                }}
+                onClick={() => setShowFestChoice(false)}
+                data-lenis-prevent="true"
+              >
+                <motion.div
+                  key="fest-choice-card"
+                  initial={{ scale: 0.92, y: 20, opacity: 0 }}
+                  animate={{ scale: 1, y: 0, opacity: 1 }}
+                  exit={{ scale: 0.92, y: 20, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    width: '100%',
+                    maxWidth: '640px',
+                    backgroundColor: 'var(--color-space-black)',
+                    border: '1px solid var(--color-star-white)',
+                    boxShadow: '6px 6px 0px 0px rgba(244, 234, 204, 0.4), 0 0 50px rgba(211, 47, 47, 0.15)',
+                    padding: 'clamp(1.5rem, 4vw, 2.25rem)',
+                    position: 'relative',
+                  }}
+                >
+                  <button
+                    id="close-fest-choice-btn"
+                    onClick={() => setShowFestChoice(false)}
+                    style={{
+                      position: 'absolute',
+                      top: '1.25rem',
+                      right: '1.25rem',
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--color-star-white)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <X size={22} />
+                  </button>
+
+                  <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
+                    <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: '800', color: 'var(--color-star-white)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.4rem' }}>
+                      Fest Event <span style={{ color: 'var(--color-neon-cyan)' }}>Registration</span>
+                    </h3>
+                    <p style={{ color: 'rgba(244, 234, 204, 0.7)', fontSize: '0.85rem' }}>
+                      Choose your participation format to continue:
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+                    {/* Individual Option */}
+                    <div
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        border: '1px solid rgba(244, 234, 204, 0.2)',
+                        padding: '1.25rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                          <User size={18} color="var(--color-neon-cyan)" />
+                          <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', color: 'var(--color-star-white)', margin: 0 }}>
+                            Individual Events
+                          </h4>
+                        </div>
+                        <p style={{ fontSize: '0.8rem', color: 'rgba(244, 234, 204, 0.65)', marginBottom: '0.6rem' }}>
+                          Solo skill & creative competitions:
+                        </p>
+                        <ul style={{ fontSize: '0.78rem', color: 'rgba(244, 234, 204, 0.55)', paddingLeft: '1.1rem', marginBottom: '1.25rem', lineHeight: '1.5' }}>
+                          <li>Photography (₹100)</li>
+                          <li>Mock Interview (₹120)</li>
+                          <li>Impossible to Sell (₹100)</li>
+                          <li>Killer Game (₹50)</li>
+                        </ul>
+                      </div>
+                      <button
+                        id="choose-individual-reg-btn"
+                        onClick={() => {
+                          setShowFestChoice(false);
+                          setShowModal(true);
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem',
+                          backgroundColor: 'var(--color-neon-cyan)',
+                          color: 'var(--color-space-black)',
+                          border: 'none',
+                          fontFamily: 'var(--font-heading)',
+                          fontWeight: '800',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.08em',
+                          fontSize: '0.82rem',
+                          cursor: 'pointer',
+                          boxShadow: '3px 3px 0px 0px rgba(244, 234, 204, 0.4)',
+                        }}
+                      >
+                        Register Individual &rarr;
+                      </button>
+                    </div>
+
+                    {/* Team Option */}
+                    <div
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        border: '1px solid rgba(244, 234, 204, 0.2)',
+                        padding: '1.25rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                          <Users size={18} color="var(--color-star-white)" />
+                          <h4 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', color: 'var(--color-star-white)', margin: 0 }}>
+                            Team Events
+                          </h4>
+                        </div>
+                        <p style={{ fontSize: '0.8rem', color: 'rgba(244, 234, 204, 0.65)', marginBottom: '0.6rem' }}>
+                          Squad & gaming tournaments:
+                        </p>
+                        <ul style={{ fontSize: '0.78rem', color: 'rgba(244, 234, 204, 0.55)', paddingLeft: '1.1rem', marginBottom: '1.25rem', lineHeight: '1.5' }}>
+                          <li>TechQuiz (₹300 / team)</li>
+                          <li>Treasure Hunt (₹400 / team)</li>
+                          <li>BGMI Tournament (₹400 / squad)</li>
+                          <li>Free Fire (₹400 / squad)</li>
+                        </ul>
+                      </div>
+                      <button
+                        id="choose-team-reg-btn"
+                        onClick={() => {
+                          setShowFestChoice(false);
+                          setTargetEventId('tech_quiz');
+                          setShowTeamModal(true);
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem',
+                          backgroundColor: 'var(--color-star-white)',
+                          color: 'var(--color-space-black)',
+                          border: 'none',
+                          fontFamily: 'var(--font-heading)',
+                          fontWeight: '800',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.08em',
+                          fontSize: '0.82rem',
+                          cursor: 'pointer',
+                          boxShadow: '3px 3px 0px 0px rgba(244, 234, 204, 0.4)',
+                        }}
+                      >
+                        Register Team &rarr;
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <AnimatePresence>
             {showModal && <IndividualRegModal key="ind-modal" onClose={() => setShowModal(false)} />}
           </AnimatePresence>
