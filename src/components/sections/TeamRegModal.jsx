@@ -286,7 +286,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
             if (verifyRes.ok && verifyData.success) {
               onClose();
               const regParam = verifyData.registrationId ? `&reg_id=${verifyData.registrationId}` : '';
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}${regParam}`);
+              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.name)}&team=${encodeURIComponent(form.teamName)}&amount=${selectedEvent.fee}${regParam}`);
             } else {
               setServerError(verifyData.error || `Payment verification failed. Payment ID: ${response.razorpay_payment_id}`);
               setLoading(false);

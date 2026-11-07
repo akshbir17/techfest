@@ -1,4 +1,4 @@
-﻿const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
 const systemInstruction = `You are Crimson, the official AI Assistant and Guide of Spectrum 1.0.
     Your tone is polite, sharp, and helpful.
