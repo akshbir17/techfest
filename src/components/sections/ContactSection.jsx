@@ -190,7 +190,21 @@ const ContactSection = () => {
         </div>
 
         <footer className="footer">
-          SPECTRUM 1.0 © DECEMBER 2026 THE AWAKENING
+          <div
+            style={{
+              marginBottom: '0.45rem',
+              fontSize: '0.85rem',
+              letterSpacing: '0.15em',
+              fontFamily: 'var(--font-heading)',
+              color: 'rgba(244, 234, 204, 0.75)',
+              textTransform: 'uppercase',
+            }}
+          >
+            MADE BY : <span style={{ color: 'var(--color-neon-cyan)', fontWeight: 800 }}>AKSHBIR SINGH SEEHRA</span>
+          </div>
+          <div>
+            SPECTRUM 1.0 © DECEMBER 2026 THE AWAKENING
+          </div>
         </footer>
       </div>
     </section>
