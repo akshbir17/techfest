@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
@@ -41,7 +41,7 @@ const RegistrationSuccessPage = () => {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  // Generate & Download Official PDF Pass
+  // Generate & Download Vibrant Colourful Cyberpunk PDF Pass
   const handleDownloadPDF = () => {
     setIsDownloading(true);
     try {
@@ -51,132 +51,330 @@ const RegistrationSuccessPage = () => {
         format: 'a4',
       });
 
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const margin = 15;
-      const contentWidth = pageWidth - margin * 2;
+      const pageWidth = doc.internal.pageSize.getWidth(); // 210mm
+      const pageHeight = doc.internal.pageSize.getHeight(); // 297mm
+      const margin = 12;
+      const contentWidth = pageWidth - margin * 2; // 186mm
 
-      // Header Banner (Cyberpunk Black/Burgundy)
-      doc.setFillColor(15, 10, 20);
-      doc.rect(margin, 15, contentWidth, 38, 'F');
+      // 1. FULL PAGE DARK CYBER BACKGROUND
+      doc.setFillColor(10, 6, 18); // Deep Space Midnight #0a0612
+      doc.rect(0, 0, pageWidth, pageHeight, 'F');
 
-      // Top Red Accent Line
-      doc.setDrawColor(211, 47, 47);
-      doc.setLineWidth(1.5);
-      doc.line(margin, 15, margin + contentWidth, 15);
+      // Decorative Outer Neon Border (Crimson & Cyan)
+      doc.setDrawColor(255, 42, 95); // Neon Crimson #ff2a5f
+      doc.setLineWidth(1);
+      doc.roundedRect(6, 6, pageWidth - 12, pageHeight - 12, 3, 3, 'S');
+
+      doc.setDrawColor(0, 240, 255); // Neon Cyan #00f0ff
+      doc.setLineWidth(0.4);
+      doc.roundedRect(8, 8, pageWidth - 16, pageHeight - 16, 2, 2, 'S');
+
+      // Corner Tech Crosshairs (Cyan)
+      const drawCrosshair = (cx, cy) => {
+        doc.setDrawColor(0, 240, 255);
+        doc.setLineWidth(0.8);
+        doc.line(cx - 3, cy, cx + 3, cy);
+        doc.line(cx, cy - 3, cx, cy + 3);
+      };
+      drawCrosshair(12, 12);
+      drawCrosshair(pageWidth - 12, 12);
+      drawCrosshair(12, pageHeight - 12);
+      drawCrosshair(pageWidth - 12, pageHeight - 12);
+
+      // 2. HEADER BANNER (Vibrant Dark Violet / Crimson)
+      doc.setFillColor(24, 12, 36);
+      doc.setDrawColor(255, 42, 95);
+      doc.setLineWidth(0.8);
+      doc.roundedRect(margin, 12, contentWidth, 40, 3, 3, 'FD');
+
+      // Top Red Accent Glow Bar
+      doc.setFillColor(211, 47, 47);
+      doc.rect(margin + 1, 13, contentWidth - 2, 3, 'F');
 
       // Fest Title
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(22);
+      doc.setFontSize(23);
       doc.setTextColor(255, 255, 255);
       doc.text('SPECTRUM 1.0', margin + 8, 28);
 
       // Subtitle
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(0, 240, 255);
-      doc.text('NATIONAL LEVEL TECHNICAL & CULTURAL FESTIVAL', margin + 8, 35);
-
       doc.setFontSize(8.5);
-      doc.setTextColor(220, 220, 225);
-      doc.text('Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka', margin + 8, 41);
-      doc.text('Dates: December 7 – 9, 2026', margin + 8, 47);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(0, 240, 255); // Neon Cyan
+      doc.text('THE AWAKENING • NATIONAL LEVEL TECHNICAL FESTIVAL', margin + 8, 35);
 
-      // Verified Badge (Green Pill)
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(244, 234, 204); // Warm Gold Parchment
+      doc.text('Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka', margin + 8, 41);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 75, 110);
+      doc.text('FEST DATES: DECEMBER 7 – 9, 2026', margin + 8, 47);
+
+      // Verified & Paid Badge (Emerald Green Glow)
       doc.setFillColor(0, 200, 83);
-      doc.roundedRect(pageWidth - margin - 48, 22, 40, 9, 2, 2, 'F');
+      doc.roundedRect(pageWidth - margin - 48, 20, 42, 11, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(255, 255, 255);
+      doc.text('★ VERIFIED & PAID ★', pageWidth - margin - 46, 27);
+
+      // 3. REGISTERED EVENT SHOWCASE CARD
+      doc.setFillColor(32, 14, 46);
+      doc.setDrawColor(0, 240, 255);
+      doc.setLineWidth(0.6);
+      doc.roundedRect(margin, 56, contentWidth, 24, 3, 3, 'FD');
+
+      // Cyan Tag Pill
+      doc.setFillColor(0, 240, 255);
+      doc.roundedRect(margin + 6, 60, 38, 5, 1, 1, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7);
+      doc.setTextColor(10, 6, 18);
+      doc.text('OFFICIAL PASS FOR', margin + 8, 63.8);
+
+      // Big Event Name
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(15);
+      doc.setTextColor(255, 42, 95); // Crimson
+      doc.text(eventName.toUpperCase(), margin + 6, 74);
+
+      // Category Pill on Right
+      doc.setFillColor(255, 255, 255, 0.08);
+      doc.roundedRect(pageWidth - margin - 55, 63, 49, 11, 2, 2, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(244, 234, 204);
+      doc.text(teamName ? `TEAM: ${teamName.toUpperCase()}` : 'INDIVIDUAL PASS', pageWidth - margin - 52, 70);
+
+      // 4. CREDENTIALS CARDS (COLOURFUL 2X2 GRID)
+      const colWidth = (contentWidth - 6) / 2; // 90mm
+      const leftColX = margin;
+      const rightColX = margin + colWidth + 6;
+
+      // Card 1: Participant Info (Cyan Accent)
+      doc.setFillColor(20, 12, 32);
+      doc.setDrawColor(0, 240, 255);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(leftColX, 84, colWidth, 28, 2, 2, 'FD');
+
+      doc.setFillColor(0, 240, 255);
+      doc.rect(leftColX, 84, 3, 28, 'F'); // Left accent line
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(0, 240, 255);
+      doc.text('PARTICIPANT DETAILS', leftColX + 6, 91);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text(participantName || 'Registered Participant', leftColX + 6, 98);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(200, 200, 210);
+      doc.text(`Entry Type: ${teamName ? `Squad Leader (${teamName})` : 'Solo Competitor'}`, leftColX + 6, 106);
+
+      // Card 2: Fee & Payment Status (Green Accent)
+      doc.setFillColor(20, 12, 32);
+      doc.setDrawColor(0, 230, 118);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(rightColX, 84, colWidth, 28, 2, 2, 'FD');
+
+      doc.setFillColor(0, 230, 118);
+      doc.rect(rightColX, 84, 3, 28, 'F'); // Left accent line
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(0, 230, 118);
+      doc.text('REGISTRATION FEE & STATUS', rightColX + 6, 91);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(255, 255, 255);
+      doc.text(amount ? `INR ${amount}/-` : 'PAID', rightColX + 6, 98);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(0, 230, 118);
+      doc.text('Status: 100% Verified & Confirmed', rightColX + 6, 106);
+
+      // Card 3: Confirmation (Order) ID (Gold Accent)
+      doc.setFillColor(20, 12, 32);
+      doc.setDrawColor(255, 179, 0);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(leftColX, 116, colWidth, 26, 2, 2, 'FD');
+
+      doc.setFillColor(255, 179, 0);
+      doc.rect(leftColX, 116, 3, 26, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(255, 179, 0);
+      doc.text('CONFIRMATION (ORDER) ID', leftColX + 6, 123);
+
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text(orderId, leftColX + 6, 133);
+
+      // Card 4: Razorpay Payment ID (Crimson Accent)
+      doc.setFillColor(20, 12, 32);
+      doc.setDrawColor(255, 42, 95);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(rightColX, 116, colWidth, 26, 2, 2, 'FD');
+
+      doc.setFillColor(255, 42, 95);
+      doc.rect(rightColX, 116, 3, 26, 'F');
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(255, 42, 95);
+      doc.text('RAZORPAY PAYMENT ID', rightColX + 6, 123);
+
+      doc.setFont('courier', 'bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text(paymentId || 'N/A', rightColX + 6, 133);
+
+      // Card 5: Database UUID Registration ID (if present)
+      let currentY = 146;
+      if (registrationId) {
+        doc.setFillColor(18, 10, 28);
+        doc.setDrawColor(120, 125, 150);
+        doc.setLineWidth(0.4);
+        doc.roundedRect(margin, currentY, contentWidth, 14, 2, 2, 'FD');
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7);
+        doc.setTextColor(0, 240, 255);
+        doc.text('DATABASE REGISTRATION ID (UUID):', margin + 6, currentY + 6);
+
+        doc.setFont('courier', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(244, 234, 204);
+        doc.text(registrationId, margin + 6, currentY + 11);
+        currentY += 18;
+      } else {
+        currentY += 4;
+      }
+
+      // 5. PERFORATED TICKET LINE & BARCODE STRIP
+      doc.setDrawColor(0, 240, 255);
+      doc.setLineDashPattern([2, 2], 0);
+      doc.line(margin + 4, currentY, margin + contentWidth - 4, currentY);
+      doc.setLineDashPattern([], 0); // Reset
+
+      currentY += 4;
+
+      // Stylized Tech Barcode Graphic
+      doc.setFillColor(255, 255, 255);
+      let bx = margin + 8;
+      const barY = currentY;
+      const barH = 7;
+      const pattern = [2, 1, 3, 1, 1, 2, 4, 1, 2, 1, 3, 2, 1, 4, 1, 2, 1, 3, 2, 1, 1, 3, 1, 4, 2, 1, 3, 1, 2, 1, 4, 1, 2, 3, 1, 2];
+      pattern.forEach((w) => {
+        doc.rect(bx, barY, w * 0.8, barH, 'F');
+        bx += w * 0.8 + 1.2;
+      });
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(6.5);
+      doc.setTextColor(0, 240, 255);
+      doc.text('SECURITY PASS VERIFICATION • RECORDED IN SUPABASE & GOOGLE SHEETS', bx + 5, barY + 4.5);
+
+      currentY += 14;
+
+      // 6. CAMPUS INSTRUCTIONS & COORDINATOR DESK (PROMINENT HIGHLIGHT)
+      doc.setFillColor(22, 13, 36);
+      doc.setDrawColor(255, 42, 95);
+      doc.setLineWidth(0.6);
+      doc.roundedRect(margin, currentY, contentWidth, 76, 3, 3, 'FD');
+
+      // Top Header inside Guidelines
+      doc.setFillColor(255, 42, 95);
+      doc.rect(margin + 1, currentY + 1, contentWidth - 2, 8, 'F');
+
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
       doc.setTextColor(255, 255, 255);
-      doc.text('VERIFIED & PAID', pageWidth - margin - 45, 28);
+      doc.text('CAMPUS INSTRUCTIONS & HELP DESK COORDINATORS', margin + 6, currentY + 6.5);
 
-      // Ticket Main Body Card
-      doc.setFillColor(252, 252, 254);
-      doc.setDrawColor(220, 225, 235);
-      doc.setLineWidth(0.5);
-      doc.roundedRect(margin, 58, contentWidth, 110, 3, 3, 'FD');
-
-      // Event Banner Bar
-      doc.setFillColor(242, 244, 248);
-      doc.rect(margin + 1, 59, contentWidth - 2, 22, 'F');
-
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(110, 115, 125);
-      doc.text('OFFICIAL REGISTRATION PASS', margin + 8, 68);
-
-      doc.setFontSize(14);
-      doc.setTextColor(211, 47, 47);
-      doc.text(eventName.toUpperCase(), margin + 8, 76);
-
-      // Details Grid
-      let y = 92;
-      const leftColX = margin + 8;
-      const rightColX = margin + 95;
-
-      const addField = (label, value, x, currentY) => {
+      let gy = currentY + 14;
+      const addRule = (icon, boldText, normalText) => {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8);
-        doc.setTextColor(115, 120, 130);
-        doc.text(label.toUpperCase(), x, currentY);
+        doc.setTextColor(0, 240, 255);
+        doc.text(icon, margin + 6, gy);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(244, 234, 204);
+        doc.text(boldText, margin + 11, gy);
 
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(25, 25, 30);
-        doc.text(String(value || 'N/A'), x, currentY + 6);
+        doc.setTextColor(215, 215, 225);
+        doc.text(normalText, margin + 11 + doc.getTextWidth(boldText) + 1, gy);
+        gy += 7.5;
       };
 
-      addField('Participant Name', participantName || 'Registered Participant', leftColX, y);
-      addField('Event Category', teamName ? `Team (${teamName})` : 'Individual Entry', rightColX, y);
-
-      y += 18;
-      addField('Registration Fee', amount ? `INR ${amount}` : 'Paid', leftColX, y);
-      addField('Event Dates', 'December 7 – 9, 2026', rightColX, y);
-
-      y += 18;
-      addField('Confirmation (Order) ID', orderId, leftColX, y);
-      addField('Razorpay Payment ID', paymentId, rightColX, y);
-
-      y += 18;
-      if (registrationId) {
-        addField('Database Registration ID', registrationId, leftColX, y);
-      }
-      addField('Reporting Venue', 'GNDEC Bidar Campus, Mailoor Rd', rightColX, y);
-
-      // Perforated line
-      doc.setDrawColor(180, 185, 195);
-      doc.setLineDashPattern([2, 2], 0);
-      doc.line(margin + 5, 155, margin + contentWidth - 5, 155);
-      doc.setLineDashPattern([], 0);
-
-      doc.setFont('helvetica', 'italic');
-      doc.setFontSize(8);
-      doc.setTextColor(120, 125, 135);
-      doc.text('* Present this pass (on phone or printout) at the Registration Desk along with your College ID.', margin + 8, 163);
-
-      // Guidelines & Campus Info Box
-      doc.setFillColor(246, 248, 252);
-      doc.setDrawColor(210, 218, 230);
-      doc.roundedRect(margin, 176, contentWidth, 54, 3, 3, 'FD');
+      addRule('>', 'Entry Gate:', 'GNDEC Bidar Main Gate (Reporting begins at 8:30 AM on Day 1).');
+      addRule('>', 'ID Mandatory:', 'Valid College / Institution ID card is required along with this pass.');
+      addRule('>', 'Hackathon Teams:', 'College lunch, dinner, breakfast & overnight accommodation provided.');
+      
+      // Coordinators Highlight Box (Features Armaandeep, Sangmesh, Abdul Aziz, Dr. Praveen Reddy)
+      doc.setFillColor(15, 8, 24);
+      doc.setDrawColor(0, 240, 255);
+      doc.setLineWidth(0.4);
+      doc.roundedRect(margin + 5, gy - 2, contentWidth - 10, 28, 2, 2, 'FD');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(18, 12, 24);
-      doc.text('CAMPUS INSTRUCTIONS & HELP DESK', margin + 8, 186);
+      doc.setFontSize(7.5);
+      doc.setTextColor(0, 240, 255);
+      doc.text('OFFICIAL EVENT COORDINATORS (CONTACT FOR ANY QUERIES):', margin + 9, gy + 3);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(60, 65, 75);
-      doc.text('1. Entry Gate: GNDEC Bidar Main Gate (Reporting begins at 8:30 AM on Day 1).', margin + 8, 194);
-      doc.text('2. ID Requirement: Valid College / Institution ID card is mandatory for campus entry.', margin + 8, 201);
-      doc.text('3. Hackathon Participants: Meals and overnight accommodation provided on campus.', margin + 8, 208);
-      doc.text('4. Queries / Assistance: Dr. Praveen Reddy: +91 99165 42332 | Sangmesh: +91 9353142522', margin + 8, 215);
-      doc.text('5. Email Support: Spectrum101213@gmail.com | Official Portal: spectrum10.vercel.app', margin + 8, 222);
-
-      // Footer
+      doc.setFontSize(7.5);
+      doc.setTextColor(255, 255, 255);
+      
+      // Student Coordinators
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(244, 234, 204);
+      doc.text('Student Coordinators:', margin + 9, gy + 10);
+      
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(150, 155, 165);
-      doc.text(`Generated on ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} (IST) • Spectrum 1.0`, margin, 242);
+      doc.setTextColor(255, 255, 255);
+      doc.text('• Armaandeep Singh: +91 8427027540', margin + 41, gy + 10);
+      doc.text('• Sangmesh: +91 9353142522', margin + 100, gy + 10);
+      doc.text('• Abdul Aziz: +91 8296683831', margin + 41, gy + 16);
+
+      // Faculty Coordinator
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 75, 110);
+      doc.text('Faculty Coordinator:', margin + 9, gy + 22);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(255, 255, 255);
+      doc.text('• Dr. Praveen Reddy: +91 99165 42332', margin + 41, gy + 22);
+
+      gy += 33;
+      addRule('>', 'Help & Support:', 'Email: Spectrum101213@gmail.com | Official Portal: spectrum10.vercel.app');
+
+      // 7. FOOTER BAR
+      doc.setDrawColor(255, 42, 95);
+      doc.setLineWidth(0.5);
+      doc.line(margin, pageHeight - 16, margin + contentWidth, pageHeight - 16);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(244, 234, 204);
+      doc.text('SPECTRUM 1.0 • DECEMBER 7–9, 2026 • GNDEC BIDAR', margin, pageHeight - 11);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(6.5);
+      doc.setTextColor(140, 140, 160);
+      doc.text(`Generated on ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} (IST) • System Authorized Pass`, margin, pageHeight - 7);
 
       doc.save(`Spectrum1.0_Pass_${orderId.slice(-8)}.pdf`);
     } catch (err) {
@@ -620,7 +818,7 @@ const RegistrationSuccessPage = () => {
             }}
           >
             <Download size={19} />
-            <span>{isDownloading ? 'Generating PDF...' : 'Download Pass (PDF)'}</span>
+            <span>{isDownloading ? 'Generating Colourful PDF...' : 'Download Pass (PDF)'}</span>
           </button>
 
           {/* Secondary CTA: Back to Home */}
