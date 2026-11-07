@@ -28,7 +28,7 @@ const CrimsonChat = () => {
     setInputValue('');
     setIsLoading(true);
 
-    const responseText = await getCrimsonResponse(inputValue);
+    const responseText = await getCrimsonResponse(inputValue, messages);
     const crimsonMessage = { id: Date.now() + 1, text: responseText, sender: 'crimson' };
     
     setMessages(prev => [...prev, crimsonMessage]);
