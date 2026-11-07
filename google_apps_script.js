@@ -200,7 +200,6 @@ function sendConfirmationEmail(data) {
 
   var subject = "🎟️ Registration Confirmed: SPECTRUM 1.0 - " + eventName;
 
-  // Plain text fallback (essential for delivery and spam filters)
   var plainText = "SPECTRUM 1.0 — REGISTRATION CONFIRMED\n\n"
     + "Dear " + participantName + ",\n\n"
     + "Your registration for SPECTRUM 1.0 has been successfully confirmed!\n\n"
@@ -248,100 +247,36 @@ function sendConfirmationEmail(data) {
 }
 
 // ==============================================================================
-// TEST HELPER 1: DIRECT EMAIL TEST
-// Select 'testDirectEmail' and click 'Run'.
-// ==============================================================================
-function testDirectEmail() {
-  var remainingQuota = MailApp.getRemainingDailyQuota();
-  Logger.log("Current remaining daily email quota: " + remainingQuota);
-
-  if (remainingQuota <= 0) {
-    throw new Error("Daily email quota reached (0 remaining). Please try again tomorrow or use another Google account.");
-  }
-
-  var targets = [
-    { name: "Davinder Singh", email: "davindersingh.seehr@gmail.com" },
-    { name: "Akshbir Singh Seehra", email: "akshbirsingh.seehra@gmail.com" }
-  ];
-
-  for (var i = 0; i < targets.length; i++) {
-    var target = targets[i];
-    Logger.log(">>> Sending test pass to: " + target.email);
-    sendConfirmationEmail({
-      registration_id: "TEST-" + Math.floor(1000 + Math.random() * 9000),
-      order_id: "order_direct_test_99",
-      participant_name: target.name,
-      email: target.email,
-      phone: "+91 9876543210",
-      college: "Guru Nanak Dev Engineering College (GNDEC), Bidar",
-      event_name: "CYBER QUEST (TECHPASS)",
-      team_name: "Cyber Squad",
-      team_members: target.name + " (Lead), Member 2",
-      amount_paid: 250,
-      razorpay_payment_id: "pay_test_" + Math.floor(100000 + Math.random() * 900000),
-      payment_status: "PAID"
-    });
-    Logger.log(">>> Successfully dispatched to: " + target.email);
-  }
-}
-
-// ==============================================================================
-// TEST HELPER 2: FULL WEBHOOK TEST (Logs to Sheet & Dispatches Email)
-// Select 'testSheet' and click 'Run'.
+// OPTIONAL TEST HELPER
+// You can select 'testSheet' and click 'Run' anytime to verify your setup.
 // ==============================================================================
 function testSheet() {
-  Logger.log("Remaining daily email quota: " + MailApp.getRemainingDailyQuota());
-
-  var testUsers = [
-    {
-      name: "Davinder Singh",
-      email: "davindersingh.seehr@gmail.com",
-      event: "CYBER QUEST (TECHNICAL CHALLENGE)",
-      team: "Tech Titans",
-      members: "Davinder Singh (Lead), Partner (+91 9876543210)",
-      amount: 250
-    },
-    {
-      name: "Davinder Singh (Fallback)",
-      email: "davindersingh.seehra@gmail.com",
-      event: "CYBER QUEST (TECHNICAL CHALLENGE)",
-      team: "Tech Titans",
-      members: "Davinder Singh (Lead), Partner (+91 9876543210)",
-      amount: 250
-    },
-    {
-      name: "Akshbir Singh Seehra",
-      email: "akshbirsingh.seehra@gmail.com",
-      event: "CODE MUTANTS / HACKATHON",
-      team: "Crimson Alpha",
-      members: "Akshbir Singh (Lead), Dev 2, Dev 3",
-      amount: 300
-    }
-  ];
-
-  for (var i = 0; i < testUsers.length; i++) {
-    var user = testUsers[i];
-    Logger.log("Testing doPost for: " + user.email);
-    var fakeEvent = {
-      postData: {
-        contents: JSON.stringify({
-          registration_id: "REG-TEST-" + (1001 + i),
-          order_id: "order_test_pass_" + (7700 + i),
-          participant_name: user.name,
-          email: user.email,
-          phone: "9876543210",
-          college: "Guru Nanak Dev Engineering College (GNDEC), Bidar",
-          event_name: user.event,
-          team_name: user.team,
-          team_members: user.members,
-          amount_paid: user.amount,
-          razorpay_payment_id: "pay_test_" + Math.floor(100000 + Math.random() * 900000),
-          payment_status: "PAID"
-        })
-      }
-    };
-
-    var res = doPost(fakeEvent);
-    Logger.log("Response for [" + user.email + "]: " + res.getContent());
+  var activeEmail = "";
+  try {
+    activeEmail = Session.getActiveUser().getEmail();
+  } catch (e) {
+    activeEmail = "";
   }
+
+  var fakeEvent = {
+    postData: {
+      contents: JSON.stringify({
+        registration_id: "REG-SAMPLE-" + Math.floor(1000 + Math.random() * 9000),
+        order_id: "order_sample_pass_01",
+        participant_name: "Sample Participant",
+        email: activeEmail || "sample@gndecbidar.ac.in",
+        phone: "+91 9876543210",
+        college: "Guru Nanak Dev Engineering College (GNDEC), Bidar",
+        event_name: "CYBER QUEST",
+        team_name: "Tech Knights",
+        team_members: "Participant 1 (Lead), Member 2",
+        amount_paid: 200,
+        razorpay_payment_id: "pay_sample_" + Math.floor(100000 + Math.random() * 900000),
+        payment_status: "PAID"
+      })
+    }
+  };
+
+  var res = doPost(fakeEvent);
+  Logger.log("Test Result: " + res.getContent());
 }
