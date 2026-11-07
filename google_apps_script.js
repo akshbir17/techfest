@@ -1,40 +1,15 @@
-/**
- * Spectrum 1.0 — Production Google Apps Script Web App for Live Registrations
- * 
- * Instructions:
- * 1. Open your target Google Sheet.
- * 2. Click Extensions > Apps Script.
- * 3. Replace all existing code with this script.
- * 4. (Optional) If you use a secret in Vercel (GOOGLE_SHEETS_WEBHOOK_SECRET),
- *    replace "YOUR_SHARED_SECRET_HERE" with that exact same secret below.
- *    If no secret is used, you can leave it as is or empty.
- * 5. Click Deploy > New deployment (or Manage Deployments > Edit > New Version).
- *    - Type: Web app
- *    - Description: Spectrum 1.0 Registrations
- *    - Execute as: Me
- *    - Who has access: Anyone
- * 6. Copy the Web App URL and ensure it matches GOOGLE_SHEETS_WEBHOOK_URL in Vercel.
- */
-
-var SHARED_SECRET = "YOUR_SHARED_SECRET_HERE";
+// ==========================================
+// SPECTRUM 1.0 — GOOGLE APPS SCRIPT WEB APP
+// ==========================================
 
 function doPost(e) {
   try {
-    var contents = e.postData ? e.postData.contents : "";
+    var contents = e && e.postData ? e.postData.contents : "";
     var data = {};
-    
     try {
       data = JSON.parse(contents);
     } catch (parseErr) {
-      data = e.parameter || {};
-    }
-
-    // Verify shared authentication secret if configured
-    if (SHARED_SECRET && SHARED_SECRET !== "YOUR_SHARED_SECRET_HERE" && SHARED_SECRET !== "") {
-      if (!data.secret || data.secret !== SHARED_SECRET) {
-        return ContentService.createTextOutput(JSON.stringify({ result: "error", message: "Unauthorized: Invalid secret" }))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
+      data = (e && e.parameter) ? e.parameter : {};
     }
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -45,25 +20,23 @@ function doPost(e) {
       var headers = [
         "Timestamp (IST)",
         "Registration ID",
-        "Participant / Leader Name",
+        "Participant Name",
         "Email",
         "Phone",
         "College / Institution",
         "Event Name",
         "Team Name",
         "Team Members",
-        "Amount Paid (₹)",
+        "Amount Paid (INR)",
         "Razorpay Payment ID",
         "Payment Status"
       ];
       sheet.appendRow(headers);
       
-      // Professional styling
       var headerRange = sheet.getRange(1, 1, 1, headers.length);
       headerRange.setFontWeight("bold");
       headerRange.setBackground("#d32f2f");
       headerRange.setFontColor("#ffffff");
-      headerRange.setFontFamily("Segoe UI");
       headerRange.setHorizontalAlignment("center");
       sheet.setFrozenRows(1);
     }
@@ -71,26 +44,22 @@ function doPost(e) {
     // Append participant registration row
     var row = [
       new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-      data.registration_id || "",
-      data.participant_name || "",
-      data.email || "",
-      data.phone ? "'" + data.phone : "", // prepended quote preserves leading zeros for mobile numbers
+      data.registration_id || "N/A",
+      data.participant_name || "N/A",
+      data.email || "N/A",
+      data.phone ? "'" + data.phone : "N/A",
       data.college || "N/A",
-      data.event_name || "",
+      data.event_name || "N/A",
       data.team_name || "N/A",
       data.team_members || "N/A",
       data.amount_paid !== undefined ? data.amount_paid : 0,
-      data.razorpay_payment_id || "",
+      data.razorpay_payment_id || "N/A",
       data.payment_status || "PAID"
     ];
 
     sheet.appendRow(row);
 
-    // Auto-align and adjust width for readability
-    var lastRow = sheet.getLastRow();
-    sheet.getRange(lastRow, 1, 1, row.length).setFontFamily("Segoe UI");
-
-    return ContentService.createTextOutput(JSON.stringify({ result: "success", rowAdded: lastRow }))
+    return ContentService.createTextOutput(JSON.stringify({ result: "success", row: sheet.getLastRow() }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ result: "error", error: err.toString() }))
@@ -98,10 +67,33 @@ function doPost(e) {
   }
 }
 
-// Allows testing directly from browser or GET requests
+// Allows testing GET requests from browser
 function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify({
     status: "active",
-    message: "Spectrum 1.0 Registration Webhook is live and ready to receive payments!"
+    message: "Spectrum 1.0 Webhook is live!"
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// Helper: You can select 'testSheet' and click 'Run' to test your sheet directly!
+function testSheet() {
+  var fakeEvent = {
+    postData: {
+      contents: JSON.stringify({
+        registration_id: "TEST-001",
+        participant_name: "Test Participant",
+        email: "test@spectrum.com",
+        phone: "9876543210",
+        college: "GNDEC Bidar",
+        event_name: "Test Event",
+        team_name: "N/A",
+        team_members: "N/A",
+        amount_paid: 1,
+        razorpay_payment_id: "pay_test_12345",
+        payment_status: "PAID"
+      })
+    }
+  };
+  var res = doPost(fakeEvent);
+  Logger.log(res.getContent());
 }
