@@ -281,9 +281,9 @@ const RegistrationSuccessPage = () => {
       });
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6.5);
+      doc.setFontSize(7.5);
       doc.setTextColor(0, 240, 255);
-      doc.text('SECURITY PASS VERIFICATION • RECORDED IN SUPABASE & GOOGLE SHEETS', bx + 5, barY + 4.5);
+      doc.text('SECURITY PASS VERIFICATION', bx + 6, barY + 4.5);
 
       currentY += 14;
 
