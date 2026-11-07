@@ -1,8 +1,24 @@
 import Razorpay from 'razorpay';
 import { createClient } from '@supabase/supabase-js';
 
+// Server-side authoritative event catalog and pricing (never trust frontend amount)
+const EVENT_CATALOG = {
+  // Individual Events
+  'impossible_to_sell': { name: 'Impossible to Sell', fee: 100, type: 'individual' },
+  'mock_interview':     { name: 'Mock Interview', fee: 120, type: 'individual' },
+  'killer_game':        { name: 'Killer Game', fee: 50, type: 'individual' },
+  'photo_booth':        { name: 'Photography', fee: 100, type: 'individual' },
+  'photography':        { name: 'Photography', fee: 100, type: 'individual' },
+  // Team Events
+  'hackathon':          { name: '24-Hour Hackathon', fee: 800, type: 'team' },
+  'tech_quiz':          { name: 'TechQuiz', fee: 300, type: 'team' },
+  'bgmi':               { name: 'BGMI Tournament', fee: 400, type: 'team' },
+  'free_fire':          { name: 'Free Fire Tournament', fee: 400, type: 'team' },
+  'treasure_hunt':      { name: 'Treasure Hunt', fee: 400, type: 'team' },
+};
+
 export default async function handler(req, res) {
-  // CORS headers
+  // Security CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -22,23 +38,44 @@ export default async function handler(req, res) {
       phone,
       college,
       eventId,
-      eventName,
-      fee,
-      type = 'individual',
       teamName = null,
       members = [],
     } = req.body || {};
 
-    if (!name || !email || !phone || !college || !eventId || fee === undefined) {
-      return res.status(400).json({ error: 'Missing required participant fields' });
+    // 1. Validate required participant fields
+    if (!name || !email || !phone || !college || !eventId) {
+      return res.status(400).json({ error: 'Missing required participant fields (name, email, phone, college, eventId).' });
     }
 
+    const trimmedName = String(name).trim();
+    const trimmedEmail = String(email).trim().toLowerCase();
+    const trimmedPhone = String(phone).replace(/\s/g, '').trim();
+    const trimmedCollege = String(college).trim();
+    const cleanEventId = String(eventId).trim().toLowerCase();
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      return res.status(400).json({ error: 'Invalid email address provided.' });
+    }
+
+    // 2. Authoritative event lookup & price calculation on backend
+    const eventConfig = EVENT_CATALOG[cleanEventId];
+    if (!eventConfig) {
+      return res.status(400).json({ error: `Event '${cleanEventId}' is not recognized in official event catalog.` });
+    }
+
+    const verifiedFee = eventConfig.fee;
+    const officialEventName = eventConfig.name;
+    const eventType = eventConfig.type;
+    const amountInPaise = Math.round(verifiedFee * 100);
+
+    // 3. Initialize Razorpay SDK
     const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!keyId || !keySecret) {
       return res.status(500).json({
-        error: 'Razorpay keys not configured on server. Please add RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in environment variables.',
+        error: 'Razorpay keys not configured on server. Please ensure RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are set in Vercel.',
       });
     }
 
@@ -47,54 +84,75 @@ export default async function handler(req, res) {
       key_secret: keySecret,
     });
 
-    const amountInPaise = Math.round(Number(fee) * 100);
-    const shortReceipt = `rcpt_${Date.now().toString().slice(-6)}_${Math.floor(Math.random() * 1000)}`;
-
+    // 4. Create Razorpay Order
+    const shortReceipt = `spec_${cleanEventId.slice(0, 4)}_${Date.now().toString().slice(-6)}`;
     const orderOptions = {
       amount: amountInPaise,
       currency: 'INR',
       receipt: shortReceipt,
       notes: {
-        eventId: String(eventId),
-        eventName: String(eventName),
-        name: String(name),
-        email: String(email),
-        phone: String(phone),
-        college: String(college),
-        type: String(type),
-        teamName: teamName ? String(teamName) : '',
+        eventId: cleanEventId,
+        eventName: officialEventName,
+        participantName: trimmedName,
+        email: trimmedEmail,
+        phone: trimmedPhone,
+        college: trimmedCollege,
+        type: eventType,
+        teamName: teamName ? String(teamName).trim() : '',
       },
     };
 
     const order = await razorpay.orders.create(orderOptions);
 
-    // If Supabase is configured, record pending registration
+    // 5. Store pending registration record in Supabase
+    let registrationId = null;
     const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
-    if (supabaseUrl && supabaseKey) {
+    if (supabaseUrl && supabaseServiceKey) {
       try {
-        const supabase = createClient(supabaseUrl, supabaseKey);
-        await supabase.from('registrations').insert([
-          {
-            event_id: eventId,
-            event_name: eventName,
-            participation_type: type,
-            name: name,
-            email: email,
-            phone: phone,
-            college: college,
-            team_name: teamName || null,
-            team_members: members && members.length > 0 ? members : null,
-            fee: Number(fee),
-            razorpay_order_id: order.id,
-            payment_status: 'pending',
-            created_at: new Date().toISOString(),
-          },
-        ]);
-      } catch (dbErr) {
-        console.warn('Supabase insert warning:', dbErr?.message || dbErr);
-        // Do not block checkout if DB insert fails; verified record will be handled in verify-payment
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+        
+        const cleanMembers = Array.isArray(members)
+          ? members.filter((m) => m && m.name && m.name.trim()).map((m) => ({
+              name: String(m.name).trim(),
+              phone: String(m.phone || '').trim(),
+            }))
+          : [];
+
+        const recordPayload = {
+          participant_name: trimmedName,
+          name: trimmedName, // compatibility with existing column
+          email: trimmedEmail,
+          phone: trimmedPhone,
+          college: trimmedCollege,
+          event_id: cleanEventId,
+          event_name: officialEventName,
+          team_name: teamName ? String(teamName).trim() : null,
+          team_members: cleanMembers.length > 0 ? cleanMembers : null,
+          amount: verifiedFee,
+          fee: verifiedFee, // compatibility
+          razorpay_order_id: order.id,
+          razorpay_payment_id: null,
+          payment_status: 'pending',
+          synced_to_sheets: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        const { data: inserted, error: dbErr } = await supabase
+          .from('registrations')
+          .insert([recordPayload])
+          .select('id')
+          .single();
+
+        if (dbErr) {
+          console.error('Supabase pending registration error:', dbErr.message);
+        } else if (inserted) {
+          registrationId = inserted.id;
+        }
+      } catch (dbEx) {
+        console.error('Supabase client exception:', dbEx.message);
       }
     }
 
@@ -103,11 +161,12 @@ export default async function handler(req, res) {
       amount: order.amount,
       currency: order.currency,
       keyId: keyId,
+      registrationId: registrationId,
     });
   } catch (error) {
     console.error('Create order error:', error);
     return res.status(500).json({
-      error: error.message || 'Failed to create payment order',
+      error: error.message || 'Failed to initialize payment order',
     });
   }
 }

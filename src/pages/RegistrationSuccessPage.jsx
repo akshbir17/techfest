@@ -8,6 +8,7 @@ const RegistrationSuccessPage = () => {
   const navigate = useNavigate();
   const orderId = searchParams.get('order_id') || 'N/A';
   const paymentId = searchParams.get('payment_id');
+  const registrationId = searchParams.get('reg_id');
   const eventName = searchParams.get('event') || 'Event';
 
   useEffect(() => {
@@ -144,12 +145,22 @@ const RegistrationSuccessPage = () => {
           >
             {orderId}
           </p>
+          {registrationId && (
+            <div style={{ marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1px dashed rgba(244,234,204,0.15)' }}>
+              <p style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>
+                Database Registration ID
+              </p>
+              <p style={{ fontFamily: 'monospace', fontSize: '0.92rem', color: 'var(--color-star-white)', marginTop: '0.2rem', wordBreak: 'break-all' }}>
+                {registrationId}
+              </p>
+            </div>
+          )}
           {paymentId && (
             <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px dashed rgba(244,234,204,0.15)' }}>
               <p style={{ fontSize: '0.72rem', color: 'rgba(244,234,204,0.5)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                 Razorpay Payment ID
               </p>
-              <p style={{ fontFamily: 'monospace', fontSize: '0.95rem', color: 'var(--color-star-white)', marginTop: '0.2rem' }}>
+              <p style={{ fontFamily: 'monospace', fontSize: '0.95rem', color: 'var(--color-star-white)', marginTop: '0.2rem', wordBreak: 'break-all' }}>
                 {paymentId}
               </p>
             </div>
