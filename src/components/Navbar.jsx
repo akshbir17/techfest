@@ -55,19 +55,7 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''}`}>
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.65rem' }} onClick={() => setIsMenuOpen(false)}>
-          <img
-            src="/logo.jpg"
-            alt="SPECTRUM 1.0"
-            style={{
-              width: '34px',
-              height: '34px',
-              borderRadius: '8px',
-              objectFit: 'cover',
-              border: '1.5px solid rgba(0, 240, 255, 0.5)',
-              boxShadow: '0 0 10px rgba(0, 240, 255, 0.3)',
-            }}
-          />
+        <Link to="/" className="navbar-logo" style={{ textDecoration: 'none' }} onClick={() => setIsMenuOpen(false)}>
           <span className="text-glow" style={{ color: 'var(--color-neon-cyan)', fontWeight: 'bold', fontSize: '1.5rem', letterSpacing: '0.1em' }}>
             SPECTRUM 1.0
           </span>
