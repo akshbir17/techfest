@@ -25,26 +25,17 @@ const Navbar = () => {
 
   const scrollTo = (id) => {
     setIsMenuOpen(false);
-    // If we are not on the homepage, navigate to homepage first, then scroll
+    // If we are not on the homepage, navigate to homepage with hash
     if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) {
-          if (window.lenis) {
-            window.lenis.scrollTo(el);
-          } else {
-            el.scrollIntoView({ behavior: 'smooth' });
-          }
-        }
-      }, 100);
+      navigate(`/#${id}`);
     } else {
       const el = document.getElementById(id);
       if (el) {
         if (window.lenis) {
-          window.lenis.scrollTo(el);
+          window.lenis.resize();
+          window.lenis.scrollTo(el, { offset: -70 });
         } else {
-          el.scrollIntoView({ behavior: 'smooth' });
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
     }
@@ -85,13 +76,12 @@ const Navbar = () => {
             ABOUT
           </button>
           
-          <Link 
-            to="/events" 
-            className={`nav-link ${location.pathname === '/events' ? 'active' : ''}`}
-            onClick={() => setIsMenuOpen(false)}
+          <button 
+            className="nav-link"
+            onClick={() => scrollTo('events')}
           >
             EVENTS
-          </Link>
+          </button>
 
           <button 
             className="nav-link"

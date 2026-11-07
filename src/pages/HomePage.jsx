@@ -14,18 +14,29 @@ const HomePage = () => {
   useEffect(() => {
     if (location.hash) {
       const targetId = location.hash.replace('#', '');
-      const timer = setTimeout(() => {
+      
+      const scrollToTarget = () => {
         const el = document.getElementById(targetId);
         if (el) {
           if (window.lenis) {
-            window.lenis.start();
+            window.lenis.resize();
             window.lenis.scrollTo(el, { offset: -70 });
           } else {
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }
-      }, 120);
-      return () => clearTimeout(timer);
+      };
+
+      // Staged executions to ensure correct landing as dynamic elements and images render
+      const t1 = setTimeout(scrollToTarget, 60);
+      const t2 = setTimeout(scrollToTarget, 250);
+      const t3 = setTimeout(scrollToTarget, 550);
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+        clearTimeout(t3);
+      };
     }
   }, [location.hash, location.pathname]);
 
