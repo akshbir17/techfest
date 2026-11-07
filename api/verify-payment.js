@@ -174,6 +174,7 @@ export default async function handler(req, res) {
           participant_name: participantName,
           email: email,
           phone: phone,
+          college: registrationRecord?.college || registrationData?.college || 'N/A',
           event_name: eventName,
           team_name: teamName,
           team_members: membersFormatted,
@@ -186,6 +187,7 @@ export default async function handler(req, res) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(sheetPayload),
+          redirect: 'follow',
         });
 
         if (sheetResponse.ok) {
