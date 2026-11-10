@@ -432,51 +432,6 @@ const RegistrationSuccessPage = () => {
     }
   };
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // ON-SCREEN UI — Clean Light-Themed Success Page
-  // Matches the new PDF and email aesthetic
-  // ═══════════════════════════════════════════════════════════════════════
-
-  // Color palette
-  const colors = {
-    indigo: '#4338CA',
-    violet: '#7C3AED',
-    pink: '#DB2777',
-    teal: '#0D9488',
-    emerald: '#10B981',
-    amber: '#F59E0B',
-    orange: '#F97316',
-    red: '#EF4444',
-    slate900: '#0F172A',
-    slate700: '#334155',
-    slate500: '#64748B',
-    slate200: '#E2E8F0',
-    white: '#FFFFFF',
-    bgLight: '#EEF2F7',
-    cardBg: '#FFFFFF',
-  };
-
-  const CopyBtn = ({ text, id }) => (
-    <button
-      onClick={() => handleCopy(text, id)}
-      style={{
-        background: 'transparent',
-        border: 'none',
-        color: copiedKey === id ? colors.emerald : colors.indigo,
-        cursor: 'pointer',
-        fontSize: '0.72rem',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.25rem',
-        padding: 0,
-        fontWeight: 600,
-      }}
-    >
-      {copiedKey === id ? <Check size={12} /> : <Copy size={12} />}
-      {copiedKey === id ? 'Copied' : 'Copy'}
-    </button>
-  );
-
   return (
     <main
       style={{
@@ -484,28 +439,43 @@ const RegistrationSuccessPage = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '2.5rem 1.25rem',
-        background: `linear-gradient(135deg, ${colors.bgLight} 0%, #f0eef5 100%)`,
+        padding: '3rem 1.25rem',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ width: '100%', maxWidth: '580px', position: 'relative', zIndex: 10 }}>
+      {/* Background Ambient Glow */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '40%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '650px',
+          height: '650px',
+          background: 'radial-gradient(circle, rgba(211, 47, 47, 0.12) 0%, rgba(0, 240, 255, 0.04) 40%, transparent 70%)',
+          pointerEvents: 'none',
+        }}
+      />
 
-        {/* ──── Animated Success Badge ──── */}
+      <div style={{ width: '100%', maxWidth: '580px', position: 'relative', zIndex: 10 }}>
+        
+        {/* Animated Success Badge */}
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'center', position: 'relative' }}
+          style={{ marginBottom: '1.75rem', display: 'flex', justifyContent: 'center', position: 'relative' }}
         >
           <motion.div
             animate={{ scale: [1, 1.25, 1], opacity: [0.6, 0, 0.6] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
             style={{
               position: 'absolute',
-              width: '86px',
-              height: '86px',
+              width: '90px',
+              height: '90px',
               borderRadius: '50%',
-              border: `2px solid ${colors.emerald}`,
+              border: '2px solid var(--color-neon-cyan, #00f0ff)',
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
@@ -513,226 +483,293 @@ const RegistrationSuccessPage = () => {
           />
           <div
             style={{
-              width: '70px',
-              height: '70px',
+              width: '74px',
+              height: '74px',
               borderRadius: '50%',
-              background: `linear-gradient(135deg, rgba(67, 56, 202, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)`,
-              border: `2px solid ${colors.emerald}`,
+              background: 'linear-gradient(135deg, rgba(211, 47, 47, 0.25) 0%, rgba(0, 240, 255, 0.15) 100%)',
+              border: '2px solid var(--color-neon-cyan, #00f0ff)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: `0 0 20px rgba(16, 185, 129, 0.3)`,
+              boxShadow: '0 0 25px rgba(0, 240, 255, 0.35)',
             }}
           >
-            <CheckCircle size={36} color={colors.emerald} strokeWidth={1.75} />
+            <CheckCircle size={38} color="var(--color-neon-cyan, #00f0ff)" strokeWidth={1.75} />
           </div>
         </motion.div>
 
-        {/* ──── Header Text ──── */}
+        {/* Header Text */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          style={{ textAlign: 'center', marginBottom: '1.5rem' }}
+          style={{ textAlign: 'center', marginBottom: '2rem' }}
         >
           <h1
             style={{
-              fontFamily: 'var(--font-heading, Inter, sans-serif)',
-              fontSize: '1.9rem',
+              fontFamily: 'var(--font-heading)',
+              fontSize: '2.1rem',
               fontWeight: 800,
-              letterSpacing: '0.04em',
-              margin: '0 0 0.4rem 0',
-              color: colors.slate900,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              margin: '0 0 0.5rem 0',
+              color: 'var(--color-star-white, #fff)',
             }}
           >
-            You're registered! <span style={{ color: colors.emerald }}>✓</span>
+            REGISTRATION <span style={{ color: 'var(--color-neon-cyan, #00f0ff)' }}>CONFIRMED!</span>
           </h1>
           <p
             style={{
-              color: colors.slate500,
-              fontSize: '0.95rem',
-              lineHeight: '1.5',
+              color: 'rgba(244, 234, 204, 0.75)',
+              fontSize: '0.98rem',
+              lineHeight: '1.6',
               margin: 0,
             }}
           >
-            Your spot at{' '}
-            <strong style={{ color: colors.indigo }}>Spectrum 1.0</strong> for{' '}
-            <strong style={{ color: colors.slate900 }}>{eventName}</strong> is confirmed.
+            You are officially registered for{' '}
+            <strong style={{ color: 'var(--color-star-white, #fff)', borderBottom: '1px solid var(--color-neon-cyan, #00f0ff)' }}>
+              {eventName}
+            </strong>
           </p>
         </motion.div>
 
-        {/* ──── Main Ticket Card ──── */}
+        {/* Digital Event Pass Ticket Card */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.35 }}
           style={{
-            background: colors.cardBg,
+            position: 'relative',
+            background: 'linear-gradient(145deg, rgba(20, 12, 28, 0.95) 0%, rgba(10, 6, 16, 0.98) 100%)',
+            border: '1px solid rgba(255, 42, 95, 0.35)',
             borderRadius: '16px',
-            boxShadow: '0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04)',
+            boxShadow: '0 15px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 42, 95, 0.15)',
+            backdropFilter: 'blur(16px)',
             overflow: 'hidden',
-            marginBottom: '1.5rem',
-            border: `1px solid ${colors.slate200}`,
+            marginBottom: '1.75rem',
+            textAlign: 'left',
           }}
         >
-          {/* Gradient header stripe */}
+          {/* Card Top Header */}
           <div
             style={{
-              height: '5px',
-              background: `linear-gradient(90deg, ${colors.indigo}, ${colors.violet}, ${colors.pink})`,
-            }}
-          />
-
-          {/* Card top row */}
-          <div
-            style={{
-              padding: '1rem 1.5rem',
-              borderBottom: `1px solid ${colors.slate200}`,
+              padding: '1.25rem 1.75rem',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              background: 'rgba(255, 255, 255, 0.02)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-              <ShieldCheck size={17} color={colors.indigo} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <ShieldCheck size={18} color="var(--color-neon-cyan, #00f0ff)" />
               <span
                 style={{
                   fontFamily: 'var(--font-heading)',
-                  fontSize: '0.78rem',
-                  letterSpacing: '0.1em',
+                  fontSize: '0.82rem',
+                  letterSpacing: '0.12em',
                   fontWeight: 700,
-                  color: colors.indigo,
+                  color: 'var(--color-neon-cyan, #00f0ff)',
                   textTransform: 'uppercase',
                 }}
               >
-                Spectrum 1.0 Pass
+                SPECTRUM 1.0 PASS
               </span>
             </div>
+
+            {/* Paid Badge */}
             <div
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.3rem',
-                padding: '0.2rem 0.65rem',
+                gap: '0.35rem',
+                padding: '0.25rem 0.75rem',
                 borderRadius: '999px',
-                background: '#D1FAE5',
-                color: '#047857',
-                fontSize: '0.72rem',
+                background: 'rgba(0, 230, 118, 0.12)',
+                border: '1px solid rgba(0, 230, 118, 0.4)',
+                color: '#00e676',
+                fontSize: '0.75rem',
                 fontWeight: 700,
+                letterSpacing: '0.05em',
               }}
             >
-              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#047857' }} />
-              Payment verified
+              <span
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: '#00e676',
+                  boxShadow: '0 0 8px #00e676',
+                }}
+              />
+              VERIFIED & PAID
             </div>
           </div>
 
-          {/* Event info */}
-          <div style={{ padding: '1.25rem 1.5rem 0.75rem 1.5rem' }}>
+          {/* Event Name & Hero Info */}
+          <div style={{ padding: '1.5rem 1.75rem 1rem 1.75rem' }}>
             <span
               style={{
-                fontSize: '0.7rem',
+                fontSize: '0.72rem',
                 textTransform: 'uppercase',
-                letterSpacing: '0.1em',
-                color: colors.slate500,
+                letterSpacing: '0.12em',
+                color: 'rgba(244, 234, 204, 0.55)',
                 fontWeight: 600,
               }}
             >
-              Registered event
+              Event
             </span>
             <h2
               style={{
-                fontSize: '1.5rem',
+                fontSize: '1.6rem',
                 fontWeight: 800,
-                color: colors.slate900,
-                margin: '0.15rem 0 0.85rem 0',
+                color: 'var(--color-star-white, #fff)',
+                margin: '0.2rem 0 1.25rem 0',
+                letterSpacing: '0.04em',
               }}
             >
               {eventName}
             </h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Calendar size={15} color={colors.indigo} />
-                <span style={{ fontSize: '0.85rem', color: colors.slate700 }}>Dec 7 – 9, 2026</span>
+
+            {/* Quick Meta Grid */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '1rem',
+                marginBottom: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Calendar size={16} color="var(--color-neon-cyan, #00f0ff)" />
+                <span style={{ fontSize: '0.88rem', color: 'rgba(244, 234, 204, 0.85)' }}>
+                  Dec 7 – 9, 2026
+                </span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <MapPin size={15} color={colors.pink} />
-                <span style={{ fontSize: '0.85rem', color: colors.slate700 }}>GNDEC Bidar Campus</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <MapPin size={16} color="#ff2a5f" />
+                <span style={{ fontSize: '0.88rem', color: 'rgba(244, 234, 204, 0.85)' }}>
+                  GNDEC Bidar Campus
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Perforated Divider with notches */}
-          <div style={{ position: 'relative', margin: '0.65rem 0' }}>
-            <div style={{ borderBottom: `2px dashed ${colors.slate200}`, width: '100%' }} />
+          {/* Perforated Ticket Divider with Notches */}
+          <div style={{ position: 'relative', margin: '0.5rem 0' }}>
             <div
               style={{
-                position: 'absolute', left: '-12px', top: '-12px',
-                width: '24px', height: '24px', borderRadius: '50%',
-                background: colors.bgLight,
-                borderRight: `1px solid ${colors.slate200}`,
+                borderBottom: '1px dashed rgba(255, 255, 255, 0.15)',
+                width: '100%',
               }}
             />
+            {/* Left Notch */}
             <div
               style={{
-                position: 'absolute', right: '-12px', top: '-12px',
-                width: '24px', height: '24px', borderRadius: '50%',
-                background: colors.bgLight,
-                borderLeft: `1px solid ${colors.slate200}`,
+                position: 'absolute',
+                left: '-12px',
+                top: '-12px',
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                background: 'var(--color-space-black, #07040a)',
+                borderRight: '1px solid rgba(255, 42, 95, 0.35)',
+              }}
+            />
+            {/* Right Notch */}
+            <div
+              style={{
+                position: 'absolute',
+                right: '-12px',
+                top: '-12px',
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                background: 'var(--color-space-black, #07040a)',
+                borderLeft: '1px solid rgba(255, 42, 95, 0.35)',
               }}
             />
           </div>
 
-          {/* Credentials Block */}
-          <div style={{ padding: '1rem 1.5rem 1.5rem 1.5rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-
+          {/* Credentials & Identification Block */}
+          <div style={{ padding: '1.25rem 1.75rem 1.75rem 1.75rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              
               {/* Order ID */}
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
-                  <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: colors.slate500, fontWeight: 600 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                  <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(244, 234, 204, 0.6)', fontWeight: 600 }}>
                     Confirmation (Order) ID
                   </span>
-                  <CopyBtn text={orderId} id="order" />
+                  <button
+                    onClick={() => handleCopy(orderId, 'order')}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: copiedKey === 'order' ? '#00e676' : 'var(--color-neon-cyan, #00f0ff)',
+                      cursor: 'pointer',
+                      fontSize: '0.72rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      padding: 0,
+                    }}
+                  >
+                    {copiedKey === 'order' ? <Check size={12} /> : <Copy size={12} />}
+                    {copiedKey === 'order' ? 'Copied' : 'Copy'}
+                  </button>
                 </div>
                 <div
                   style={{
-                    fontFamily: 'Consolas, monospace',
-                    fontSize: '0.92rem',
-                    color: '#B45309',
-                    background: '#FFFBEB',
-                    padding: '0.5rem 0.75rem',
+                    fontFamily: 'monospace',
+                    fontSize: '0.95rem',
+                    color: 'var(--color-star-white, #fff)',
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    padding: '0.55rem 0.85rem',
                     borderRadius: '6px',
-                    border: '1px solid #FDE68A',
-                    borderLeft: `4px solid ${colors.amber}`,
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
                     wordBreak: 'break-all',
-                    fontWeight: 600,
                   }}
                 >
                   {orderId}
                 </div>
               </div>
 
-              {/* Payment ID */}
+              {/* Razorpay Payment ID */}
               {paymentId && paymentId !== 'N/A' && (
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
-                    <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: colors.slate500, fontWeight: 600 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                    <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(244, 234, 204, 0.6)', fontWeight: 600 }}>
                       Razorpay Payment ID
                     </span>
-                    <CopyBtn text={paymentId} id="payment" />
+                    <button
+                      onClick={() => handleCopy(paymentId, 'payment')}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: copiedKey === 'payment' ? '#00e676' : 'var(--color-neon-cyan, #00f0ff)',
+                        cursor: 'pointer',
+                        fontSize: '0.72rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                        padding: 0,
+                      }}
+                    >
+                      {copiedKey === 'payment' ? <Check size={12} /> : <Copy size={12} />}
+                      {copiedKey === 'payment' ? 'Copied' : 'Copy'}
+                    </button>
                   </div>
                   <div
                     style={{
-                      fontFamily: 'Consolas, monospace',
-                      fontSize: '0.9rem',
-                      color: '#BE185D',
-                      background: '#FDF2F8',
-                      padding: '0.5rem 0.75rem',
+                      fontFamily: 'monospace',
+                      fontSize: '0.92rem',
+                      color: 'var(--color-star-white, #fff)',
+                      background: 'rgba(0, 0, 0, 0.4)',
+                      padding: '0.55rem 0.85rem',
                       borderRadius: '6px',
-                      border: '1px solid #FBCFE8',
-                      borderLeft: `4px solid ${colors.pink}`,
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       wordBreak: 'break-all',
-                      fontWeight: 600,
                     }}
                   >
                     {paymentId}
@@ -740,27 +777,41 @@ const RegistrationSuccessPage = () => {
                 </div>
               )}
 
-              {/* Database Reg ID */}
+              {/* Database Registration ID (UUID) */}
               {registrationId && (
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
-                    <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: colors.slate500, fontWeight: 600 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                    <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(244, 234, 204, 0.6)', fontWeight: 600 }}>
                       Database Registration ID
                     </span>
-                    <CopyBtn text={registrationId} id="reg" />
+                    <button
+                      onClick={() => handleCopy(registrationId, 'reg')}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: copiedKey === 'reg' ? '#00e676' : 'var(--color-neon-cyan, #00f0ff)',
+                        cursor: 'pointer',
+                        fontSize: '0.72rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.25rem',
+                        padding: 0,
+                      }}
+                    >
+                      {copiedKey === 'reg' ? <Check size={12} /> : <Copy size={12} />}
+                      {copiedKey === 'reg' ? 'Copied' : 'Copy'}
+                    </button>
                   </div>
                   <div
                     style={{
-                      fontFamily: 'Consolas, monospace',
-                      fontSize: '0.82rem',
-                      color: '#0F766E',
-                      background: '#F0FDFA',
-                      padding: '0.5rem 0.75rem',
+                      fontFamily: 'monospace',
+                      fontSize: '0.85rem',
+                      color: 'rgba(244, 234, 204, 0.85)',
+                      background: 'rgba(0, 0, 0, 0.4)',
+                      padding: '0.55rem 0.85rem',
                       borderRadius: '6px',
-                      border: '1px solid #99F6E4',
-                      borderLeft: `4px solid ${colors.teal}`,
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       wordBreak: 'break-all',
-                      fontWeight: 600,
                     }}
                   >
                     {registrationId}
@@ -771,13 +822,14 @@ const RegistrationSuccessPage = () => {
           </div>
         </motion.div>
 
-        {/* ──── Action Buttons ──── */}
+        {/* Action Buttons: Download PDF & Back Home */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '2rem' }}
         >
+          {/* Primary CTA: Download PDF Pass */}
           <button
             id="download-pass-pdf-btn"
             onClick={handleDownloadPDF}
@@ -787,36 +839,37 @@ const RegistrationSuccessPage = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.6rem',
-              padding: '0.9rem 1.5rem',
+              gap: '0.65rem',
+              padding: '1rem 1.5rem',
               fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              letterSpacing: '0.06em',
+              fontWeight: 800,
+              fontSize: '0.98rem',
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
               color: '#ffffff',
-              background: `linear-gradient(90deg, ${colors.indigo}, ${colors.pink})`,
-              border: 'none',
-              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #d32f2f 0%, #ff1744 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              borderRadius: '8px',
               cursor: isDownloading ? 'wait' : 'pointer',
-              boxShadow: '0 4px 14px rgba(67, 56, 202, 0.3)',
+              boxShadow: '0 6px 20px rgba(255, 23, 68, 0.35)',
               transition: 'all 0.25s ease',
             }}
             onMouseOver={(e) => {
               if (!isDownloading) {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(67, 56, 202, 0.45)';
+                e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 23, 68, 0.5)';
               }
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = 'none';
-              e.currentTarget.style.boxShadow = '0 4px 14px rgba(67, 56, 202, 0.3)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 23, 68, 0.35)';
             }}
           >
-            <Download size={18} />
-            <span>{isDownloading ? 'Generating PDF...' : 'Download Pass (PDF)'}</span>
+            <Download size={19} />
+            <span>{isDownloading ? 'Generating Colourful PDF...' : 'Download Pass (PDF)'}</span>
           </button>
 
+          {/* Secondary CTA: Back to Home */}
           <button
             id="back-to-home-btn"
             onClick={() => navigate('/')}
@@ -825,27 +878,27 @@ const RegistrationSuccessPage = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.5rem',
-              padding: '0.8rem 1.5rem',
+              gap: '0.55rem',
+              padding: '0.85rem 1.5rem',
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
-              fontSize: '0.85rem',
-              letterSpacing: '0.06em',
+              fontSize: '0.88rem',
+              letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: colors.slate700,
-              background: colors.white,
-              border: `1px solid ${colors.slate200}`,
-              borderRadius: '12px',
+              color: 'var(--color-star-white, #fff)',
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '8px',
               cursor: 'pointer',
               transition: 'all 0.25s ease',
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.borderColor = colors.indigo;
-              e.currentTarget.style.color = colors.indigo;
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.borderColor = 'var(--color-neon-cyan, #00f0ff)';
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.borderColor = colors.slate200;
-              e.currentTarget.style.color = colors.slate700;
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
             }}
           >
             <Home size={16} />
@@ -853,29 +906,28 @@ const RegistrationSuccessPage = () => {
           </button>
         </motion.div>
 
-        {/* ──── What to do next ──── */}
+        {/* Next Steps Instructions Card */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.65 }}
           style={{
-            background: colors.white,
-            border: `1px solid ${colors.slate200}`,
-            borderRadius: '12px',
-            padding: '1.15rem',
+            background: 'rgba(255, 255, 255, 0.02)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '10px',
+            padding: '1.25rem',
             textAlign: 'left',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.6rem' }}>
-            <Info size={15} color={colors.indigo} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.65rem' }}>
+            <Info size={15} color="var(--color-neon-cyan, #00f0ff)" />
             <h4
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: '0.78rem',
-                letterSpacing: '0.08em',
+                fontSize: '0.8rem',
+                letterSpacing: '0.1em',
                 fontWeight: 700,
-                color: colors.slate900,
+                color: 'var(--color-star-white, #fff)',
                 margin: 0,
                 textTransform: 'uppercase',
               }}
@@ -883,32 +935,33 @@ const RegistrationSuccessPage = () => {
               What to do next?
             </h4>
           </div>
+
           <ul
             style={{
               margin: 0,
-              paddingLeft: '1.1rem',
-              color: colors.slate500,
-              fontSize: '0.82rem',
+              paddingLeft: '1.2rem',
+              color: 'rgba(244, 234, 204, 0.72)',
+              fontSize: '0.84rem',
               lineHeight: '1.6',
             }}
           >
-            <li>Download and keep this <strong style={{ color: colors.slate900 }}>Pass (PDF)</strong> ready on your mobile device.</li>
-            <li>Carry your physical <strong style={{ color: colors.slate900 }}>College / Institution ID card</strong> to GNDEC Bidar on fest day.</li>
-            <li>Present this pass at the <strong style={{ color: colors.slate900 }}>Main Registration Desk</strong> on arrival to receive your badge.</li>
+            <li>Download and keep this <strong>Pass (PDF)</strong> ready on your mobile device.</li>
+            <li>Carry your physical <strong>College / Institution ID card</strong> to GNDEC Bidar on fest day.</li>
+            <li>Present this pass at the <strong>Main Registration Desk</strong> on arrival to receive your badge.</li>
           </ul>
         </motion.div>
 
-        {/* Footer */}
+        {/* Festive Footer Sign-off */}
         <p
           style={{
-            marginTop: '1.5rem',
-            fontSize: '0.72rem',
-            color: colors.slate500,
-            letterSpacing: '0.06em',
+            marginTop: '1.75rem',
+            fontSize: '0.75rem',
+            color: 'rgba(244, 234, 204, 0.35)',
+            letterSpacing: '0.08em',
             textAlign: 'center',
           }}
         >
-          SPECTRUM 1.0 · DECEMBER 7–9, 2026 · GNDEC BIDAR
+          SPECTRUM 1.0 • DECEMBER 7–9, 2026 • GNDEC BIDAR
         </p>
       </div>
     </main>
