@@ -28,3 +28,4 @@ dist-ssr
 .env*.local
 
 *.backup.jsx
+scratch/
