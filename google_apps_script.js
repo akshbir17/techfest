@@ -140,6 +140,7 @@ function doGet(e) {
 // 100% Google Apps Script Compatible (no nested backticks, ES5 string concat)
 // ==============================================================================
 function buildHtmlPass(data) {
+  data = data || {};
   var participantName = data.participant_name || "Participant";
   var firstName = participantName.split(" ")[0] || participantName;
   var eventName = data.event_name || "Official Event";
@@ -396,6 +397,23 @@ function buildHtmlPass(data) {
 // EMAIL DISPATCH HELPER
 // ==============================================================================
 function sendConfirmationEmail(data) {
+  data = data || {};
+  
+  // Safe defaults if run directly from Apps Script editor toolbar without arguments
+  if (!data.email || String(data.email).indexOf("@") === -1) {
+    try {
+      data.email = Session.getActiveUser().getEmail() || "thedclaw.gaming@gmail.com";
+    } catch (e) {
+      data.email = "thedclaw.gaming@gmail.com";
+    }
+    data.participant_name = data.participant_name || "Akshbir Singh Seehra";
+    data.event_name = data.event_name || "Live Test Event (₹1 Payment Test)";
+    data.amount_paid = data.amount_paid !== undefined ? data.amount_paid : 1;
+    data.order_id = data.order_id || "order_manual_test_01";
+    data.razorpay_payment_id = data.razorpay_payment_id || "pay_manual_test_01";
+    data.college = data.college || "Guru Nanak Dev Engineering College (GNDEC), Bidar";
+  }
+
   var recipientEmail = String(data.email).trim();
   var participantName = data.participant_name || "Participant";
   var eventName = data.event_name || "Official Event";
