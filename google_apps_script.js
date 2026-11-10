@@ -19,25 +19,26 @@ function doPost(e) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getActiveSheet();
 
-    // Auto-create and format header row if sheet is fresh/empty
-    if (sheet.getLastRow() === 0) {
-      var headers = [
-        "Timestamp (IST)",
-        "Registration ID",
-        "Participant Name",
-        "Email",
-        "Phone",
-        "College / Institution",
-        "Event Name",
-        "Team Name",
-        "Team Members",
-        "Amount Paid (INR)",
-        "Razorpay Payment ID",
-        "Payment Status",
-        "Confirmation Email"
-      ];
-      sheet.appendRow(headers);
-      
+    // Standardized Official Spectrum 1.0 Google Sheet Column Headers
+    var headers = [
+      "Timestamp",
+      "Reg ID",
+      "Participant Name (Leader)",
+      "Email",
+      "Phone",
+      "College",
+      "Event Name",
+      "Team Name",
+      "Team Members",
+      "Fee",
+      "Razorpay Payment ID",
+      "Status",
+      "Confirmation Email"
+    ];
+
+    // Auto-create or format header row if sheet is fresh/empty
+    if (sheet.getLastRow() === 0 || sheet.getRange(1, 1).getValue() === "") {
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       var headerRange = sheet.getRange(1, 1, 1, headers.length);
       headerRange.setFontWeight("bold");
       headerRange.setBackground("#d32f2f");
@@ -59,18 +60,49 @@ function doPost(e) {
       }
     }
 
-    // Append participant registration row to the Google Sheet
+    // Check if team registration
+    var isTeam = (data.team_name && data.team_name !== "N/A" && String(data.team_name).trim() !== "");
+    var participantName = data.participant_name || "N/A";
+    if (isTeam && participantName !== "N/A" && participantName.indexOf("(Leader)") === -1) {
+      participantName = participantName + " (Leader)";
+    }
+
+    // Format Team Members: Red (+91 8888888888), Blue (+91 4444444444)
+    var membersFormatted = "N/A";
+    if (data.team_members && data.team_members !== "N/A") {
+      if (Array.isArray(data.team_members)) {
+        membersFormatted = data.team_members.map(function(m, idx) {
+          if (typeof m === "string") return m;
+          var phoneStr = "";
+          if (m.phone) {
+            var raw = String(m.phone).trim();
+            phoneStr = raw.indexOf("+91") === 0 ? raw : "+91 " + raw.replace(/^0+/, "");
+          }
+          return (m.name || "Member " + (idx + 2)) + (phoneStr ? " (" + phoneStr + ")" : "");
+        }).join(", ");
+      } else {
+        membersFormatted = String(data.team_members);
+      }
+    }
+
+    // Timestamp: dd/MM/yyyy, hh:mm a (e.g. 08/11/2026, 11:30 AM) in Indian Standard Time (IST)
+    var timestampStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd/MM/yyyy, hh:mm a");
+
+    // Fee formatted with INR symbol (e.g. ₹800)
+    var feeStr = "₹" + (data.amount_paid !== undefined ? data.amount_paid : 0);
+
+    // Append participant registration row to the Google Sheet matching exact column format
     var row = [
-      new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      timestampStr,
       data.registration_id || data.order_id || "N/A",
-      data.participant_name || "N/A",
+      participantName,
       data.email || "N/A",
-      data.phone ? "'" + data.phone : "N/A",
+      data.phone ? "'" + String(data.phone).replace(/\s+/g, '') : "N/A",
       data.college || "N/A",
       data.event_name || "N/A",
       data.team_name || "N/A",
-      data.team_members || "N/A",
-      data.amount_paid !== undefined ? data.amount_paid : 0,
+      membersFormatted,
+      feeStr,
       data.razorpay_payment_id || "N/A",
       data.payment_status || "PAID",
       emailSent ? "Sent Successfully" : (emailError ? "Failed: " + emailError : "No Email")
@@ -423,6 +455,38 @@ function sendConfirmationEmail(data) {
 }
 
 // ==============================================================================
+// 1-CLICK HEADER UPDATER
+// Run this function from the Apps Script editor to update your sheet headers to the exact format
+// ==============================================================================
+function updateSheetHeaders() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+  var headers = [
+    "Timestamp",
+    "Reg ID",
+    "Participant Name (Leader)",
+    "Email",
+    "Phone",
+    "College",
+    "Event Name",
+    "Team Name",
+    "Team Members",
+    "Fee",
+    "Razorpay Payment ID",
+    "Status",
+    "Confirmation Email"
+  ];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setFontWeight("bold");
+  headerRange.setBackground("#d32f2f");
+  headerRange.setFontColor("#ffffff");
+  headerRange.setHorizontalAlignment("center");
+  sheet.setFrozenRows(1);
+  Logger.log("Headers updated successfully to 13 official columns!");
+}
+
+// ==============================================================================
 // OPTIONAL TEST HELPER
 // You can select 'testSheet' and click 'Run' anytime to verify your setup.
 // ==============================================================================
@@ -437,17 +501,17 @@ function testSheet() {
   var fakeEvent = {
     postData: {
       contents: JSON.stringify({
-        registration_id: "REG-SAMPLE-" + Math.floor(1000 + Math.random() * 9000),
+        registration_id: "REG-104921",
         order_id: "order_sample_pass_01",
-        participant_name: "Sample Participant",
-        email: activeEmail || "sample@gndecbidar.ac.in",
-        phone: "+91 9876543210",
-        college: "Guru Nanak Dev Engineering College (GNDEC), Bidar",
-        event_name: "CYBER QUEST",
-        team_name: "Tech Knights",
-        team_members: "Participant 1 (Lead), Member 2",
-        amount_paid: 200,
-        razorpay_payment_id: "pay_sample_" + Math.floor(100000 + Math.random() * 900000),
+        participant_name: "Ash",
+        email: activeEmail || "ash@gmail.com",
+        phone: "9999999999",
+        college: "GNDEC Bidar",
+        event_name: "24-Hour Hackathon",
+        team_name: "Cyber Knights",
+        team_members: "Red (+91 8888888888), Blue (+91 4444444444)",
+        amount_paid: 800,
+        razorpay_payment_id: "pay_P1a2b3c4",
         payment_status: "PAID"
       })
     }

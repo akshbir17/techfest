@@ -50,7 +50,15 @@ export default async function handler(req, res) {
       let membersFormatted = 'N/A';
       if (Array.isArray(record.team_members) && record.team_members.length > 0) {
         membersFormatted = record.team_members
-          .map((m, i) => `${m.name || `Member ${i + 2}`}${m.phone ? ` (${m.phone})` : ''}`)
+          .map((m, i) => {
+            if (typeof m === 'string') return m;
+            let phoneStr = '';
+            if (m.phone) {
+              const clean = String(m.phone).trim();
+              phoneStr = clean.startsWith('+91') ? clean : `+91 ${clean.replace(/^0+/, '')}`;
+            }
+            return `${m.name || `Member ${i + 2}`}${phoneStr ? ` (${phoneStr})` : ''}`;
+          })
           .join(', ');
       }
 

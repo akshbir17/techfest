@@ -162,7 +162,12 @@ export default async function handler(req, res) {
           membersFormatted = rawMembers
             .map((m, i) => {
               if (typeof m === 'string') return m;
-              return `${m.name || `Member ${i + 2}`}${m.phone ? ` (${m.phone})` : ''}`;
+              let phoneStr = '';
+              if (m.phone) {
+                const clean = String(m.phone).trim();
+                phoneStr = clean.startsWith('+91') ? clean : `+91 ${clean.replace(/^0+/, '')}`;
+              }
+              return `${m.name || `Member ${i + 2}`}${phoneStr ? ` (${phoneStr})` : ''}`;
             })
             .join(', ');
         }
