@@ -5,6 +5,13 @@
  */
 
 export const EVENT_SCHEDULE_DATA = {
+  test_event: {
+    title: 'Spectrum 1.0: Live Test Event',
+    start: '2026-12-07T10:00:00+05:30',
+    end: '2026-12-07T11:00:00+05:30',
+    venue: 'GNDEC Campus, Bidar',
+    description: 'Spectrum 1.0 Live Payment and Verification Test Event.\n\nWebsite: https://spectrum10.vercel.app',
+  },
   hackathon: {
     title: 'Spectrum 1.0: 24-Hour Hackathon',
     start: '2026-12-08T12:00:00+05:30',

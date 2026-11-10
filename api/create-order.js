@@ -3,6 +3,9 @@ import { createClient } from '@supabase/supabase-js';
 
 // Server-side authoritative event catalog and pricing (never trust frontend amount)
 const EVENT_CATALOG = {
+  // Live Test Event (₹1 testing)
+  'test_event':         { name: 'Live Test Event', fee: 1, type: 'individual' },
+  'test':               { name: 'Live Test Event', fee: 1, type: 'individual' },
   // Individual Events
   'impossible_to_sell': { name: 'Impossible to Sell', fee: 100, type: 'individual' },
   'mock_interview':     { name: 'Mock Interview', fee: 120, type: 'individual' },
