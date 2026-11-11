@@ -1,4 +1,5 @@
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+// Crimson AI Concierge - Client Service
+// All Gemini API calls are securely routed through /api/chat so no API key is ever exposed in the browser.
 
 const systemInstruction = `You are Crimson, the official AI Concierge and Sentinel of SPECTRUM 1.0 — the premier National Level Technical & Cultural Festival at Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka.
 
@@ -146,100 +147,33 @@ const getOfflineResponse = (query) => {
 
 /**
  * Main AI response handler:
- * 1. Checks for Google Gemini API key (official Google AI Studio format: AIzaSy...)
- * 2. Checks for OpenRouter API key (sk-or-v1-...)
- * 3. Gracefully falls back to offline knowledge engine if network fails or key is exhausted.
+ * 1. Calls secure serverless backend (/api/chat) where the Gemini API key is completely protected.
+ * 2. If the network or serverless route is unreachable, gracefully falls back to the local offline knowledge engine.
  */
 export const getCrimsonResponse = async (userMessage, history = []) => {
   if (!userMessage || !userMessage.trim()) return "";
 
-  // 1. Official Google Gemini API (gemini-1.5-flash / gemini-2.0-flash)
-  if (apiKey && (apiKey.startsWith("AIzaSy") || (!apiKey.startsWith("sk-or-") && apiKey.length > 25))) {
-    try {
-      // Build conversation contents with history
-      const contents = [];
-      
-      // Include last 4 turns of history for contextual awareness
-      const recentHistory = (history || []).slice(-4);
-      recentHistory.forEach((msg) => {
-        if (msg.sender === 'user') {
-          contents.push({ role: 'user', parts: [{ text: msg.text }] });
-        } else if (msg.sender === 'crimson') {
-          contents.push({ role: 'model', parts: [{ text: msg.text }] });
-        }
-      });
+  // 1. Secure Server-side API Route (/api/chat)
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: userMessage,
+        history: history,
+      }),
+    });
 
-      // Add current user prompt
-      contents.push({ role: 'user', parts: [{ text: userMessage }] });
-
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            system_instruction: {
-              parts: [{ text: systemInstruction }]
-            },
-            contents: contents,
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 250,
-            }
-          })
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (reply && reply.trim()) {
-          return reply.trim();
-        }
+    if (response.ok) {
+      const data = await response.json();
+      if (data?.reply && data.reply.trim()) {
+        return data.reply.trim();
       }
-    } catch (geminiErr) {
-      console.warn("Gemini API call failed, falling back:", geminiErr);
     }
+  } catch (apiErr) {
+    console.warn("Secure chat endpoint unreachable, falling back to local engine:", apiErr.message);
   }
 
-  // 2. OpenRouter API Fallback
-  if (apiKey && apiKey.startsWith("sk-or-v1-")) {
-    try {
-      const messages = [{ role: "system", content: systemInstruction }];
-      (history || []).slice(-4).forEach((msg) => {
-        messages.push({
-          role: msg.sender === 'user' ? 'user' : 'assistant',
-          content: msg.text
-        });
-      });
-      messages.push({ role: "user", content: userMessage });
-
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://spectrum10.vercel.app",
-          "X-Title": "SPECTRUM 1.0"
-        },
-        body: JSON.stringify({
-          model: "google/gemini-2.0-flash-001",
-          messages: messages,
-          max_tokens: 250
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data?.choices?.[0]?.message?.content) {
-          return data.choices[0].message.content.trim();
-        }
-      }
-    } catch {
-      // Graceful fallback below
-    }
-  }
-
-  // 3. High-reliability instant knowledge base fallback
+  // 2. High-reliability instant knowledge base fallback
   return getOfflineResponse(userMessage);
 };
