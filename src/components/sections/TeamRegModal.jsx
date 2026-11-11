@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { motion } from 'framer-motion';
-import { X, Loader2, AlertCircle, Users, Plus, Trash2 } from 'lucide-react';
+import { X, ChevronDown, Loader2, AlertCircle, Users, Plus, Trash2 } from 'lucide-react';
 
-// Team events configuration - Strictly 24-Hour Hackathon
+// Team events configuration
 const TEAM_EVENTS = [
   {
     id: 'hackathon',
@@ -14,6 +14,46 @@ const TEAM_EVENTS = [
     max: 4,
     teamSize: '2 to 4 members',
     description: 'Flagship event — build something amazing in 24 hours. ₹30,000 first prize, ₹14,000 second prize.',
+    memberLabel: 'Team Member',
+  },
+  {
+    id: 'tech_quiz',
+    name: 'TechQuiz',
+    fee: 300,
+    min: 1,
+    max: 3,
+    teamSize: '1 to 3 members',
+    description: 'Test your technical knowledge. ₹3,000 first prize, ₹1,500 second prize.',
+    memberLabel: 'Quiz Partner',
+  },
+  {
+    id: 'bgmi',
+    name: 'BGMI Tournament',
+    fee: 400,
+    min: 4,
+    max: 4,
+    teamSize: '4 squad members',
+    description: 'Squad-based competitive BGMI. ₹4,000 first prize, ₹2,000 second prize.',
+    memberLabel: 'Squad Player',
+  },
+  {
+    id: 'free_fire',
+    name: 'Free Fire Tournament',
+    fee: 400,
+    min: 4,
+    max: 4,
+    teamSize: '4 squad members',
+    description: 'Squad-based Free Fire battle. ₹4,000 first prize, ₹2,000 second prize.',
+    memberLabel: 'Squad Player',
+  },
+  {
+    id: 'treasure_hunt',
+    name: 'Treasure Hunt',
+    fee: 400,
+    min: 1,
+    max: 4,
+    teamSize: '1 to 4 members',
+    description: 'Campus-wide mystery quest solving clues & riddles. ₹3,000 first prize + trophies.',
     memberLabel: 'Team Member',
   },
 ];
@@ -95,6 +135,27 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setErrors((prev) => ({ ...prev, [e.target.name]: '' }));
     setServerError('');
+  };
+
+  const handleEventChange = (e) => {
+    const ev = TEAM_EVENTS.find((item) => item.id === e.target.value);
+    if (ev) {
+      setSelectedEvent(ev);
+      setErrors({});
+      const minAdd = getMinAdditional(ev);
+      const maxAdd = getMaxAdditional(ev);
+      setMembers((prev) => {
+        let updated = [...prev];
+        if (updated.length < minAdd) {
+          while (updated.length < minAdd) {
+            updated.push({ name: '', phone: '' });
+          }
+        } else if (updated.length > maxAdd) {
+          updated = updated.slice(0, maxAdd);
+        }
+        return updated;
+      });
+    }
   };
 
 
@@ -350,41 +411,88 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
               )}
             </div>
 
-            {/* Event Display (Strictly 24-Hour Hackathon) */}
-            <div style={{ marginBottom: '1.25rem' }}>
-              <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--color-star-white)', marginBottom: '0.5rem', letterSpacing: '0.15em', fontWeight: 'bold', textTransform: 'uppercase' }}>
-                Event
-              </label>
+            {/* Event Display or Selector */}
+            {initialEventId === 'hackathon' ? (
+              /* Strictly 24-Hour Hackathon */
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--color-star-white)', marginBottom: '0.5rem', letterSpacing: '0.15em', fontWeight: 'bold', textTransform: 'uppercase' }}>
+                  Event
+                </label>
 
-              <div
-                style={{
-                  width: '100%',
-                  background: 'rgba(211, 47, 47, 0.08)',
-                  border: '1px solid rgba(211, 47, 47, 0.35)',
-                  borderLeft: '4px solid var(--color-bright-crimson)',
-                  borderRadius: '4px',
-                  padding: '0.9rem 1.1rem',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '0.5rem',
-                  boxSizing: 'border-box'
-                }}
-              >
-                <div>
-                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-star-white)', letterSpacing: '0.05em' }}>
-                    24-Hour Hackathon
+                <div
+                  style={{
+                    width: '100%',
+                    background: 'rgba(211, 47, 47, 0.08)',
+                    border: '1px solid rgba(211, 47, 47, 0.35)',
+                    borderLeft: '4px solid var(--color-bright-crimson)',
+                    borderRadius: '4px',
+                    padding: '0.9rem 1.1rem',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '0.5rem',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-star-white)', letterSpacing: '0.05em' }}>
+                      24-Hour Hackathon
+                    </div>
+                    <div style={{ fontSize: '0.78rem', color: 'rgba(244, 234, 204, 0.7)', marginTop: '0.2rem' }}>
+                      Squad: 2 to 4 members · Campus stay & meals included
+                    </div>
                   </div>
-                  <div style={{ fontSize: '0.78rem', color: 'rgba(244, 234, 204, 0.7)', marginTop: '0.2rem' }}>
-                    Squad: 2 to 4 members · Campus stay & meals included
+                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-neon-cyan)' }}>
+                    ₹800
                   </div>
-                </div>
-                <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-neon-cyan)' }}>
-                  ₹800
                 </div>
               </div>
-            </div>
+            ) : (
+              /* Fest Team Event Dropdown */
+              <div style={{ marginBottom: '1.25rem' }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--color-star-white)', marginBottom: '0.5rem', letterSpacing: '0.15em', fontWeight: 'bold', textTransform: 'uppercase' }}>
+                  Select Team Event
+                </label>
+
+                <div style={{ position: 'relative' }}>
+                  <select
+                    id="team-event-select"
+                    value={selectedEvent?.id || ''}
+                    onChange={handleEventChange}
+                    disabled={loading}
+                    style={{
+                      width: '100%',
+                      background: 'var(--color-deep-blue)',
+                      border: '1px solid #333',
+                      borderBottom: '2px solid var(--color-star-white)',
+                      color: 'var(--color-star-white)',
+                      padding: '0.85rem 2.5rem 0.85rem 1rem',
+                      fontFamily: 'var(--font-primary)',
+                      fontSize: '0.95rem',
+                      cursor: 'pointer',
+                      appearance: 'none',
+                      WebkitAppearance: 'none',
+                      outline: 'none',
+                    }}
+                  >
+                    {TEAM_EVENTS.filter((e) => e.id !== 'hackathon').map((ev) => (
+                      <option key={ev.id} value={ev.id} style={{ background: '#121212' }}>
+                        {ev.name} — ₹{ev.fee} ({ev.teamSize})
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-star-white)', pointerEvents: 'none' }} />
+                </div>
+
+                {selectedEvent?.description && (
+                  <p style={{ marginTop: '0.45rem', fontSize: '0.78rem', color: 'rgba(244,234,204,0.55)', fontStyle: 'italic' }}>
+                    {selectedEvent.description}
+                    <span style={{ marginLeft: '0.4rem', color: 'var(--color-neon-cyan)' }}>· Team size: {selectedEvent.teamSize}</span>
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Divider */}
             <div style={{ height: '1px', background: 'rgba(244,234,204,0.1)', marginBottom: '1.25rem' }} />
