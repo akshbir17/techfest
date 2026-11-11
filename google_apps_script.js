@@ -8,12 +8,16 @@
 
 function doPost(e) {
   try {
-    var contents = e && e.postData ? e.postData.contents : "";
+    var contents = (e && e.postData && e.postData.contents) ? e.postData.contents : "";
     var data = {};
-    try {
-      data = JSON.parse(contents);
-    } catch (parseErr) {
-      data = (e && e.parameter) ? e.parameter : {};
+    if (contents) {
+      try {
+        data = JSON.parse(contents);
+      } catch (parseErr) {
+        data = {};
+      }
+    } else if (e && e.parameter) {
+      data = e.parameter;
     }
 
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -46,20 +50,10 @@ function doPost(e) {
     headerRange.setHorizontalAlignment("center");
     sheet.setFrozenRows(1);
 
-    // Try sending automated confirmation email
-    var emailSent = false;
-    var emailError = "";
-    if (data.email && String(data.email).indexOf("@") !== -1) {
-      try {
-        sendConfirmationEmail(data);
-        emailSent = true;
-      } catch (mailErr) {
-        emailError = mailErr.toString();
-        Logger.log("Email dispatch failed: " + emailError);
-      }
-    }
+    // Send automated confirmation email
+    var emailSent = trySendConfirmationEmail(data);
 
-    // Check if team registration
+    // Format Leader/Participant name
     var isTeam = (data.team_name && data.team_name !== "N/A" && String(data.team_name).trim() !== "");
     var participantName = data.participant_name || "N/A";
     if (isTeam && participantName !== "N/A" && participantName.indexOf("(Leader)") === -1) {
@@ -84,11 +78,14 @@ function doPost(e) {
       }
     }
 
-    // Timestamp: dd/MM/yyyy, hh:mm a (e.g. 08/11/2026, 11:30 AM) in Indian Standard Time (IST)
+    // Timestamp: dd/MM/yyyy, hh:mm a in Indian Standard Time (IST)
     var timestampStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd/MM/yyyy, hh:mm a");
 
     // Fee formatted with INR symbol (e.g. ₹1)
     var feeStr = "₹" + (data.amount_paid !== undefined ? data.amount_paid : 0);
+
+    // Confirmation Email Status
+    var emailStatusText = (emailSent === true) ? "Sent" : "Failed";
 
     // Append participant registration row to the Google Sheet matching exact column format
     var row = [
@@ -105,33 +102,28 @@ function doPost(e) {
       feeStr,
       data.razorpay_payment_id || "N/A",
       data.payment_status || "PAID",
-      (emailSent === true ? "Sent" : "Failed")
+      emailStatusText
     ];
 
     sheet.appendRow(row);
 
     // Apply color styling to the Confirmation Email cell (Green for Sent, Red for Failed)
-    try {
-      var lastRow = sheet.getLastRow();
-      var emailCell = sheet.getRange(lastRow, headers.length);
-      if (emailSent === true) {
-        emailCell.setFontColor("#155724");
-        emailCell.setBackground("#d4edda");
-      } else {
-        emailCell.setFontColor("#721c24");
-        emailCell.setBackground("#f8d7da");
-      }
-      emailCell.setHorizontalAlignment("center");
-      emailCell.setFontWeight("bold");
-    } catch (fmtErr) {
-      Logger.log("Status cell format warning: " + fmtErr.toString());
+    var lastRow = sheet.getLastRow();
+    var emailCell = sheet.getRange(lastRow, headers.length);
+    if (emailSent === true) {
+      emailCell.setFontColor("#155724");
+      emailCell.setBackground("#d4edda");
+    } else {
+      emailCell.setFontColor("#721c24");
+      emailCell.setBackground("#f8d7da");
     }
+    emailCell.setHorizontalAlignment("center");
+    emailCell.setFontWeight("bold");
 
     return ContentService.createTextOutput(JSON.stringify({
       result: "success",
-      row: sheet.getLastRow(),
-      email_sent: emailSent,
-      email_error: emailError || null
+      row: lastRow,
+      email_sent: emailSent
     })).setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
@@ -140,6 +132,20 @@ function doPost(e) {
       result: "error",
       error: err.toString()
     })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Safely attempts to send confirmation email and returns true/false without crashing
+function trySendConfirmationEmail(data) {
+  try {
+    if (!data || !data.email || String(data.email).indexOf("@") === -1) {
+      return false;
+    }
+    sendConfirmationEmail(data);
+    return true;
+  } catch (mailErr) {
+    Logger.log("Email dispatch failed: " + mailErr.toString());
+    return false;
   }
 }
 
