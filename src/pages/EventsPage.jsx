@@ -149,7 +149,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: '1 to 3 Members',
       date: '7th Dec 2026 (R1: 1:00 PM | R2: 4:00 PM)',
       venue: 'Seminar Hall 1',
-      prize: '₹3,000 First Prize, ₹1,500 Second Prize + Certificates',
+      prize: 'Revealing Soon',
       description: 'Test your technical acumen, algorithmic thinking, and tech trivia against the sharpest minds across the region.',
       rules: [
         'Teams can consist of 1 to 3 participants.',
@@ -178,7 +178,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: 'Individual',
       date: '7th Dec 2026',
       venue: 'Training & Placement Cell, GNDEC',
-      prize: '₹1,000 Cash Prize + Industry Feedback Scorecard & Certificate',
+      prize: 'Revealing Soon',
       description: 'Simulate high-stakes corporate HR and Technical interviews conducted by seasoned tech recruiters and corporate evaluators.',
       rules: [
         'Individual participation only. Open to students of all years and branches.',
@@ -204,7 +204,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: 'Max 3 entries / person',
       date: '7th to 9th Dec 2026',
       venue: 'Spectrum Photo Booth & GNDEC Campus',
-      prize: '₹1,000 Prize Pool + Feature in Official Fest Aftermovie & Exhibition',
+      prize: 'Revealing Soon',
       description: 'Capture the essence, aesthetics, and energy of Spectrum 1.0 through your lens. Showcase framing, perspective, and visual storytelling.',
       rules: [
         'Each registration allows submission of 1 photograph (participants may register up to 3 entries at ₹100 each).',
@@ -230,7 +230,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: 'Individual or Duo',
       date: '7th Dec 2026 (2:00 PM – 4:00 PM)',
       venue: 'Main Stage / Seminar Hall 2',
-      prize: '₹2,000 First Prize + Trophies',
+      prize: 'Revealing Soon',
       description: 'A high-voltage creative selling challenge where participants put their persuasion, wit, and salesmanship to the test by pitching an unusual, absurd, or notoriously difficult-to-sell product or concept.',
       rules: [
         'Participants may compete solo or as a duo (2 members).',
@@ -258,7 +258,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: '4 Members (Squad)',
       date: '7th Dec 2026 (9:00 AM – 11:00 AM)',
       venue: 'Esports Arena / CC Lab 2',
-      prize: '₹4,000 First Prize, ₹2,000 Second Prize + Trophies',
+      prize: 'Revealing Soon',
       description: 'Competitive squad-based Battlegrounds Mobile India showdown. Runs in parallel with the Free Fire Tournament from 9:00 AM to 11:00 AM on Day 1.',
       rules: [
         'Squad format (4 players per team; 1 optional substitute registered in advance).',
@@ -284,7 +284,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: '4 Members (Squad)',
       date: '7th Dec 2026 (9:00 AM – 11:00 AM)',
       venue: 'Esports Arena / CC Lab 3',
-      prize: '₹4,000 First Prize, ₹2,000 Second Prize + Trophies',
+      prize: 'Revealing Soon',
       description: 'High-octane mobile squad battle royale. Runs in parallel with the BGMI Tournament from 9:00 AM to 11:00 AM on Day 1.',
       rules: [
         'Squad format (4 players per squad).',
@@ -310,7 +310,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: '1 to 4 Members',
       date: '7th Dec 2026 (11:30 AM – 1:00 PM)',
       venue: 'GNDEC Campus Grounds',
-      prize: '₹3,000 First Prize + Trophies',
+      prize: 'Revealing Soon',
       description: 'An exhilarating campus-wide mystery quest! Crack cryptic clues, solve riddles, navigate hidden checkpoints, and race against fellow seekers. Strictly ends at 1:00 PM.',
       rules: [
         'Teams must consist of 1 to 4 members. Inter-college and inter-branch teams are permitted.',
@@ -336,7 +336,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: 'Individual',
       date: '7th Dec 2026 (1:00 PM – 2:00 PM)',
       venue: 'Campus Ground / Open Lawn',
-      prize: 'Trophies & Exclusive Fest Merch',
+      prize: 'Revealing Soon',
       description: 'An exhilarating social deduction and stealth mystery elimination challenge of strategy, deception, and razor-sharp survival instincts. Runs in parallel with TechQuiz Round 1.',
       rules: [
         'Individual solo participation.',

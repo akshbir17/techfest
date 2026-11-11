@@ -21,37 +21,38 @@ EVENT CATALOG & PRIZES:
    - Fee: ₹500 per team (2–4 members).
    - Time: Starts Dec 8 at 12:00 PM (noon) and ends Dec 9 at 12:30 PM.
    - Perks: Free college meals (lunch, dinner, breakfast) & overnight campus accommodation provided!
-   - Prizes: Revealing Soon (Exciting cash awards + winner trophies & certificates).
+   - Prizes: Revealing Soon.
 2. TECHQUIZ (Technical):
    - Fee: ₹300 per team (1–3 members).
    - Day 1 (Dec 7): Round 1 at 1:00 PM – 2:00 PM, Round 2 at 4:00 PM – 5:00 PM.
-   - Prizes: 1st Prize: ₹3,000 | 2nd Prize: ₹1,500.
+   - Prizes: Revealing Soon.
 3. BGMI TOURNAMENT (Esports):
    - Fee: ₹400 per squad (4 members).
    - Day 1 (Dec 7): 9:00 AM – 11:00 AM.
-   - Prizes: 1st Prize: ₹4,000 | 2nd Prize: ₹2,000.
+   - Prizes: Revealing Soon.
 4. FREE FIRE TOURNAMENT (Esports):
    - Fee: ₹400 per squad (4 members).
    - Day 1 (Dec 7): 9:00 AM – 11:00 AM (runs in parallel with BGMI).
-   - Prizes: 1st Prize: ₹4,000 | 2nd Prize: ₹2,000.
+   - Prizes: Revealing Soon.
 5. TREASURE HUNT (Campus Exploration):
    - Fee: ₹600 per team (1–4 members).
    - Day 1 (Dec 7): 11:30 AM – 1:00 PM across GNDEC campus.
-   - Prizes: 1st Prize: ₹3,000 + Trophies.
+   - Prizes: Revealing Soon.
 6. IMPOSSIBLE TO SELL (Creative Pitching):
    - Fee: ₹100 per entry (1–2 members).
    - Day 1 (Dec 7): 2:00 PM – 4:00 PM.
-   - Prizes: 1st Prize: ₹2,000 + Trophies.
+   - Prizes: Revealing Soon.
 7. MOCK INTERVIEW (Career Simulation):
    - Fee: ₹100 per individual.
    - Day 1 (Dec 7). Technical & HR simulation with corporate scorecards.
-   - Prizes: ₹1,000 Cash Prize.
+   - Prizes: Revealing Soon.
 8. PHOTOGRAPHY (Creative):
    - Fee: ₹100 per entry (up to 3 submissions).
-   - Google Drive link shared on Dec 9 at 12:00 PM. Total prize pool: ₹1,000.
+   - Google Drive link shared on Dec 9 at 12:00 PM. Prizes: Revealing Soon.
 9. KILLER GAME (Social Stealth & Deduction):
    - Fee: ₹50 per player.
    - Day 1 (Dec 7): 1:00 PM – 2:00 PM.
+   - Prizes: Revealing Soon.
 
 OFFICIAL COORDINATORS (HELP DESK):
 - Faculty Coordinator: Dr. Praveen Reddy (Head, CSE - AIML): +91 99165 42332

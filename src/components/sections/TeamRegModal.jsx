@@ -23,7 +23,7 @@ const TEAM_EVENTS = [
     min: 1,
     max: 3,
     teamSize: '1 to 3 members',
-    description: 'Test your technical knowledge. ₹3,000 first prize, ₹1,500 second prize.',
+    description: 'Test your technical knowledge & algorithmic skills. Prizes Revealing Soon.',
     memberLabel: 'Quiz Partner',
   },
   {
@@ -33,7 +33,7 @@ const TEAM_EVENTS = [
     min: 4,
     max: 4,
     teamSize: '4 squad members',
-    description: 'Squad-based competitive BGMI. ₹4,000 first prize, ₹2,000 second prize.',
+    description: 'Squad-based competitive BGMI showdown. Prizes Revealing Soon.',
     memberLabel: 'Squad Player',
   },
   {
@@ -43,7 +43,7 @@ const TEAM_EVENTS = [
     min: 4,
     max: 4,
     teamSize: '4 squad members',
-    description: 'Squad-based Free Fire battle. ₹4,000 first prize, ₹2,000 second prize.',
+    description: 'Squad-based Free Fire battle royale. Prizes Revealing Soon.',
     memberLabel: 'Squad Player',
   },
   {
@@ -53,7 +53,7 @@ const TEAM_EVENTS = [
     min: 1,
     max: 4,
     teamSize: '1 to 4 members',
-    description: 'Campus-wide mystery quest solving clues & riddles. ₹3,000 first prize + trophies.',
+    description: 'Campus-wide mystery quest solving clues & riddles. Prizes Revealing Soon.',
     memberLabel: 'Team Member',
   },
 ];

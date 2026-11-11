@@ -233,7 +233,7 @@ const EventRulesModal = ({ event, onClose }) => {
                 <Award size={14} /> <span>PRIZE / REWARD</span>
               </div>
               <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#ffb300' }}>
-                {event.prize || 'Cash Prizes & Certificates'}
+                {event.prize || 'Revealing Soon'}
               </span>
             </div>
           </div>
