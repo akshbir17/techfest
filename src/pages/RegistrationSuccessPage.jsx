@@ -45,9 +45,9 @@ const RegistrationSuccessPage = () => {
   };
 
   // ═══════════════════════════════════════════════════════════════════════
-  // REDESIGNED PDF PASS — Clean, Light, Professional Design
-  // Gradient header · Ticket-style participant card · Numbered instructions
-  // Coordinator grid · Light backgrounds · Modern typography
+  // REDESIGNED PDF PASS — Crimson Red + Black Futuristic Tech Credential
+  // Primary: #B5122A · Secondary: #090909 · Accent: #E31B3F
+  // Background: #101014 · Text: #FFFFFF & #BFC0C5
   // ═══════════════════════════════════════════════════════════════════════
   const handleDownloadPDF = () => {
     setIsDownloading(true);
@@ -58,385 +58,455 @@ const RegistrationSuccessPage = () => {
       const m = 14;
       const cw = pw - m * 2; // 182mm
 
-      // 1. PAGE BACKGROUND
-      doc.setFillColor(255, 255, 255);
+      const drawSectionHeader = (title, yPos) => {
+        doc.setFillColor(227, 27, 63); // #E31B3F
+        doc.rect(m, yPos - 2.6, 1.4, 4.2, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.8);
+        doc.setTextColor(255, 255, 255);
+        doc.text(title, m + 4, yPos + 0.8);
+
+        const titleWidth = doc.getTextWidth(title);
+        doc.setDrawColor(95, 22, 34);
+        doc.setLineWidth(0.25);
+        doc.line(m + titleWidth + 7, yPos - 0.5, m + cw, yPos - 0.5);
+      };
+
+      // 1. DARK NEAR-BLACK BACKGROUND (#101014) + SUBTLE ARCHITECTURAL GRID
+      doc.setFillColor(16, 16, 20);
       doc.rect(0, 0, pw, ph, 'F');
 
-      // 2. FULL-BLEED GRADIENT HEADER (from x=0 to pw, y=0 to 54)
-      const hdrH = 54;
-      const steps = 60;
-      const c1 = [67, 56, 202];   // Indigo
-      const c2 = [124, 58, 237];  // Violet
-      const c3 = [219, 39, 119];  // Pink
+      doc.setDrawColor(23, 23, 29);
+      doc.setLineWidth(0.15);
+      for (let gx = 14; gx < pw; gx += 14) {
+        doc.line(gx, 0, gx, ph);
+      }
+      for (let gy = 14; gy < ph; gy += 14) {
+        doc.line(0, gy, pw, gy);
+      }
+
+      // Subtle outer framing line
+      doc.setDrawColor(36, 36, 44);
+      doc.setLineWidth(0.25);
+      doc.rect(5, 5, pw - 10, ph - 10, 'S');
+
+      // 2. FULL-BLEED CRIMSON + BLACK GRADIENT HEADER
+      const hdrH = 50;
+      const steps = 64;
+      const c1 = [9, 9, 9];       // #090909 Dark Black
+      const c2 = [48, 9, 17];     // Deep Burgundy transition
+      const c3 = [181, 18, 42];   // #B5122A Deep Crimson Red
       for (let i = 0; i < steps; i++) {
         const t = i / (steps - 1);
         let r, g, b;
-        if (t < 0.5) {
-          const f = t / 0.5;
+        if (t < 0.55) {
+          const f = t / 0.55;
           r = Math.round(c1[0] + (c2[0] - c1[0]) * f);
           g = Math.round(c1[1] + (c2[1] - c1[1]) * f);
           b = Math.round(c1[2] + (c2[2] - c1[2]) * f);
         } else {
-          const f = (t - 0.5) / 0.5;
+          const f = (t - 0.55) / 0.45;
           r = Math.round(c2[0] + (c3[0] - c2[0]) * f);
           g = Math.round(c2[1] + (c3[1] - c2[1]) * f);
-          b = Math.round(c3[2] + (c3[2] - c2[2]) * f);
+          b = Math.round(c2[2] + (c3[2] - c2[2]) * f);
         }
         doc.setFillColor(r, g, b);
         const sx = (i * pw) / steps;
-        const sw = pw / steps + 0.5;
+        const sw = pw / steps + 0.6;
         doc.rect(sx, 0, sw, hdrH, 'F');
       }
 
-      // Header Typography
+      // Subtle futuristic geometric diagonals inside header right
+      doc.setDrawColor(227, 27, 63);
+      doc.setLineWidth(0.35);
+      doc.line(145, 0, 182, hdrH);
+      doc.setDrawColor(181, 18, 42);
+      doc.setLineWidth(0.2);
+      doc.line(158, 0, 195, hdrH);
+      doc.circle(182, 16, 13, 'S');
+      doc.setDrawColor(90, 30, 42);
+      doc.circle(182, 16, 8, 'S');
+
+      // Bright Crimson bottom structural rail on header
+      doc.setFillColor(227, 27, 63); // #E31B3F
+      doc.rect(0, hdrH - 0.7, pw, 0.7, 'F');
+
+      // Top Eyebrow Tagline
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(22);
-      doc.setTextColor(255, 255, 255);
-      doc.text('SPECTRUM 1.0', m, 18);
+      doc.setFontSize(7.4);
+      doc.setTextColor(191, 192, 197); // #BFC0C5
+      doc.text('THE AWAKENING  |  NATIONAL LEVEL TECHNICAL FESTIVAL', m, 12.5);
 
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7.5);
-      doc.setTextColor(252, 231, 243);
-      doc.text('THE AWAKENING  |  NATIONAL LEVEL TECHNICAL FESTIVAL', m, 24);
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(7.2);
-      doc.setTextColor(253, 242, 248);
-      doc.text('Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka', m, 29);
-
-      // Pills in Header
-      // Left: Date Pill (Yellow)
-      doc.setFillColor(251, 191, 36);
-      doc.roundedRect(m, 33.5, 42, 7, 3.5, 3.5, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7);
-      doc.setTextColor(15, 23, 42);
-      doc.text('DEC 7 - 9, 2026', m + 7, 38.5);
-
-      // Right: Official Pass Pill (White)
+      // Right: Highlighted OFFICIAL PASS Pill (#B5122A with #E31B3F border)
+      const pillW = 35;
+      const pillX = pw - m - pillW;
+      doc.setFillColor(181, 18, 42);
+      doc.setDrawColor(227, 27, 63);
+      doc.setLineWidth(0.35);
+      doc.roundedRect(pillX, 8, pillW, 6.5, 1.2, 1.2, 'FD');
       doc.setFillColor(255, 255, 255);
-      doc.roundedRect(m + 46, 33.5, 32, 7, 3.5, 3.5, 'F');
+      doc.circle(pillX + 4.5, 11.25, 0.85, 'F');
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(6.8);
-      doc.setTextColor(67, 56, 202);
-      doc.text('OFFICIAL PASS', m + 51, 38.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text('OFFICIAL PASS', pillX + 7.5, 12.3);
 
-      // 3. PARTICIPANT CARD (floating over header bottom)
-      const cardY = 44;
-      const cardH = 43;
-
-      // White Card
-      doc.setFillColor(255, 255, 255);
-      doc.setDrawColor(226, 232, 240);
-      doc.setLineWidth(0.4);
-      doc.roundedRect(m, cardY, cw, cardH, 4, 4, 'FD');
-
-      // Left Indigo Edge
-      doc.setFillColor(67, 56, 202);
-      doc.roundedRect(m, cardY, 3, cardH, 3, 0, 'F');
-      doc.rect(m + 1.5, cardY, 1.5, cardH, 'F');
-
-      // Participant Pass Label
+      // Main Focus: SPECTRUM 1.0
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7);
-      doc.setTextColor(219, 39, 119); // Pink
-      doc.text('PARTICIPANT PASS', m + 8, cardY + 7);
+      doc.setFontSize(26);
+      doc.setTextColor(255, 255, 255);
+      doc.text('SPECTRUM', m, 25.5);
+      const specWidth = doc.getTextWidth('SPECTRUM ');
+      doc.setTextColor(227, 27, 63); // #E31B3F
+      doc.text('1.0', m + specWidth, 25.5);
 
-      // Big Participant Name
+      // Venue Line
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(191, 192, 197);
+      doc.text('Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka', m, 32);
+
+      // Right Date Pill (#090909 dark with #E31B3F left accent)
+      const dateW = 38;
+      const dateX = pw - m - dateW;
+      doc.setFillColor(9, 9, 9);
+      doc.setDrawColor(75, 75, 85);
+      doc.setLineWidth(0.25);
+      doc.roundedRect(dateX, 24.5, dateW, 7.5, 1, 1, 'FD');
+      doc.setFillColor(227, 27, 63);
+      doc.rect(dateX, 24.5, 1.4, 7.5, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.setTextColor(17, 24, 39);
+      doc.setFontSize(7.6);
+      doc.setTextColor(255, 255, 255);
+      doc.text('DEC 7 - 9, 2026', dateX + dateW / 2 + 0.5, 29.4, { align: 'center' });
+
+      // 3. PROMINENT PARTICIPANT PASS CARD (Dark #090909 floating over header bottom)
+      const cardY = 41.5;
+      const cardH = 44;
+
+      doc.setFillColor(9, 9, 9);
+      doc.setDrawColor(145, 20, 40);
+      doc.setLineWidth(0.35);
+      doc.roundedRect(m, cardY, cw, cardH, 2, 2, 'FD');
+
+      // Left Bright Crimson Accent Bar
+      doc.setFillColor(227, 27, 63);
+      doc.rect(m, cardY, 1.8, cardH, 'F');
+
+      // Architectural corner calibration reticles (top-left & bottom-right)
+      doc.setDrawColor(227, 27, 63);
+      doc.setLineWidth(0.6);
+      doc.line(m, cardY, m + 5, cardY);
+      doc.line(m + cw - 5, cardY + cardH, m + cw, cardY + cardH);
+      doc.line(m + cw, cardY + cardH - 5, m + cw, cardY + cardH);
+
+      // Left Zone Header: PARTICIPANT PASS
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.4);
+      doc.setTextColor(227, 27, 63);
+      doc.text('PARTICIPANT PASS', m + 7, cardY + 7.5);
+      doc.setDrawColor(95, 22, 34);
+      doc.setLineWidth(0.2);
+      doc.line(m + 42, cardY + 6.5, m + cw - 68, cardY + 6.5);
+
+      // Dominant Participant Name
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18.5);
+      doc.setTextColor(255, 255, 255);
       const nameText = participantName || 'Registered Participant';
       let displayName = nameText;
-      const maxNameWidth = cw - 75;
+      const maxNameWidth = cw - 76;
       if (doc.getTextWidth(displayName) > maxNameWidth) {
         while (doc.getTextWidth(displayName + '...') > maxNameWidth && displayName.length > 0) {
           displayName = displayName.slice(0, -1);
         }
         displayName += '...';
       }
-      doc.text(displayName, m + 8, cardY + 16);
+      doc.text(displayName, m + 7, cardY + 18);
 
-      // Pills under name
-      const entryText = teamName ? `TEAM: ${teamName.toUpperCase()}` : 'SOLO COMPETITOR';
-      doc.setFillColor(13, 148, 136); // Teal
-      doc.roundedRect(m + 8, cardY + 21, doc.getTextWidth(entryText) * 0.52 + 10, 6, 3, 3, 'F');
+      // Participation Type & Verification Badges side-by-side cleanly
+      let displayEntry = teamName ? `TEAM: ${teamName.toUpperCase()}` : 'SOLO COMPETITOR';
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6.5);
+      doc.setFontSize(6.8);
+      if (doc.getTextWidth(displayEntry) > 46) {
+        while (doc.getTextWidth(displayEntry + '...') > 46 && displayEntry.length > 0) {
+          displayEntry = displayEntry.slice(0, -1);
+        }
+        displayEntry += '...';
+      }
+      const entryW = doc.getTextWidth(displayEntry) + 8;
+      doc.setFillColor(26, 26, 34);
+      doc.setDrawColor(85, 86, 95);
+      doc.setLineWidth(0.25);
+      doc.roundedRect(m + 7, cardY + 25.5, entryW, 6.5, 1.2, 1.2, 'FD');
       doc.setTextColor(255, 255, 255);
-      doc.text(entryText, m + 13, cardY + 25);
+      doc.text(displayEntry, m + 7 + entryW / 2, cardY + 29.8, { align: 'center' });
 
-      doc.setFillColor(16, 185, 129); // Green
-      doc.roundedRect(m + 8, cardY + 29, 68, 6.5, 3.2, 3.2, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6.5);
+      const verX = m + 7 + entryW + 3;
+      const verW = 54;
+      doc.setFillColor(55, 12, 21);
+      doc.setDrawColor(227, 27, 63);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(verX, cardY + 25.5, verW, 6.5, 1.2, 1.2, 'FD');
       doc.setTextColor(255, 255, 255);
-      doc.text('100% VERIFIED & CONFIRMED', m + 14, cardY + 33.5);
+      doc.text('100% VERIFIED & CONFIRMED', verX + verW / 2, cardY + 29.8, { align: 'center' });
 
-      // Right Side: Fee Box
-      const feeW = 62;
-      const feeX = m + cw - feeW - 4;
-      const feeY = cardY + 4;
-      const feeH = cardH - 8;
+      if (theme) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(6.6);
+        doc.setTextColor(191, 192, 197);
+        doc.text(`THEME: ${theme.toUpperCase()}`, m + 7, cardY + 38.5);
+      }
 
-      doc.setFillColor(255, 253, 240); // Pale yellow
-      doc.setDrawColor(254, 240, 138); // Soft yellow border
-      doc.setLineWidth(0.4);
-      doc.roundedRect(feeX, feeY, feeW, feeH, 3.5, 3.5, 'FD');
+      // Right Zone: Registration Fee & Event Details
+      const feeW = 63;
+      const feeX = m + cw - feeW;
+      doc.setFillColor(14, 10, 12);
+      doc.rect(feeX, cardY + 0.5, feeW - 0.5, cardH - 1, 'F');
+      doc.setDrawColor(145, 20, 40);
+      doc.setLineWidth(0.3);
+      doc.setLineDashPattern([1.2, 1.2], 0);
+      doc.line(feeX, cardY + 2, feeX, cardY + cardH - 2);
+      doc.setLineDashPattern([], 0);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6.5);
-      doc.setTextColor(180, 83, 9);
-      doc.text('REGISTRATION FEE', feeX + 6, feeY + 6.5);
+      doc.setFontSize(6.8);
+      doc.setTextColor(191, 192, 197);
+      doc.text('REGISTRATION FEE', feeX + 5.5, cardY + 9);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.setTextColor(225, 29, 72); // Crimson/Red
-      doc.text(`INR ${amount || '0'}/-`, feeX + 6, feeY + 16);
+      doc.setFontSize(17.5);
+      doc.setTextColor(227, 27, 63);
+      doc.text('INR ', feeX + 5.5, cardY + 19.5);
+      const inrW = doc.getTextWidth('INR ');
+      doc.setTextColor(255, 255, 255);
+      doc.text(`${amount || '0'}/-`, feeX + 5.5 + inrW, cardY + 19.5);
 
-      // Clean Event Name (clean rupee symbol and avoid unicode issues in PDF)
+      doc.setDrawColor(38, 38, 46);
+      doc.setLineWidth(0.2);
+      doc.line(feeX + 5.5, cardY + 24, feeX + feeW - 5.5, cardY + 24);
+
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7.2);
-      doc.setTextColor(55, 65, 81);
+      doc.setFontSize(7.8);
+      doc.setTextColor(191, 192, 197);
       const cleanEventName = eventName.replace(/[₹\u20B9]/g, 'Rs. ').trim();
-      const evLines = doc.splitTextToSize(cleanEventName, feeW - 12);
-      doc.text(evLines.slice(0, 2), feeX + 6, feeY + 23);
+      const evLines = doc.splitTextToSize(cleanEventName, feeW - 11);
+      doc.text(evLines.slice(0, 2), feeX + 5.5, cardY + 30);
 
       // 4. REGISTRATION DETAILS SECTION
-      let y = cardY + cardH + 6;
-
-      // Header pill & text
-      doc.setFillColor(67, 56, 202);
-      doc.roundedRect(m, y - 2.5, 4.5, 4.5, 1.2, 1.2, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.8);
-      doc.setTextColor(67, 56, 202);
-      doc.text('REGISTRATION DETAILS', m + 7.5, y + 1);
-      y += 4.5;
+      let y = cardY + cardH + 9;
+      drawSectionHeader('REGISTRATION DETAILS', y);
+      y += 5;
 
       const halfW = (cw - 4) / 2;
 
-      // Card 1: Order ID (Light lavender)
-      doc.setFillColor(238, 242, 255);
-      doc.setDrawColor(224, 231, 255);
-      doc.setLineWidth(0.3);
-      doc.roundedRect(m, y, halfW, 13.5, 2.5, 2.5, 'FD');
-      doc.setFillColor(79, 70, 229);
-      doc.rect(m, y + 1.5, 2.5, 10.5, 'F');
+      // Order ID Card
+      doc.setFillColor(9, 9, 9);
+      doc.setDrawColor(38, 38, 46);
+      doc.setLineWidth(0.25);
+      doc.roundedRect(m, y, halfW, 14.5, 1.5, 1.5, 'FD');
+      doc.setFillColor(181, 18, 42);
+      doc.rect(m, y + 0.5, 1.4, 13.5, 'F');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6);
-      doc.setTextColor(67, 56, 202);
-      doc.text('CONFIRMATION (ORDER) ID', m + 6, y + 4.8);
+      doc.setFontSize(6.5);
+      doc.setTextColor(191, 192, 197);
+      doc.text('CONFIRMATION (ORDER) ID', m + 5, y + 5.2);
 
       doc.setFont('courier', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(15, 23, 42);
-      doc.text(orderId, m + 6, y + 10);
+      doc.setFontSize(8.8);
+      doc.setTextColor(255, 255, 255);
+      doc.text(orderId, m + 5, y + 11);
 
-      // Card 2: Razorpay Payment ID (Light teal)
+      // Payment ID Card
       const rightX = m + halfW + 4;
-      doc.setFillColor(240, 253, 250);
-      doc.setDrawColor(204, 251, 241);
-      doc.setLineWidth(0.3);
-      doc.roundedRect(rightX, y, halfW, 13.5, 2.5, 2.5, 'FD');
-      doc.setFillColor(13, 148, 136);
-      doc.rect(rightX, y + 1.5, 2.5, 10.5, 'F');
+      doc.setFillColor(9, 9, 9);
+      doc.setDrawColor(38, 38, 46);
+      doc.setLineWidth(0.25);
+      doc.roundedRect(rightX, y, halfW, 14.5, 1.5, 1.5, 'FD');
+      doc.setFillColor(181, 18, 42);
+      doc.rect(rightX, y + 0.5, 1.4, 13.5, 'F');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6);
-      doc.setTextColor(13, 148, 136);
-      doc.text('RAZORPAY PAYMENT ID', rightX + 6, y + 4.8);
+      doc.setFontSize(6.5);
+      doc.setTextColor(191, 192, 197);
+      doc.text('RAZORPAY PAYMENT ID', rightX + 5, y + 5.2);
 
       doc.setFont('courier', 'bold');
-      doc.setFontSize(8);
-      doc.setTextColor(15, 23, 42);
-      doc.text(paymentId || 'N/A', rightX + 6, y + 10);
+      doc.setFontSize(8.8);
+      doc.setTextColor(255, 255, 255);
+      doc.text(paymentId || 'N/A', rightX + 5, y + 11);
 
-      y += 16;
+      y += 17.5;
 
-      // Card 3: Database Registration ID (Light pink)
+      // Database Registration UUID Card
       if (registrationId) {
-        doc.setFillColor(253, 242, 248);
-        doc.setDrawColor(252, 231, 243);
-        doc.setLineWidth(0.3);
-        doc.roundedRect(m, y, cw, 13.5, 2.5, 2.5, 'FD');
-        doc.setFillColor(219, 39, 119);
-        doc.rect(m, y + 1.5, 2.5, 10.5, 'F');
+        doc.setFillColor(9, 9, 9);
+        doc.setDrawColor(38, 38, 46);
+        doc.setLineWidth(0.25);
+        doc.roundedRect(m, y, cw, 14.5, 1.5, 1.5, 'FD');
+        doc.setFillColor(227, 27, 63);
+        doc.rect(m, y + 0.5, 1.4, 13.5, 'F');
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(6);
-        doc.setTextColor(219, 39, 119);
-        doc.text('DATABASE REGISTRATION ID (UUID)', m + 6, y + 4.8);
+        doc.setFontSize(6.5);
+        doc.setTextColor(191, 192, 197);
+        doc.text('DATABASE REGISTRATION ID (UUID)', m + 5, y + 5.2);
 
         doc.setFont('courier', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(15, 23, 42);
-        doc.text(registrationId, m + 6, y + 10);
+        doc.setFontSize(8.8);
+        doc.setTextColor(255, 255, 255);
+        doc.text(registrationId, m + 5, y + 11);
 
-        y += 16;
+        y += 22.5;
+      } else {
+        y += 6;
       }
 
       // 5. CAMPUS INSTRUCTIONS SECTION
-      doc.setFillColor(249, 115, 22);
-      doc.roundedRect(m, y - 2.5, 4.5, 4.5, 1.2, 1.2, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.8);
-      doc.setTextColor(234, 88, 12);
-      doc.text('CAMPUS INSTRUCTIONS', m + 7.5, y + 1);
-      y += 4.5;
+      drawSectionHeader('CAMPUS INSTRUCTIONS', y);
+      y += 5;
 
       const instructions = [
         {
           num: '1',
-          circleColor: [67, 56, 202],
-          bgColor: [238, 242, 255],
-          borderColor: [224, 231, 255],
           title: 'Entry Gate',
           desc: 'GNDEC Bidar Main Gate. Reporting begins at 8:30 AM on Day 1.',
         },
         {
           num: '2',
-          circleColor: [13, 148, 136],
-          bgColor: [240, 253, 250],
-          borderColor: [204, 251, 241],
           title: 'ID Mandatory',
           desc: 'Carry a valid college or institution ID card along with this pass.',
         },
         {
           num: '3',
-          circleColor: [249, 115, 22],
-          bgColor: [255, 247, 237],
-          borderColor: [254, 215, 170],
           title: 'Hackathon Teams',
           desc: 'College lunch, dinner, breakfast and overnight accommodation provided.',
         },
       ];
 
-      const instH = 11.5;
-      const instGap = 2.2;
+      const instH = 13.5;
+      const instGap = 3;
 
       instructions.forEach((inst) => {
-        doc.setFillColor(...inst.bgColor);
-        doc.setDrawColor(...inst.borderColor);
-        doc.setLineWidth(0.3);
-        doc.roundedRect(m, y, cw, instH, 2.5, 2.5, 'FD');
+        doc.setFillColor(9, 9, 9);
+        doc.setDrawColor(38, 38, 46);
+        doc.setLineWidth(0.25);
+        doc.roundedRect(m, y, cw, instH, 1.5, 1.5, 'FD');
 
-        // Perfectly centered numbered circle
-        const circleRadius = 3.5;
-        const circleCenterX = m + 7;
-        const circleCenterY = y + instH / 2;
-
-        doc.setFillColor(...inst.circleColor);
-        doc.circle(circleCenterX, circleCenterY, circleRadius, 'F');
-
+        // Crimson numbered square badge
+        doc.setFillColor(181, 18, 42);
+        doc.roundedRect(m + 4, y + (instH - 6.8) / 2, 6.8, 6.8, 1.2, 1.2, 'F');
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(7.8);
+        doc.setFontSize(8.5);
         doc.setTextColor(255, 255, 255);
-        doc.text(inst.num, circleCenterX, circleCenterY + 1.05, { align: 'center' });
+        doc.text(inst.num, m + 7.4, y + instH / 2 + 1.15, { align: 'center' });
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(7.8);
-        doc.setTextColor(17, 24, 39);
-        doc.text(inst.title, m + 14.5, y + 4.6);
+        doc.setFontSize(8.6);
+        doc.setTextColor(255, 255, 255);
+        doc.text(inst.title, m + 15, y + 5.2);
 
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7);
-        doc.setTextColor(71, 85, 105);
-        doc.text(inst.desc, m + 14.5, y + 8.8);
+        doc.setFontSize(7.6);
+        doc.setTextColor(191, 192, 197);
+        doc.text(inst.desc, m + 15, y + 10);
 
         y += instH + instGap;
       });
 
-      y += 3.5;
+      y += 5.5;
 
       // 6. OFFICIAL EVENT COORDINATORS SECTION
-      doc.setFillColor(124, 58, 237);
-      doc.roundedRect(m, y - 2.5, 4.5, 4.5, 1.2, 1.2, 'F');
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.8);
-      doc.setTextColor(124, 58, 237);
-      doc.text('OFFICIAL EVENT COORDINATORS', m + 7.5, y + 1);
-      y += 4.5;
+      drawSectionHeader('OFFICIAL EVENT COORDINATORS', y);
+      y += 5;
 
       const coordinators = [
-        { role: 'HEAD, CSE - AIML', name: 'Dr. Praveen Reddy', phone: '+91 99165 42332', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
-        { role: 'CONVENER (IIC)', name: 'Prof. Channa Reddy', phone: '+91 861 881 3191', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
-        { role: 'CEO (INCUBATION CTR)', name: 'Prof. Rakesh Marturkar', phone: '+91 99024 24263', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
-        { role: 'STUDENT COORDINATOR', name: 'Armaandeep Singh', phone: '+91 8427027540', border: [13, 148, 136], bg: [240, 253, 250], roleColor: [13, 148, 136] },
-        { role: 'STUDENT COORDINATOR', name: 'Sangmesh', phone: '+91 9353142522', border: [13, 148, 136], bg: [240, 253, 250], roleColor: [13, 148, 136] },
-        { role: 'STUDENT COORDINATOR', name: 'Abdul Aziz', phone: '+91 8296683831', border: [13, 148, 136], bg: [240, 253, 250], roleColor: [13, 148, 136] },
+        { role: 'HEAD, CSE - AIML', name: 'Dr. Praveen Reddy', phone: '+91 99165 42332', isFaculty: true },
+        { role: 'CONVENER (IIC)', name: 'Prof. Channa Reddy', phone: '+91 861 881 3191', isFaculty: true },
+        { role: 'CEO (INCUBATION CTR)', name: 'Prof. Rakesh Marturkar', phone: '+91 99024 24263', isFaculty: true },
+        { role: 'STUDENT COORDINATOR', name: 'Armaandeep Singh', phone: '+91 8427027540', isFaculty: false },
+        { role: 'STUDENT COORDINATOR', name: 'Sangmesh', phone: '+91 9353142522', isFaculty: false },
+        { role: 'STUDENT COORDINATOR', name: 'Abdul Aziz', phone: '+91 8296683831', isFaculty: false },
       ];
 
       const coordW = (cw - 4) / 2;
-      const coordH = 11.5;
-      const coordGap = 2.2;
+      const coordH = 13.5;
+      const coordGap = 3;
 
       coordinators.forEach((c, idx) => {
         const col = idx % 2;
-        const row = Math.floor(idx / 2);
+        const rowIdx = Math.floor(idx / 2);
         const cx = m + col * (coordW + 4);
-        const cy = y + row * (coordH + coordGap);
+        const cy = y + rowIdx * (coordH + coordGap);
 
-        doc.setFillColor(...c.bg);
-        doc.setDrawColor(226, 232, 240);
-        doc.setLineWidth(0.3);
-        doc.roundedRect(cx, cy, coordW, coordH, 2.5, 2.5, 'FD');
+        doc.setFillColor(9, 9, 9);
+        doc.setDrawColor(38, 38, 46);
+        doc.setLineWidth(0.25);
+        doc.roundedRect(cx, cy, coordW, coordH, 1.5, 1.5, 'FD');
 
-        doc.setFillColor(...c.border);
-        doc.rect(cx, cy + 1.2, 2.5, coordH - 2.4, 'F');
+        if (c.isFaculty) {
+          doc.setFillColor(227, 27, 63); // Bright Crimson
+        } else {
+          doc.setFillColor(181, 18, 42); // Deep Crimson
+        }
+        doc.rect(cx, cy + 0.5, 1.4, coordH - 1, 'F');
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(6);
-        doc.setTextColor(...c.roleColor);
-        doc.text(c.role, cx + 5.5, cy + 4.2);
+        doc.setFontSize(6.2);
+        if (c.isFaculty) {
+          doc.setTextColor(227, 27, 63);
+        } else {
+          doc.setTextColor(191, 192, 197);
+        }
+        doc.text(c.role, cx + 5, cy + 4.8);
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(7.8);
-        doc.setTextColor(17, 24, 39);
-        doc.text(c.name, cx + 5.5, cy + 9);
+        doc.setFontSize(8.6);
+        doc.setTextColor(255, 255, 255);
+        doc.text(c.name, cx + 5, cy + 10.2);
 
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7.2);
-        doc.setTextColor(30, 41, 59);
-        doc.text(c.phone, cx + coordW - 4, cy + 9, { align: 'right' });
+        doc.setFont('courier', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(191, 192, 197);
+        doc.text(c.phone, cx + coordW - 4, cy + 10.2, { align: 'right' });
       });
 
-      // 7. FULL-WIDTH FOOTER
-      const footH = 18;
+      // 7. FULL-WIDTH DARK TECH FOOTER
+      const footH = 19;
       const footY = ph - footH;
 
-      doc.setFillColor(15, 23, 42); // Deep slate/indigo
+      doc.setFillColor(9, 9, 9);
       doc.rect(0, footY, pw, footH, 'F');
 
-      doc.setFillColor(67, 56, 202);
-      doc.rect(0, footY, pw, 0.8, 'F');
+      doc.setFillColor(181, 18, 42);
+      doc.rect(0, footY, pw, 0.7, 'F');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6.5);
-      doc.setTextColor(52, 211, 153); // Mint
-      doc.text('NEED HELP?', m, footY + 4.5);
+      doc.setFontSize(6.8);
+      doc.setTextColor(227, 27, 63);
+      doc.text('NEED HELP?', m, footY + 5);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.5);
+      doc.setFontSize(9);
       doc.setTextColor(255, 255, 255);
-      doc.text('Spectrum101213@gmail.com', m, footY + 9.5);
+      doc.text('Spectrum101213@gmail.com', m, footY + 10.2);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(6.5);
-      doc.setTextColor(148, 163, 184);
-      doc.text('SPECTRUM 1.0  |  DECEMBER 7-9, 2026  |  GNDEC BIDAR', m, footY + 14);
+      doc.setFontSize(6.8);
+      doc.setTextColor(191, 192, 197);
+      doc.text('SPECTRUM 1.0  |  DECEMBER 7-9, 2026  |  GNDEC BIDAR', m, footY + 14.8);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.5);
+      doc.setFontSize(9);
       doc.setTextColor(255, 255, 255);
-      doc.text('spectrum10.vercel.app', pw - m, footY + 9.5, { align: 'right' });
+      doc.text('spectrum10.vercel.app', pw - m, footY + 10.2, { align: 'right' });
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(6.5);
-      doc.setTextColor(148, 163, 184);
+      doc.setFontSize(6.8);
+      doc.setTextColor(191, 192, 197);
       const nowStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-      doc.text(`Generated ${nowStr} (IST)  |  System Authorized Pass`, pw - m, footY + 14, { align: 'right' });
+      doc.text(`Generated ${nowStr} (IST)  |  System Authorized Pass`, pw - m, footY + 14.8, { align: 'right' });
 
       doc.save(`Spectrum1.0_Pass_${orderId.slice(-8)}.pdf`);
     } catch (err) {
