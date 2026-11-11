@@ -5,7 +5,7 @@ import { User, Phone, GraduationCap } from 'lucide-react';
 
 const CoordinatorsSection = () => {
   const facultyCoordinators = [
-    { name: 'Dr. Praveen Reddy', dept: 'Faculty Coordinator', phone: '+91 99165 42332' },
+    { name: 'Dr. Praveen Reddy', dept: 'Head, CSE - AIML', phone: '+91 99165 42332' },
     { name: 'Prof. Channa Reddy', dept: 'Convener, Institution Innovation Council', phone: '+91 861 881 3191' },
     { name: 'Prof. Rakesh Marturkar', dept: 'CEO, Incubation Center GNJERBI', phone: '+91 99024 24263' },
   ];

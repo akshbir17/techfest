@@ -54,7 +54,9 @@ EVENT CATALOG & PRIZES:
    - Day 1 (Dec 7): 1:00 PM – 2:00 PM.
 
 OFFICIAL COORDINATORS (HELP DESK):
-- Faculty Coordinator: Dr. Praveen Reddy: +91 99165 42332
+- Faculty Coordinator: Dr. Praveen Reddy (Head, CSE - AIML): +91 99165 42332
+- Faculty Coordinator: Prof. Channa Reddy (Convener, Institution Innovation Council): +91 861 881 3191
+- Faculty Coordinator: Prof. Rakesh Marturkar (CEO, Incubation Center GNJERBI): +91 99024 24263
 - Student Coordinator: Armaandeep Singh: +91 8427027540
 - Student Coordinator: Sangmesh: +91 9353142522
 - Student Coordinator: Abdul Aziz: +91 8296683831

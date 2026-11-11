@@ -428,11 +428,11 @@ html.lenis { height: auto; }
   box-sizing: border-box;
 }
 .hero-subtitle {
-  font-size: clamp(0.72rem, 2.5vw, 0.95rem);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: clamp(0.9rem, 3.2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
   color: var(--color-star-white);
-  opacity: 0.85;
+  opacity: 0.95;
   margin-bottom: 0.75rem;
   display: block;
   text-align: center;
@@ -445,8 +445,8 @@ html.lenis { height: auto; }
 }
 @media (min-width: 768px) {
   .hero-subtitle {
-    font-size: 1.05rem;
-    letter-spacing: 0.15em;
+    font-size: 1.35rem;
+    letter-spacing: 0.16em;
     margin-bottom: 1rem;
   }
 }

@@ -358,7 +358,7 @@ const RegistrationSuccessPage = () => {
       y += 4.5;
 
       const coordinators = [
-        { role: 'FACULTY COORDINATOR', name: 'Dr. Praveen Reddy', phone: '+91 99165 42332', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
+        { role: 'HEAD, CSE - AIML', name: 'Dr. Praveen Reddy', phone: '+91 99165 42332', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
         { role: 'CONVENER (IIC)', name: 'Prof. Channa Reddy', phone: '+91 861 881 3191', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
         { role: 'CEO (INCUBATION CTR)', name: 'Prof. Rakesh Marturkar', phone: '+91 99024 24263', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
         { role: 'STUDENT COORDINATOR', name: 'Armaandeep Singh', phone: '+91 8427027540', border: [13, 148, 136], bg: [240, 253, 250], roleColor: [13, 148, 136] },

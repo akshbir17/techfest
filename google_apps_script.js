@@ -354,7 +354,7 @@ function buildHtmlPass(data) {
   parts.push('                  </td>');
   parts.push('                  <td width="50%" valign="top" style="padding:0 0 0 6px;">');
   parts.push('                    <div style="background-color:#FDF2F8; border-left:4px solid #DB2777; border-radius:8px; padding:12px 14px;">');
-  parts.push('                      <div style="font-size:11px; font-weight:700; color:#DB2777;">Faculty coordinator</div>');
+  parts.push('                      <div style="font-size:11px; font-weight:700; color:#DB2777;">Head, CSE - AIML</div>');
   parts.push('                      <div style="font-size:14px; font-weight:700; color:#0F172A; margin-top:3px;">Dr. Praveen Reddy</div>');
   parts.push('                      <div style="font-size:13px; color:#475569; margin-top:2px;">+91 99165 42332</div>');
   parts.push('                    </div>');
@@ -447,7 +447,7 @@ function sendConfirmationEmail(data) {
     + "• Armaandeep Singh: +91 8427027540 (Student Coordinator)\n"
     + "• Sangmesh: +91 9353142522 (Student Coordinator)\n"
     + "• Abdul Aziz: +91 8296683831 (Student Coordinator)\n"
-    + "• Dr. Praveen Reddy: +91 99165 42332 (Faculty Coordinator)\n\n"
+    + "• Dr. Praveen Reddy: +91 99165 42332 (Head, CSE - AIML)\n\n"
     + "Official Portal: https://spectrum10.vercel.app\n"
     + "Help Desk Email: Spectrum101213@gmail.com\n";
 
