@@ -8,14 +8,38 @@ const HeroSection = () => {
     <section id="event" className="section-container hero-section">
       <div className="hero-content">
         
+        {/* College & Organizing Bodies */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+          style={{ marginBottom: '1.25rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
-          <span className="hero-subtitle">
-            GURU NANAK DEV ENGINEERING COLLEGE (GNDEC), BIDAR PRESENTS
+          <span className="hero-subtitle" style={{ display: 'block', marginBottom: '0.65rem', letterSpacing: '0.12em' }}>
+            GURU NANAK DEV ENGINEERING COLLEGE BIDAR
           </span>
+
+          <p className="hero-organized-by" style={{ marginBottom: '0.65rem' }}>
+            Organized By
+          </p>
+
+          <div className="hero-departments">
+            <div className="hero-dept-item" style={{ maxWidth: '360px' }}>
+              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
+                INSTITUTION INNOVATION COUNCIL
+              </div>
+            </div>
+
+            <span className="hero-dept-amp">
+              &
+            </span>
+
+            <div className="hero-dept-item" style={{ maxWidth: '460px' }}>
+              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
+                GURU NANAK JHIRA ENTREPRENEURSHIP RESEARCH AND BUSINESS INCUBATION FOUNDATION
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         <motion.h1 
