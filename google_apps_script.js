@@ -90,9 +90,6 @@ function doPost(e) {
     // Fee formatted with INR symbol (e.g. ₹1)
     var feeStr = "₹" + (data.amount_paid !== undefined ? data.amount_paid : 0);
 
-    // Confirmation email status: "Sent" or "Failed"
-    var emailStatus = emailSent ? "Sent" : "Failed";
-
     // Append participant registration row to the Google Sheet matching exact column format
     var row = [
       timestampStr,
@@ -108,7 +105,7 @@ function doPost(e) {
       feeStr,
       data.razorpay_payment_id || "N/A",
       data.payment_status || "PAID",
-      emailStatus
+      (emailSent === true ? "Sent" : "Failed")
     ];
 
     sheet.appendRow(row);
@@ -117,7 +114,7 @@ function doPost(e) {
     try {
       var lastRow = sheet.getLastRow();
       var emailCell = sheet.getRange(lastRow, headers.length);
-      if (emailSent) {
+      if (emailSent === true) {
         emailCell.setFontColor("#155724");
         emailCell.setBackground("#d4edda");
       } else {
