@@ -155,7 +155,7 @@ export default async function handler(req, res) {
         const eventName = registrationRecord?.event_name || registrationData?.eventName || '';
         const rawTeamName = registrationRecord?.team_name || registrationData?.teamName || 'N/A';
         const themeVal = registrationRecord?.theme || registrationData?.theme || null;
-        const teamName = themeVal && rawTeamName !== 'N/A' ? `${rawTeamName} [Theme: ${themeVal}]` : rawTeamName;
+        const teamName = rawTeamName;
         const amountPaid = Number(registrationRecord?.amount || registrationRecord?.fee || registrationData?.fee || 0);
 
         let membersFormatted = 'N/A';

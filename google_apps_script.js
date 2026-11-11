@@ -28,6 +28,7 @@ function doPost(e) {
       "Phone",
       "College",
       "Event Name",
+      "Theme",
       "Team Name",
       "Team Members",
       "Fee",
@@ -36,16 +37,14 @@ function doPost(e) {
       "Confirmation Email"
     ];
 
-    // Auto-create or format header row if sheet is fresh/empty
-    if (sheet.getLastRow() === 0 || sheet.getRange(1, 1).getValue() === "") {
-      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      var headerRange = sheet.getRange(1, 1, 1, headers.length);
-      headerRange.setFontWeight("bold");
-      headerRange.setBackground("#d32f2f");
-      headerRange.setFontColor("#ffffff");
-      headerRange.setHorizontalAlignment("center");
-      sheet.setFrozenRows(1);
-    }
+    // Ensure header row has official green background and includes Theme
+    var headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setValues([headers]);
+    headerRange.setFontWeight("bold");
+    headerRange.setBackground("#2e7d32"); // Green header background
+    headerRange.setFontColor("#ffffff");
+    headerRange.setHorizontalAlignment("center");
+    sheet.setFrozenRows(1);
 
     // Try sending automated confirmation email
     var emailSent = false;
@@ -88,8 +87,11 @@ function doPost(e) {
     // Timestamp: dd/MM/yyyy, hh:mm a (e.g. 08/11/2026, 11:30 AM) in Indian Standard Time (IST)
     var timestampStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd/MM/yyyy, hh:mm a");
 
-    // Fee formatted with INR symbol (e.g. ₹500)
+    // Fee formatted with INR symbol (e.g. ₹1)
     var feeStr = "₹" + (data.amount_paid !== undefined ? data.amount_paid : 0);
+
+    // Confirmation email status: "Sent" or "Failed"
+    var emailStatus = emailSent ? "Sent" : "Failed";
 
     // Append participant registration row to the Google Sheet matching exact column format
     var row = [
@@ -100,15 +102,33 @@ function doPost(e) {
       data.phone ? "'" + String(data.phone).replace(/\s+/g, '') : "N/A",
       data.college || "N/A",
       data.event_name || "N/A",
+      data.theme || "N/A",
       data.team_name || "N/A",
       membersFormatted,
       feeStr,
       data.razorpay_payment_id || "N/A",
       data.payment_status || "PAID",
-      emailSent ? "Sent Successfully" : (emailError ? "Failed: " + emailError : "No Email")
+      emailStatus
     ];
 
     sheet.appendRow(row);
+
+    // Apply color styling to the Confirmation Email cell (Green for Sent, Red for Failed)
+    try {
+      var lastRow = sheet.getLastRow();
+      var emailCell = sheet.getRange(lastRow, headers.length);
+      if (emailSent) {
+        emailCell.setFontColor("#155724");
+        emailCell.setBackground("#d4edda");
+      } else {
+        emailCell.setFontColor("#721c24");
+        emailCell.setBackground("#f8d7da");
+      }
+      emailCell.setHorizontalAlignment("center");
+      emailCell.setFontWeight("bold");
+    } catch (fmtErr) {
+      Logger.log("Status cell format warning: " + fmtErr.toString());
+    }
 
     return ContentService.createTextOutput(JSON.stringify({
       result: "success",
@@ -226,6 +246,15 @@ function buildHtmlPass(data) {
     parts.push('                      <tr>');
     parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Team</td>');
     parts.push('                        <td valign="top" style="padding:8px 0; font-size:15px; font-weight:700; color:#0D9488;">' + teamName + '</td>');
+    parts.push('                      </tr>');
+  }
+
+  // Theme row (conditional for Hackathon)
+  var theme = data.theme || "";
+  if (theme && theme !== "N/A") {
+    parts.push('                      <tr>');
+    parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Theme</td>');
+    parts.push('                        <td valign="top" style="padding:8px 0; font-size:14px; font-weight:700; color:#DB2777;">' + theme + '</td>');
     parts.push('                      </tr>');
   }
 
@@ -407,7 +436,8 @@ function sendConfirmationEmail(data) {
       data.email = "thedclaw.gaming@gmail.com";
     }
     data.participant_name = data.participant_name || "Akshbir Singh Seehra";
-    data.event_name = data.event_name || "Live Test Event (₹1 Payment Test)";
+    data.event_name = data.event_name || "24-Hour Hackathon";
+    data.theme = data.theme || "AI & Autonomous Systems";
     data.amount_paid = data.amount_paid !== undefined ? data.amount_paid : 1;
     data.order_id = data.order_id || "order_manual_test_01";
     data.razorpay_payment_id = data.razorpay_payment_id || "pay_manual_test_01";
@@ -537,4 +567,38 @@ function testSheet() {
 
   var res = doPost(fakeEvent);
   Logger.log("Test Result: " + res.getContent());
+}
+
+/**
+ * Utility function to immediately format the Google Sheet headers to green
+ * and add the "Theme" column. Can be run directly from Apps Script editor!
+ */
+function formatSheetHeaders() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+  var headers = [
+    "Timestamp",
+    "Reg ID",
+    "Participant Name (Leader)",
+    "Email",
+    "Phone",
+    "College",
+    "Event Name",
+    "Theme",
+    "Team Name",
+    "Team Members",
+    "Fee",
+    "Razorpay Payment ID",
+    "Status",
+    "Confirmation Email"
+  ];
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setValues([headers]);
+  headerRange.setFontWeight("bold");
+  headerRange.setBackground("#2e7d32"); // Green header background
+  headerRange.setFontColor("#ffffff");
+  headerRange.setHorizontalAlignment("center");
+  sheet.setFrozenRows(1);
+  SpreadsheetApp.flush();
+  Logger.log("Sheet headers updated successfully with Green background and Theme column!");
 }

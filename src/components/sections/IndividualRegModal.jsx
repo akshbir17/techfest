@@ -6,7 +6,6 @@ import { useScrollLock } from '../../hooks/useScrollLock';
 
 // List of individual events
 const INDIVIDUAL_EVENTS = [
-  { id: 'test_event',         name: 'Live Test Event (₹1 Payment Test)', fee: 1,   description: 'Temporary ₹1 test event for verifying live payment gateway, Google Sheets sync, and instant email pass delivery.' },
   { id: 'impossible_to_sell', name: 'Impossible to Sell',          fee: 100, description: 'Creative selling challenge — pitch an unusual or bizarre product. ₹2,000 first prize + trophies.' },
   { id: 'mock_interview',     name: 'Mock Interview',              fee: 100, description: 'Simulate a real interview and get evaluated — ₹1,000 cash prize for top participant.' },
   { id: 'killer_game',        name: 'Killer Game',                 fee: 50,  description: 'Social deduction & stealth elimination challenge on Day 1. Trophies & fest merch.' },

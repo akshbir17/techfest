@@ -70,6 +70,7 @@ export default async function handler(req, res) {
         phone: record.phone || '',
         college: record.college || 'N/A',
         event_name: record.event_name || '',
+        theme: record.theme || 'N/A',
         team_name: record.team_name || 'N/A',
         team_members: membersFormatted,
         amount_paid: Number(record.amount || record.fee || 0),
