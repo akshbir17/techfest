@@ -453,7 +453,7 @@ const RegistrationSuccessPage = () => {
           transform: 'translate(-50%, -50%)',
           width: '650px',
           height: '650px',
-          background: 'radial-gradient(circle, rgba(211, 47, 47, 0.12) 0%, rgba(0, 240, 255, 0.04) 40%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(211, 47, 47, 0.22) 0%, rgba(154, 0, 0, 0.06) 45%, transparent 70%)',
           pointerEvents: 'none',
         }}
       />
@@ -475,7 +475,7 @@ const RegistrationSuccessPage = () => {
               width: '90px',
               height: '90px',
               borderRadius: '50%',
-              border: '2px solid var(--color-neon-cyan, #00f0ff)',
+              border: '2px solid rgba(211, 47, 47, 0.6)',
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
@@ -486,15 +486,15 @@ const RegistrationSuccessPage = () => {
               width: '74px',
               height: '74px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, rgba(211, 47, 47, 0.25) 0%, rgba(0, 240, 255, 0.15) 100%)',
-              border: '2px solid var(--color-neon-cyan, #00f0ff)',
+              background: 'linear-gradient(135deg, rgba(211, 47, 47, 0.35) 0%, rgba(8, 8, 8, 0.9) 100%)',
+              border: '2px solid #d32f2f',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 25px rgba(0, 240, 255, 0.35)',
+              boxShadow: '0 0 25px rgba(211, 47, 47, 0.45)',
             }}
           >
-            <CheckCircle size={38} color="var(--color-neon-cyan, #00f0ff)" strokeWidth={1.75} />
+            <CheckCircle size={38} color="#d32f2f" strokeWidth={2} />
           </div>
         </motion.div>
 
@@ -513,37 +513,37 @@ const RegistrationSuccessPage = () => {
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               margin: '0 0 0.5rem 0',
-              color: 'var(--color-star-white, #fff)',
+              color: 'var(--color-star-white, #f4eacc)',
             }}
           >
-            REGISTRATION <span style={{ color: 'var(--color-neon-cyan, #00f0ff)' }}>CONFIRMED!</span>
+            REGISTRATION <span style={{ color: '#d32f2f', textShadow: '0 0 15px rgba(211, 47, 47, 0.5)' }}>CONFIRMED!</span>
           </h1>
           <p
             style={{
-              color: 'rgba(244, 234, 204, 0.75)',
+              color: 'rgba(244, 234, 204, 0.8)',
               fontSize: '0.98rem',
               lineHeight: '1.6',
               margin: 0,
             }}
           >
             You are officially registered for{' '}
-            <strong style={{ color: 'var(--color-star-white, #fff)', borderBottom: '1px solid var(--color-neon-cyan, #00f0ff)' }}>
+            <strong style={{ color: 'var(--color-star-white, #f4eacc)', borderBottom: '1px solid #d32f2f' }}>
               {eventName}
             </strong>
           </p>
         </motion.div>
 
-        {/* Digital Event Pass Ticket Card */}
+        {/* Digital Event Pass Ticket Card (Matching Registration Section Card Design) */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.35 }}
           style={{
             position: 'relative',
-            background: 'linear-gradient(145deg, rgba(20, 12, 28, 0.95) 0%, rgba(10, 6, 16, 0.98) 100%)',
-            border: '1px solid rgba(255, 42, 95, 0.35)',
-            borderRadius: '16px',
-            boxShadow: '0 15px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 42, 95, 0.15)',
+            background: 'var(--color-glass-bg, rgba(8, 8, 8, 0.88))',
+            border: '1px solid rgba(211, 47, 47, 0.5)',
+            borderRadius: '6px',
+            boxShadow: '0 20px 45px rgba(0, 0, 0, 0.85), 0 0 30px rgba(211, 47, 47, 0.15), 4px 4px 0px 0px rgba(211, 47, 47, 0.3)',
             backdropFilter: 'blur(16px)',
             overflow: 'hidden',
             marginBottom: '1.75rem',
@@ -554,27 +554,32 @@ const RegistrationSuccessPage = () => {
           <div
             style={{
               padding: '1.25rem 1.75rem',
-              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              borderBottom: '1px solid rgba(211, 47, 47, 0.25)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               background: 'rgba(255, 255, 255, 0.02)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ShieldCheck size={18} color="var(--color-neon-cyan, #00f0ff)" />
-              <span
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '0.82rem',
-                  letterSpacing: '0.12em',
-                  fontWeight: 700,
-                  color: 'var(--color-neon-cyan, #00f0ff)',
-                  textTransform: 'uppercase',
-                }}
-              >
-                SPECTRUM 1.0 PASS
-              </span>
+            {/* Pill Badge matching Registration Section */}
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                padding: '0.35rem 1rem',
+                background: 'rgba(211, 47, 47, 0.15)',
+                border: '1px solid rgba(211, 47, 47, 0.45)',
+                borderRadius: '20px',
+                fontSize: '0.78rem',
+                fontWeight: '700',
+                letterSpacing: '0.12em',
+                color: 'var(--color-bright-crimson, #ff3d57)',
+                textTransform: 'uppercase',
+              }}
+            >
+              <ShieldCheck size={15} color="#ff3d57" />
+              <span>SPECTRUM 1.0 PASS</span>
             </div>
 
             {/* Paid Badge */}
@@ -584,7 +589,7 @@ const RegistrationSuccessPage = () => {
                 alignItems: 'center',
                 gap: '0.35rem',
                 padding: '0.25rem 0.75rem',
-                borderRadius: '999px',
+                borderRadius: '20px',
                 background: 'rgba(0, 230, 118, 0.12)',
                 border: '1px solid rgba(0, 230, 118, 0.4)',
                 color: '#00e676',
@@ -607,50 +612,76 @@ const RegistrationSuccessPage = () => {
           </div>
 
           {/* Event Name & Hero Info */}
-          <div style={{ padding: '1.5rem 1.75rem 1rem 1.75rem' }}>
+          <div style={{ padding: '1.5rem 1.75rem 1.25rem 1.75rem' }}>
             <span
               style={{
-                fontSize: '0.72rem',
+                fontSize: '0.74rem',
                 textTransform: 'uppercase',
                 letterSpacing: '0.12em',
-                color: 'rgba(244, 234, 204, 0.55)',
-                fontWeight: 600,
+                color: '#d32f2f',
+                fontWeight: 700,
               }}
             >
               Event
             </span>
             <h2
               style={{
-                fontSize: '1.6rem',
+                fontFamily: 'var(--font-heading)',
+                fontSize: '1.65rem',
                 fontWeight: 800,
-                color: 'var(--color-star-white, #fff)',
-                margin: '0.2rem 0 1.25rem 0',
+                color: 'var(--color-star-white, #f4eacc)',
+                margin: '0.25rem 0 1.25rem 0',
                 letterSpacing: '0.04em',
               }}
             >
               {eventName}
             </h2>
 
-            {/* Quick Meta Grid */}
+            {/* Quick Meta Grid matching Registration Highlights */}
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '1rem',
-                marginBottom: '1rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '0.85rem',
+                marginBottom: '0.5rem',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <Calendar size={16} color="var(--color-neon-cyan, #00f0ff)" />
-                <span style={{ fontSize: '0.88rem', color: 'rgba(244, 234, 204, 0.85)' }}>
+              <div
+                style={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(244, 234, 204, 0.15)',
+                  borderRadius: '6px',
+                  padding: '0.75rem 1rem',
+                }}
+              >
+                <div style={{ fontSize: '0.72rem', color: '#d32f2f', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Calendar size={13} color="#d32f2f" /> DATE
+                </div>
+                <div style={{ fontSize: '1.05rem', fontWeight: '800', color: 'var(--color-star-white, #f4eacc)', fontFamily: 'var(--font-heading)', marginTop: '0.25rem' }}>
                   Dec 7 – 9, 2026
-                </span>
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>
+                  3-Day National Fest
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <MapPin size={16} color="#ff2a5f" />
-                <span style={{ fontSize: '0.88rem', color: 'rgba(244, 234, 204, 0.85)' }}>
-                  GNDEC Bidar Campus
-                </span>
+
+              <div
+                style={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(244, 234, 204, 0.15)',
+                  borderRadius: '6px',
+                  padding: '0.75rem 1rem',
+                }}
+              >
+                <div style={{ fontSize: '0.72rem', color: '#d32f2f', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <MapPin size={13} color="#d32f2f" /> VENUE
+                </div>
+                <div style={{ fontSize: '1.05rem', fontWeight: '800', color: 'var(--color-star-white, #f4eacc)', fontFamily: 'var(--font-heading)', marginTop: '0.25rem' }}>
+                  GNDEC Campus
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>
+                  Bidar, Karnataka
+                </div>
               </div>
             </div>
           </div>
@@ -659,7 +690,7 @@ const RegistrationSuccessPage = () => {
           <div style={{ position: 'relative', margin: '0.5rem 0' }}>
             <div
               style={{
-                borderBottom: '1px dashed rgba(255, 255, 255, 0.15)',
+                borderBottom: '1px dashed rgba(211, 47, 47, 0.35)',
                 width: '100%',
               }}
             />
@@ -672,8 +703,8 @@ const RegistrationSuccessPage = () => {
                 width: '24px',
                 height: '24px',
                 borderRadius: '50%',
-                background: 'var(--color-space-black, #07040a)',
-                borderRight: '1px solid rgba(255, 42, 95, 0.35)',
+                background: 'var(--color-space-black, #080808)',
+                borderRight: '1px solid rgba(211, 47, 47, 0.5)',
               }}
             />
             {/* Right Notch */}
@@ -685,8 +716,8 @@ const RegistrationSuccessPage = () => {
                 width: '24px',
                 height: '24px',
                 borderRadius: '50%',
-                background: 'var(--color-space-black, #07040a)',
-                borderLeft: '1px solid rgba(255, 42, 95, 0.35)',
+                background: 'var(--color-space-black, #080808)',
+                borderLeft: '1px solid rgba(211, 47, 47, 0.5)',
               }}
             />
           </div>
@@ -696,9 +727,16 @@ const RegistrationSuccessPage = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               
               {/* Order ID */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                  <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(244, 234, 204, 0.6)', fontWeight: 600 }}>
+              <div
+                style={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(244, 234, 204, 0.15)',
+                  borderRadius: '6px',
+                  padding: '0.85rem 1rem',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                  <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#d32f2f', fontWeight: 'bold' }}>
                     Confirmation (Order) ID
                   </span>
                   <button
@@ -706,7 +744,7 @@ const RegistrationSuccessPage = () => {
                     style={{
                       background: 'transparent',
                       border: 'none',
-                      color: copiedKey === 'order' ? '#00e676' : 'var(--color-neon-cyan, #00f0ff)',
+                      color: copiedKey === 'order' ? '#00e676' : 'rgba(244, 234, 204, 0.8)',
                       cursor: 'pointer',
                       fontSize: '0.72rem',
                       display: 'flex',
@@ -722,12 +760,12 @@ const RegistrationSuccessPage = () => {
                 <div
                   style={{
                     fontFamily: 'monospace',
-                    fontSize: '0.95rem',
-                    color: 'var(--color-star-white, #fff)',
-                    background: 'rgba(0, 0, 0, 0.4)',
+                    fontSize: '0.92rem',
+                    color: 'var(--color-star-white, #f4eacc)',
+                    background: 'rgba(0, 0, 0, 0.55)',
                     padding: '0.55rem 0.85rem',
-                    borderRadius: '6px',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(211, 47, 47, 0.25)',
                     wordBreak: 'break-all',
                   }}
                 >
@@ -737,9 +775,16 @@ const RegistrationSuccessPage = () => {
 
               {/* Razorpay Payment ID */}
               {paymentId && paymentId !== 'N/A' && (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                    <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(244, 234, 204, 0.6)', fontWeight: 600 }}>
+                <div
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(244, 234, 204, 0.15)',
+                    borderRadius: '6px',
+                    padding: '0.85rem 1rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                    <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#d32f2f', fontWeight: 'bold' }}>
                       Razorpay Payment ID
                     </span>
                     <button
@@ -747,7 +792,7 @@ const RegistrationSuccessPage = () => {
                       style={{
                         background: 'transparent',
                         border: 'none',
-                        color: copiedKey === 'payment' ? '#00e676' : 'var(--color-neon-cyan, #00f0ff)',
+                        color: copiedKey === 'payment' ? '#00e676' : 'rgba(244, 234, 204, 0.8)',
                         cursor: 'pointer',
                         fontSize: '0.72rem',
                         display: 'flex',
@@ -764,11 +809,11 @@ const RegistrationSuccessPage = () => {
                     style={{
                       fontFamily: 'monospace',
                       fontSize: '0.92rem',
-                      color: 'var(--color-star-white, #fff)',
-                      background: 'rgba(0, 0, 0, 0.4)',
+                      color: 'var(--color-star-white, #f4eacc)',
+                      background: 'rgba(0, 0, 0, 0.55)',
                       padding: '0.55rem 0.85rem',
-                      borderRadius: '6px',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '4px',
+                      border: '1px solid rgba(211, 47, 47, 0.25)',
                       wordBreak: 'break-all',
                     }}
                   >
@@ -779,9 +824,16 @@ const RegistrationSuccessPage = () => {
 
               {/* Database Registration ID (UUID) */}
               {registrationId && (
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                    <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(244, 234, 204, 0.6)', fontWeight: 600 }}>
+                <div
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(244, 234, 204, 0.15)',
+                    borderRadius: '6px',
+                    padding: '0.85rem 1rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                    <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#d32f2f', fontWeight: 'bold' }}>
                       Database Registration ID
                     </span>
                     <button
@@ -789,7 +841,7 @@ const RegistrationSuccessPage = () => {
                       style={{
                         background: 'transparent',
                         border: 'none',
-                        color: copiedKey === 'reg' ? '#00e676' : 'var(--color-neon-cyan, #00f0ff)',
+                        color: copiedKey === 'reg' ? '#00e676' : 'rgba(244, 234, 204, 0.8)',
                         cursor: 'pointer',
                         fontSize: '0.72rem',
                         display: 'flex',
@@ -807,10 +859,10 @@ const RegistrationSuccessPage = () => {
                       fontFamily: 'monospace',
                       fontSize: '0.85rem',
                       color: 'rgba(244, 234, 204, 0.85)',
-                      background: 'rgba(0, 0, 0, 0.4)',
+                      background: 'rgba(0, 0, 0, 0.55)',
                       padding: '0.55rem 0.85rem',
-                      borderRadius: '6px',
-                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      borderRadius: '4px',
+                      border: '1px solid rgba(211, 47, 47, 0.25)',
                       wordBreak: 'break-all',
                     }}
                   >
@@ -822,14 +874,14 @@ const RegistrationSuccessPage = () => {
           </div>
         </motion.div>
 
-        {/* Action Buttons: Download PDF & Back Home */}
+        {/* Action Buttons: Download PDF & Back Home (Styled exactly like Registration Section CTAs) */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '2rem' }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', marginBottom: '2rem' }}
         >
-          {/* Primary CTA: Download PDF Pass */}
+          {/* Primary CTA: Download PDF Pass (Matching REGISTER FOR HACKATHON Button) */}
           <button
             id="download-pass-pdf-btn"
             onClick={handleDownloadPDF}
@@ -840,32 +892,32 @@ const RegistrationSuccessPage = () => {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.65rem',
-              padding: '1rem 1.5rem',
+              padding: '1rem 2rem',
               fontFamily: 'var(--font-heading)',
               fontWeight: 800,
-              fontSize: '0.98rem',
-              letterSpacing: '0.08em',
+              fontSize: '1rem',
+              letterSpacing: '0.15em',
               textTransform: 'uppercase',
-              color: '#ffffff',
-              background: 'linear-gradient(135deg, #d32f2f 0%, #ff1744 100%)',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
-              borderRadius: '8px',
+              color: 'var(--color-space-black, #080808)',
+              backgroundColor: '#d32f2f',
+              border: '2px solid #d32f2f',
+              borderRadius: '4px',
               cursor: isDownloading ? 'wait' : 'pointer',
-              boxShadow: '0 6px 20px rgba(255, 23, 68, 0.35)',
-              transition: 'all 0.25s ease',
+              boxShadow: '4px 4px 0px 0px rgba(244, 234, 204, 0.5)',
+              transition: 'all 0.3s ease',
             }}
             onMouseOver={(e) => {
               if (!isDownloading) {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 25px rgba(255, 23, 68, 0.5)';
+                e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)';
+                e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(244, 234, 204, 0.6)';
               }
             }}
             onMouseOut={(e) => {
               e.currentTarget.style.transform = 'none';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 23, 68, 0.35)';
+              e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(244, 234, 204, 0.5)';
             }}
           >
-            <Download size={19} />
+            <Download size={19} color="#080808" strokeWidth={2.5} />
             <span>{isDownloading ? 'Generating Colourful PDF...' : 'Download Pass (PDF)'}</span>
           </button>
 
@@ -879,26 +931,31 @@ const RegistrationSuccessPage = () => {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.55rem',
-              padding: '0.85rem 1.5rem',
+              padding: '0.9rem 2rem',
               fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: '0.88rem',
-              letterSpacing: '0.08em',
+              fontWeight: 800,
+              fontSize: '0.92rem',
+              letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              color: 'var(--color-star-white, #fff)',
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              borderRadius: '8px',
+              color: 'var(--color-star-white, #f4eacc)',
+              backgroundColor: 'rgba(255, 255, 255, 0.03)',
+              border: '2px solid rgba(244, 234, 204, 0.25)',
+              borderRadius: '4px',
               cursor: 'pointer',
-              transition: 'all 0.25s ease',
+              boxShadow: '3px 3px 0px 0px rgba(211, 47, 47, 0.4)',
+              transition: 'all 0.3s ease',
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-              e.currentTarget.style.borderColor = 'var(--color-neon-cyan, #00f0ff)';
+              e.currentTarget.style.backgroundColor = 'rgba(211, 47, 47, 0.15)';
+              e.currentTarget.style.borderColor = '#d32f2f';
+              e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)';
+              e.currentTarget.style.boxShadow = '5px 5px 0px 0px rgba(211, 47, 47, 0.6)';
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+              e.currentTarget.style.borderColor = 'rgba(244, 234, 204, 0.25)';
+              e.currentTarget.style.transform = 'none';
+              e.currentTarget.style.boxShadow = '3px 3px 0px 0px rgba(211, 47, 47, 0.4)';
             }}
           >
             <Home size={16} />
@@ -912,22 +969,23 @@ const RegistrationSuccessPage = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.65 }}
           style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '10px',
+            background: 'var(--color-glass-bg, rgba(8, 8, 8, 0.85))',
+            border: '1px solid rgba(211, 47, 47, 0.3)',
+            borderRadius: '6px',
             padding: '1.25rem',
             textAlign: 'left',
+            boxShadow: '3px 3px 0px 0px rgba(211, 47, 47, 0.2)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.65rem' }}>
-            <Info size={15} color="var(--color-neon-cyan, #00f0ff)" />
+            <Info size={15} color="#d32f2f" />
             <h4
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontSize: '0.8rem',
                 letterSpacing: '0.1em',
                 fontWeight: 700,
-                color: 'var(--color-star-white, #fff)',
+                color: 'var(--color-star-white, #f4eacc)',
                 margin: 0,
                 textTransform: 'uppercase',
               }}
@@ -940,7 +998,7 @@ const RegistrationSuccessPage = () => {
             style={{
               margin: 0,
               paddingLeft: '1.2rem',
-              color: 'rgba(244, 234, 204, 0.72)',
+              color: 'rgba(244, 234, 204, 0.75)',
               fontSize: '0.84rem',
               lineHeight: '1.6',
             }}
@@ -956,7 +1014,7 @@ const RegistrationSuccessPage = () => {
           style={{
             marginTop: '1.75rem',
             fontSize: '0.75rem',
-            color: 'rgba(244, 234, 204, 0.35)',
+            color: 'rgba(244, 234, 204, 0.45)',
             letterSpacing: '0.08em',
             textAlign: 'center',
           }}
