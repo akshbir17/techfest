@@ -30,7 +30,7 @@ const RegistrationSection = () => {
           <div className="rules-divider"></div>
         </motion.div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto" style={{ width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', width: '100%', maxWidth: '980px', margin: '0 auto' }}>
           
           {/* 1. Hackathon Participation Card */}
           <motion.div
