@@ -172,8 +172,8 @@ const RegistrationSuccessPage = () => {
       doc.text('100% VERIFIED & CONFIRMED', m + 20, cardY + 38);
 
       // Right Side: Fee Box
-      const feeW = 58;
-      const feeX = m + cw - feeW - 5;
+      const feeW = 62;
+      const feeX = m + cw - feeW - 4;
       const feeY = cardY + 5;
       const feeH = cardH - 10;
 
@@ -188,18 +188,17 @@ const RegistrationSuccessPage = () => {
       doc.text('REGISTRATION FEE', feeX + 6, feeY + 7);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(20);
-      doc.setTextColor(225, 29, 72); // Pink/Red
-      doc.text(`INR ${amount || '0'}/-`, feeX + 6, feeY + 18);
+      doc.setFontSize(18);
+      doc.setTextColor(225, 29, 72); // Crimson/Red
+      doc.text(`INR ${amount || '0'}/-`, feeX + 6, feeY + 17);
 
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(75, 85, 99);
-      const evLines = doc.splitTextToSize(eventName, feeW - 12);
-      doc.text(evLines, feeX + 6, feeY + 25);
+      // Clean Event Name (clean rupee symbol and avoid unicode issues in PDF)
+      doc.setFont('helvetica', 'bold');
       doc.setFontSize(7.5);
-      doc.setTextColor(107, 114, 128);
-      doc.text('1 payment test', feeX + 6, feeY + 31);
+      doc.setTextColor(55, 65, 81);
+      const cleanEventName = eventName.replace(/[₹\u20B9]/g, 'Rs. ').trim();
+      const evLines = doc.splitTextToSize(cleanEventName, feeW - 12);
+      doc.text(evLines.slice(0, 2), feeX + 6, feeY + 24.5);
 
       // 4. REGISTRATION DETAILS SECTION
       let y = cardY + cardH + 10;
@@ -312,33 +311,43 @@ const RegistrationSuccessPage = () => {
         },
       ];
 
+      const instH = 14;
+      const instGap = 3.5;
+
       instructions.forEach((inst) => {
         doc.setFillColor(...inst.bgColor);
         doc.setDrawColor(...inst.borderColor);
         doc.setLineWidth(0.3);
-        doc.roundedRect(m, y, cw, 14, 3, 3, 'FD');
+        doc.roundedRect(m, y, cw, instH, 3, 3, 'FD');
+
+        // Perfectly centered numbered circle
+        const circleRadius = 3.8;
+        const circleCenterX = m + 7.5;
+        const circleCenterY = y + instH / 2;
 
         doc.setFillColor(...inst.circleColor);
-        doc.circle(m + 7, y + 7, 3.8, 'F');
+        doc.circle(circleCenterX, circleCenterY, circleRadius, 'F');
+
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8.5);
         doc.setTextColor(255, 255, 255);
-        doc.text(inst.num, m + 5.8, y + 9.5);
+        // Center text on circle horizontally and vertically
+        doc.text(inst.num, circleCenterX, circleCenterY + 1.15, { align: 'center' });
 
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8.5);
         doc.setTextColor(17, 24, 39);
-        doc.text(inst.title, m + 14, y + 5.5);
+        doc.text(inst.title, m + 15.5, y + 5.5);
 
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7.5);
         doc.setTextColor(71, 85, 105);
-        doc.text(inst.desc, m + 14, y + 10.5);
+        doc.text(inst.desc, m + 15.5, y + 10.3);
 
-        y += 17;
+        y += instH + instGap;
       });
 
-      y += 2;
+      y += 5; // Balanced breathing room before coordinators section
 
       // 6. OFFICIAL EVENT COORDINATORS SECTION
       doc.setFillColor(124, 58, 237);
@@ -359,13 +368,14 @@ const RegistrationSuccessPage = () => {
       ];
 
       const coordW = (cw - 4) / 2;
-      const coordH = 13;
+      const coordH = 13.5;
+      const coordGap = 3.5;
 
       coordinators.forEach((c, idx) => {
         const col = idx % 2;
         const row = Math.floor(idx / 2);
         const cx = m + col * (coordW + 4);
-        const cy = y + row * (coordH + 3);
+        const cy = y + row * (coordH + coordGap);
 
         doc.setFillColor(...c.bg);
         doc.setDrawColor(226, 232, 240);
@@ -378,17 +388,17 @@ const RegistrationSuccessPage = () => {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(6.5);
         doc.setTextColor(...c.roleColor);
-        doc.text(c.role, cx + 6, cy + 5);
+        doc.text(c.role, cx + 6, cy + 4.8);
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8.5);
+        doc.setFontSize(8.2);
         doc.setTextColor(17, 24, 39);
-        doc.text(c.name, cx + 6, cy + 11);
+        doc.text(c.name, cx + 6, cy + 10.3);
 
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8);
+        doc.setFontSize(7.8);
         doc.setTextColor(30, 41, 59);
-        doc.text(c.phone, cx + coordW - 4, cy + 11, { align: 'right' });
+        doc.text(c.phone, cx + coordW - 4, cy + 10.3, { align: 'right' });
       });
 
       // 7. FULL-WIDTH FOOTER
