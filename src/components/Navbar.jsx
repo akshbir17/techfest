@@ -85,6 +85,13 @@ const Navbar = () => {
 
           <button 
             className="nav-link"
+            onClick={() => scrollTo('themes')}
+          >
+            THEMES
+          </button>
+
+          <button 
+            className="nav-link"
             onClick={() => scrollTo('schedule')}
           >
             SCHEDULE

@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import HeroSection from '../components/sections/HeroSection';
 import AboutSection from '../components/sections/AboutSection';
 import EventsPage from './EventsPage';
+import ThemesSection from '../components/sections/ThemesSection';
 import ScheduleSection from '../components/sections/ScheduleSection';
 import CoordinatorsSection from '../components/sections/CoordinatorsSection';
 import RegistrationSection from '../components/sections/RegistrationSection';
@@ -46,6 +47,7 @@ const HomePage = () => {
       <AboutSection />
       {/* Scroll 2nd shows events */}
       <EventsPage isEmbedded={true} />
+      <ThemesSection />
       <ScheduleSection />
       <CoordinatorsSection />
       <RegistrationSection />
