@@ -13,7 +13,7 @@ const TEAM_EVENTS = [
     min: 2,
     max: 4,
     teamSize: '2 to 4 members',
-    description: 'Flagship event — build something amazing in 24 hours. ₹30,000 first prize, ₹14,000 second prize.',
+    description: 'Flagship event — build something amazing in 24 hours. Exciting cash prizes & trophies (Revealing Soon).',
     memberLabel: 'Team Member',
   },
   {

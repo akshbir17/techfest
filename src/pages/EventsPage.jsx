@@ -120,7 +120,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: '2 to 4 Members',
       date: '8th to 9th Dec 2026',
       venue: 'CSE Advanced Computing Lab',
-      prize: '₹30,000 First Prize, ₹14,000 Second Prize + Trophies',
+      prize: 'Revealing Soon',
       description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Kickoff at 12:00 PM on 8 Dec, Evaluation at 12:30 PM on 9 Dec. College-provided lunch, dinner, breakfast & accommodation included.',
       rules: [
         'Teams must consist of 2 to 4 members. Inter-college and inter-branch teams are fully permitted.',
