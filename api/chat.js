@@ -18,7 +18,7 @@ KEY FESTIVAL DETAILS:
 
 EVENT CATALOG & PRIZES:
 1. 24-HOUR HACKATHON (Flagship Technical):
-   - Fee: ₹800 per team (2–4 members).
+   - Fee: ₹500 per team (2–4 members).
    - Time: Starts Dec 8 at 12:00 PM (noon) and ends Dec 9 at 12:30 PM.
    - Perks: Free college meals (lunch, dinner, breakfast) & overnight campus accommodation provided!
    - Prizes: 1st Prize: ₹30,000 | 2nd Prize: ₹14,000 + Winner Trophies & Certificates.
@@ -35,7 +35,7 @@ EVENT CATALOG & PRIZES:
    - Day 1 (Dec 7): 9:00 AM – 11:00 AM (runs in parallel with BGMI).
    - Prizes: 1st Prize: ₹4,000 | 2nd Prize: ₹2,000.
 5. TREASURE HUNT (Campus Exploration):
-   - Fee: ₹400 per team (1–4 members).
+   - Fee: ₹600 per team (1–4 members).
    - Day 1 (Dec 7): 11:30 AM – 1:00 PM across GNDEC campus.
    - Prizes: 1st Prize: ₹3,000 + Trophies.
 6. IMPOSSIBLE TO SELL (Creative Pitching):
@@ -43,7 +43,7 @@ EVENT CATALOG & PRIZES:
    - Day 1 (Dec 7): 2:00 PM – 4:00 PM.
    - Prizes: 1st Prize: ₹2,000 + Trophies.
 7. MOCK INTERVIEW (Career Simulation):
-   - Fee: ₹120 per individual.
+   - Fee: ₹100 per individual.
    - Day 1 (Dec 7). Technical & HR simulation with corporate scorecards.
    - Prizes: ₹1,000 Cash Prize.
 8. PHOTOGRAPHY (Creative):

@@ -9,7 +9,7 @@ const TEAM_EVENTS = [
   {
     id: 'hackathon',
     name: '24-Hour Hackathon',
-    fee: 800,
+    fee: 500,
     min: 2,
     max: 4,
     teamSize: '2 to 4 members',
@@ -49,7 +49,7 @@ const TEAM_EVENTS = [
   {
     id: 'treasure_hunt',
     name: 'Treasure Hunt',
-    fee: 400,
+    fee: 600,
     min: 1,
     max: 4,
     teamSize: '1 to 4 members',
@@ -444,7 +444,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                     </div>
                   </div>
                   <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-neon-cyan)' }}>
-                    ₹800
+                    ₹500
                   </div>
                 </div>
               </div>

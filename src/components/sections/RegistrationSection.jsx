@@ -70,7 +70,7 @@ const RegistrationSection = () => {
 
                   <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
                     <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Registration Fee</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-bright-crimson)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>₹800 / Team</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-bright-crimson)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>₹500 / Team</div>
                     <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>Stay & meals included</div>
                   </div>
                 </div>
@@ -129,7 +129,7 @@ const RegistrationSection = () => {
                   <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
                     <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Entry Fee</div>
                     <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-neon-cyan)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>From ₹50</div>
-                    <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>₹50 to ₹400 per event</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>₹50 to ₹600 per event</div>
                   </div>
                 </div>
               </div>
@@ -260,7 +260,7 @@ const RegistrationSection = () => {
                         </p>
                         <ul style={{ fontSize: '0.78rem', color: 'rgba(244, 234, 204, 0.55)', paddingLeft: '1.1rem', marginBottom: '1.25rem', lineHeight: '1.5' }}>
                           <li>Photography (₹100)</li>
-                          <li>Mock Interview (₹120)</li>
+                          <li>Mock Interview (₹100)</li>
                           <li>Impossible to Sell (₹100)</li>
                           <li>Killer Game (₹50)</li>
                         </ul>
@@ -314,7 +314,7 @@ const RegistrationSection = () => {
                         </p>
                         <ul style={{ fontSize: '0.78rem', color: 'rgba(244, 234, 204, 0.55)', paddingLeft: '1.1rem', marginBottom: '1.25rem', lineHeight: '1.5' }}>
                           <li>TechQuiz (₹300 / team)</li>
-                          <li>Treasure Hunt (₹400 / team)</li>
+                          <li>Treasure Hunt (₹600 / team)</li>
                           <li>BGMI Tournament (₹400 / squad)</li>
                           <li>Free Fire (₹400 / squad)</li>
                         </ul>

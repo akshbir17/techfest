@@ -88,7 +88,7 @@ function doPost(e) {
     // Timestamp: dd/MM/yyyy, hh:mm a (e.g. 08/11/2026, 11:30 AM) in Indian Standard Time (IST)
     var timestampStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd/MM/yyyy, hh:mm a");
 
-    // Fee formatted with INR symbol (e.g. ₹800)
+    // Fee formatted with INR symbol (e.g. ₹500)
     var feeStr = "₹" + (data.amount_paid !== undefined ? data.amount_paid : 0);
 
     // Append participant registration row to the Google Sheet matching exact column format
@@ -528,7 +528,7 @@ function testSheet() {
         event_name: "24-Hour Hackathon",
         team_name: "Cyber Knights",
         team_members: "Red (+91 8888888888), Blue (+91 4444444444)",
-        amount_paid: 800,
+        amount_paid: 500,
         razorpay_payment_id: "pay_P1a2b3c4",
         payment_status: "PAID"
       })
