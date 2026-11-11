@@ -60,8 +60,8 @@ const RegistrationSuccessPage = () => {
       doc.setFillColor(255, 255, 255);
       doc.rect(0, 0, pw, ph, 'F');
 
-      // 2. FULL-BLEED GRADIENT HEADER (from x=0 to pw, y=0 to 70)
-      const hdrH = 70;
+      // 2. FULL-BLEED GRADIENT HEADER (from x=0 to pw, y=0 to 54)
+      const hdrH = 54;
       const steps = 60;
       const c1 = [67, 56, 202];   // Indigo
       const c2 = [124, 58, 237];  // Violet
@@ -78,7 +78,7 @@ const RegistrationSuccessPage = () => {
           const f = (t - 0.5) / 0.5;
           r = Math.round(c2[0] + (c3[0] - c2[0]) * f);
           g = Math.round(c2[1] + (c3[1] - c2[1]) * f);
-          b = Math.round(c2[2] + (c3[2] - c2[2]) * f);
+          b = Math.round(c3[2] + (c3[2] - c2[2]) * f);
         }
         doc.setFillColor(r, g, b);
         const sx = (i * pw) / steps;
@@ -88,46 +88,46 @@ const RegistrationSuccessPage = () => {
 
       // Header Typography
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(28);
+      doc.setFontSize(22);
       doc.setTextColor(255, 255, 255);
-      doc.text('SPECTRUM 1.0', m, 26);
+      doc.text('SPECTRUM 1.0', m, 18);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8.5);
+      doc.setFontSize(7.5);
       doc.setTextColor(252, 231, 243);
-      doc.text('THE AWAKENING  |  NATIONAL LEVEL TECHNICAL FESTIVAL', m, 33);
+      doc.text('THE AWAKENING  |  NATIONAL LEVEL TECHNICAL FESTIVAL', m, 24);
 
       doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
+      doc.setFontSize(7.2);
       doc.setTextColor(253, 242, 248);
-      doc.text('Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka', m, 40);
+      doc.text('Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka', m, 29);
 
       // Pills in Header
       // Left: Date Pill (Yellow)
       doc.setFillColor(251, 191, 36);
-      doc.roundedRect(m, 46, 50, 9, 4.5, 4.5, 'F');
+      doc.roundedRect(m, 33.5, 42, 7, 3.5, 3.5, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(8);
+      doc.setFontSize(7);
       doc.setTextColor(15, 23, 42);
-      doc.text('DEC 7 - 9, 2026', m + 11, 52);
+      doc.text('DEC 7 - 9, 2026', m + 7, 38.5);
 
       // Right: Official Pass Pill (White)
       doc.setFillColor(255, 255, 255);
-      doc.roundedRect(m + 54, 46, 36, 9, 4.5, 4.5, 'F');
+      doc.roundedRect(m + 46, 33.5, 32, 7, 3.5, 3.5, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7.5);
+      doc.setFontSize(6.8);
       doc.setTextColor(67, 56, 202);
-      doc.text('OFFICIAL PASS', m + 60, 52);
+      doc.text('OFFICIAL PASS', m + 51, 38.5);
 
       // 3. PARTICIPANT CARD (floating over header bottom)
-      const cardY = 60;
-      const cardH = 50;
+      const cardY = 44;
+      const cardH = 43;
 
       // White Card
       doc.setFillColor(255, 255, 255);
       doc.setDrawColor(226, 232, 240);
       doc.setLineWidth(0.4);
-      doc.roundedRect(m, cardY, cw, cardH, 5, 5, 'FD');
+      doc.roundedRect(m, cardY, cw, cardH, 4, 4, 'FD');
 
       // Left Indigo Edge
       doc.setFillColor(67, 56, 202);
@@ -136,13 +136,13 @@ const RegistrationSuccessPage = () => {
 
       // Participant Pass Label
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7.5);
+      doc.setFontSize(7);
       doc.setTextColor(219, 39, 119); // Pink
-      doc.text('PARTICIPANT PASS', m + 8, cardY + 9);
+      doc.text('PARTICIPANT PASS', m + 8, cardY + 7);
 
       // Big Participant Name
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(20);
+      doc.setFontSize(16);
       doc.setTextColor(17, 24, 39);
       const nameText = participantName || 'Registered Participant';
       let displayName = nameText;
@@ -153,64 +153,64 @@ const RegistrationSuccessPage = () => {
         }
         displayName += '...';
       }
-      doc.text(displayName, m + 8, cardY + 20);
+      doc.text(displayName, m + 8, cardY + 16);
 
       // Pills under name
       const entryText = teamName ? `TEAM: ${teamName.toUpperCase()}` : 'SOLO COMPETITOR';
       doc.setFillColor(13, 148, 136); // Teal
-      doc.roundedRect(m + 8, cardY + 24, doc.getTextWidth(entryText) * 0.53 + 12, 6.5, 3.2, 3.2, 'F');
+      doc.roundedRect(m + 8, cardY + 21, doc.getTextWidth(entryText) * 0.52 + 10, 6, 3, 3, 'F');
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(6.5);
       doc.setTextColor(255, 255, 255);
-      doc.text(entryText, m + 14, cardY + 28.5);
+      doc.text(entryText, m + 13, cardY + 25);
 
       doc.setFillColor(16, 185, 129); // Green
-      doc.roundedRect(m + 8, cardY + 33, 76, 7, 3.5, 3.5, 'F');
+      doc.roundedRect(m + 8, cardY + 29, 68, 6.5, 3.2, 3.2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7);
+      doc.setFontSize(6.5);
       doc.setTextColor(255, 255, 255);
-      doc.text('100% VERIFIED & CONFIRMED', m + 20, cardY + 38);
+      doc.text('100% VERIFIED & CONFIRMED', m + 14, cardY + 33.5);
 
       // Right Side: Fee Box
       const feeW = 62;
       const feeX = m + cw - feeW - 4;
-      const feeY = cardY + 5;
-      const feeH = cardH - 10;
+      const feeY = cardY + 4;
+      const feeH = cardH - 8;
 
       doc.setFillColor(255, 253, 240); // Pale yellow
       doc.setDrawColor(254, 240, 138); // Soft yellow border
       doc.setLineWidth(0.4);
-      doc.roundedRect(feeX, feeY, feeW, feeH, 4, 4, 'FD');
+      doc.roundedRect(feeX, feeY, feeW, feeH, 3.5, 3.5, 'FD');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7);
+      doc.setFontSize(6.5);
       doc.setTextColor(180, 83, 9);
-      doc.text('REGISTRATION FEE', feeX + 6, feeY + 7);
+      doc.text('REGISTRATION FEE', feeX + 6, feeY + 6.5);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(18);
+      doc.setFontSize(16);
       doc.setTextColor(225, 29, 72); // Crimson/Red
-      doc.text(`INR ${amount || '0'}/-`, feeX + 6, feeY + 17);
+      doc.text(`INR ${amount || '0'}/-`, feeX + 6, feeY + 16);
 
       // Clean Event Name (clean rupee symbol and avoid unicode issues in PDF)
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7.5);
+      doc.setFontSize(7.2);
       doc.setTextColor(55, 65, 81);
       const cleanEventName = eventName.replace(/[₹\u20B9]/g, 'Rs. ').trim();
       const evLines = doc.splitTextToSize(cleanEventName, feeW - 12);
-      doc.text(evLines.slice(0, 2), feeX + 6, feeY + 24.5);
+      doc.text(evLines.slice(0, 2), feeX + 6, feeY + 23);
 
       // 4. REGISTRATION DETAILS SECTION
-      let y = cardY + cardH + 10;
+      let y = cardY + cardH + 6;
 
       // Header pill & text
       doc.setFillColor(67, 56, 202);
-      doc.roundedRect(m, y - 3, 5, 5, 1.5, 1.5, 'F');
+      doc.roundedRect(m, y - 2.5, 4.5, 4.5, 1.2, 1.2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
+      doc.setFontSize(8.8);
       doc.setTextColor(67, 56, 202);
-      doc.text('REGISTRATION DETAILS', m + 8, y + 1);
-      y += 6;
+      doc.text('REGISTRATION DETAILS', m + 7.5, y + 1);
+      y += 4.5;
 
       const halfW = (cw - 4) / 2;
 
@@ -218,71 +218,71 @@ const RegistrationSuccessPage = () => {
       doc.setFillColor(238, 242, 255);
       doc.setDrawColor(224, 231, 255);
       doc.setLineWidth(0.3);
-      doc.roundedRect(m, y, halfW, 16, 3, 3, 'FD');
+      doc.roundedRect(m, y, halfW, 13.5, 2.5, 2.5, 'FD');
       doc.setFillColor(79, 70, 229);
-      doc.rect(m, y + 1.5, 2.5, 13, 'F');
+      doc.rect(m, y + 1.5, 2.5, 10.5, 'F');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6.5);
+      doc.setFontSize(6);
       doc.setTextColor(67, 56, 202);
-      doc.text('CONFIRMATION (ORDER) ID', m + 6, y + 5.5);
+      doc.text('CONFIRMATION (ORDER) ID', m + 6, y + 4.8);
 
       doc.setFont('courier', 'bold');
-      doc.setFontSize(8.5);
+      doc.setFontSize(8);
       doc.setTextColor(15, 23, 42);
-      doc.text(orderId, m + 6, y + 11.5);
+      doc.text(orderId, m + 6, y + 10);
 
       // Card 2: Razorpay Payment ID (Light teal)
       const rightX = m + halfW + 4;
       doc.setFillColor(240, 253, 250);
       doc.setDrawColor(204, 251, 241);
       doc.setLineWidth(0.3);
-      doc.roundedRect(rightX, y, halfW, 16, 3, 3, 'FD');
+      doc.roundedRect(rightX, y, halfW, 13.5, 2.5, 2.5, 'FD');
       doc.setFillColor(13, 148, 136);
-      doc.rect(rightX, y + 1.5, 2.5, 13, 'F');
+      doc.rect(rightX, y + 1.5, 2.5, 10.5, 'F');
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(6.5);
+      doc.setFontSize(6);
       doc.setTextColor(13, 148, 136);
-      doc.text('RAZORPAY PAYMENT ID', rightX + 6, y + 5.5);
+      doc.text('RAZORPAY PAYMENT ID', rightX + 6, y + 4.8);
 
       doc.setFont('courier', 'bold');
-      doc.setFontSize(8.5);
+      doc.setFontSize(8);
       doc.setTextColor(15, 23, 42);
-      doc.text(paymentId || 'N/A', rightX + 6, y + 11.5);
+      doc.text(paymentId || 'N/A', rightX + 6, y + 10);
 
-      y += 20;
+      y += 16;
 
       // Card 3: Database Registration ID (Light pink)
       if (registrationId) {
         doc.setFillColor(253, 242, 248);
         doc.setDrawColor(252, 231, 243);
         doc.setLineWidth(0.3);
-        doc.roundedRect(m, y, cw, 16, 3, 3, 'FD');
+        doc.roundedRect(m, y, cw, 13.5, 2.5, 2.5, 'FD');
         doc.setFillColor(219, 39, 119);
-        doc.rect(m, y + 1.5, 2.5, 13, 'F');
+        doc.rect(m, y + 1.5, 2.5, 10.5, 'F');
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(6.5);
+        doc.setFontSize(6);
         doc.setTextColor(219, 39, 119);
-        doc.text('DATABASE REGISTRATION ID (UUID)', m + 6, y + 5.5);
+        doc.text('DATABASE REGISTRATION ID (UUID)', m + 6, y + 4.8);
 
         doc.setFont('courier', 'bold');
-        doc.setFontSize(8.5);
+        doc.setFontSize(8);
         doc.setTextColor(15, 23, 42);
-        doc.text(registrationId, m + 6, y + 11.5);
+        doc.text(registrationId, m + 6, y + 10);
 
-        y += 20;
+        y += 16;
       }
 
       // 5. CAMPUS INSTRUCTIONS SECTION
       doc.setFillColor(249, 115, 22);
-      doc.roundedRect(m, y - 3, 5, 5, 1.5, 1.5, 'F');
+      doc.roundedRect(m, y - 2.5, 4.5, 4.5, 1.2, 1.2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
+      doc.setFontSize(8.8);
       doc.setTextColor(234, 88, 12);
-      doc.text('CAMPUS INSTRUCTIONS', m + 8, y + 1);
-      y += 6;
+      doc.text('CAMPUS INSTRUCTIONS', m + 7.5, y + 1);
+      y += 4.5;
 
       const instructions = [
         {
@@ -311,52 +311,51 @@ const RegistrationSuccessPage = () => {
         },
       ];
 
-      const instH = 14;
-      const instGap = 3.5;
+      const instH = 11.5;
+      const instGap = 2.2;
 
       instructions.forEach((inst) => {
         doc.setFillColor(...inst.bgColor);
         doc.setDrawColor(...inst.borderColor);
         doc.setLineWidth(0.3);
-        doc.roundedRect(m, y, cw, instH, 3, 3, 'FD');
+        doc.roundedRect(m, y, cw, instH, 2.5, 2.5, 'FD');
 
         // Perfectly centered numbered circle
-        const circleRadius = 3.8;
-        const circleCenterX = m + 7.5;
+        const circleRadius = 3.5;
+        const circleCenterX = m + 7;
         const circleCenterY = y + instH / 2;
 
         doc.setFillColor(...inst.circleColor);
         doc.circle(circleCenterX, circleCenterY, circleRadius, 'F');
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8.5);
+        doc.setFontSize(7.8);
         doc.setTextColor(255, 255, 255);
-        // Center text on circle horizontally and vertically
-        doc.text(inst.num, circleCenterX, circleCenterY + 1.15, { align: 'center' });
+        doc.text(inst.num, circleCenterX, circleCenterY + 1.05, { align: 'center' });
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8.5);
+        doc.setFontSize(7.8);
         doc.setTextColor(17, 24, 39);
-        doc.text(inst.title, m + 15.5, y + 5.5);
+        doc.text(inst.title, m + 14.5, y + 4.6);
 
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7.5);
+        doc.setFontSize(7);
         doc.setTextColor(71, 85, 105);
-        doc.text(inst.desc, m + 15.5, y + 10.3);
+        doc.text(inst.desc, m + 14.5, y + 8.8);
 
         y += instH + instGap;
       });
 
-      y += 5; // Balanced breathing room before coordinators section
+      y += 3.5;
 
       // 6. OFFICIAL EVENT COORDINATORS SECTION
       doc.setFillColor(124, 58, 237);
-      doc.roundedRect(m, y - 3, 5, 5, 1.5, 1.5, 'F');
+      doc.roundedRect(m, y - 2.5, 4.5, 4.5, 1.2, 1.2, 'F');
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9.5);
+      doc.setFontSize(8.8);
       doc.setTextColor(124, 58, 237);
-      doc.text('OFFICIAL EVENT COORDINATORS', m + 8, y + 1);
-      y += 6;
+      doc.text('OFFICIAL EVENT COORDINATORS', m + 7.5, y + 1);
+      y += 4.5;
 
       const coordinators = [
         { role: 'FACULTY COORDINATOR', name: 'Dr. Praveen Reddy', phone: '+91 99165 42332', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
@@ -368,8 +367,8 @@ const RegistrationSuccessPage = () => {
       ];
 
       const coordW = (cw - 4) / 2;
-      const coordH = 13.5;
-      const coordGap = 3.5;
+      const coordH = 11.5;
+      const coordGap = 2.2;
 
       coordinators.forEach((c, idx) => {
         const col = idx % 2;
@@ -380,29 +379,29 @@ const RegistrationSuccessPage = () => {
         doc.setFillColor(...c.bg);
         doc.setDrawColor(226, 232, 240);
         doc.setLineWidth(0.3);
-        doc.roundedRect(cx, cy, coordW, coordH, 3, 3, 'FD');
+        doc.roundedRect(cx, cy, coordW, coordH, 2.5, 2.5, 'FD');
 
         doc.setFillColor(...c.border);
-        doc.rect(cx, cy + 1.5, 2.5, coordH - 3, 'F');
+        doc.rect(cx, cy + 1.2, 2.5, coordH - 2.4, 'F');
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(6.5);
+        doc.setFontSize(6);
         doc.setTextColor(...c.roleColor);
-        doc.text(c.role, cx + 6, cy + 4.8);
+        doc.text(c.role, cx + 5.5, cy + 4.2);
 
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8.2);
+        doc.setFontSize(7.8);
         doc.setTextColor(17, 24, 39);
-        doc.text(c.name, cx + 6, cy + 10.3);
+        doc.text(c.name, cx + 5.5, cy + 9);
 
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7.8);
+        doc.setFontSize(7.2);
         doc.setTextColor(30, 41, 59);
-        doc.text(c.phone, cx + coordW - 4, cy + 10.3, { align: 'right' });
+        doc.text(c.phone, cx + coordW - 4, cy + 9, { align: 'right' });
       });
 
       // 7. FULL-WIDTH FOOTER
-      const footH = 20;
+      const footH = 18;
       const footY = ph - footH;
 
       doc.setFillColor(15, 23, 42); // Deep slate/indigo
@@ -414,28 +413,28 @@ const RegistrationSuccessPage = () => {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(6.5);
       doc.setTextColor(52, 211, 153); // Mint
-      doc.text('NEED HELP?', m, footY + 5);
+      doc.text('NEED HELP?', m, footY + 4.5);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
+      doc.setFontSize(8.5);
       doc.setTextColor(255, 255, 255);
-      doc.text('Spectrum101213@gmail.com', m, footY + 10.5);
+      doc.text('Spectrum101213@gmail.com', m, footY + 9.5);
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(6.5);
       doc.setTextColor(148, 163, 184);
-      doc.text('SPECTRUM 1.0  |  DECEMBER 7-9, 2026  |  GNDEC BIDAR', m, footY + 15.5);
+      doc.text('SPECTRUM 1.0  |  DECEMBER 7-9, 2026  |  GNDEC BIDAR', m, footY + 14);
 
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(9);
+      doc.setFontSize(8.5);
       doc.setTextColor(255, 255, 255);
-      doc.text('spectrum10.vercel.app', pw - m, footY + 10.5, { align: 'right' });
+      doc.text('spectrum10.vercel.app', pw - m, footY + 9.5, { align: 'right' });
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(6.5);
       doc.setTextColor(148, 163, 184);
       const nowStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-      doc.text(`Generated ${nowStr} (IST)  |  System Authorized Pass`, pw - m, footY + 15.5, { align: 'right' });
+      doc.text(`Generated ${nowStr} (IST)  |  System Authorized Pass`, pw - m, footY + 14, { align: 'right' });
 
       doc.save(`Spectrum1.0_Pass_${orderId.slice(-8)}.pdf`);
     } catch (err) {
