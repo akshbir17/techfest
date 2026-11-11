@@ -116,7 +116,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       name: '24-Hour Hackathon',
       category: 'Technical',
       type: 'team',
-      price: '₹1 per team',
+      price: '₹500 per team',
       teamSize: '2 to 4 Members',
       date: '8th to 9th Dec 2026',
       venue: 'CSE Advanced Computing Lab',
