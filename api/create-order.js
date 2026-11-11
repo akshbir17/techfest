@@ -42,6 +42,7 @@ export default async function handler(req, res) {
       college,
       eventId,
       teamName = null,
+      theme = null,
       members = [],
     } = req.body || {};
 
@@ -102,6 +103,7 @@ export default async function handler(req, res) {
         college: trimmedCollege,
         type: eventType,
         teamName: teamName ? String(teamName).trim() : '',
+        theme: theme ? String(theme).trim() : '',
       },
     };
 

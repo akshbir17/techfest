@@ -58,6 +58,13 @@ const TEAM_EVENTS = [
   },
 ];
 
+export const HACKATHON_THEMES = [
+  'Agriculture, FoodTech & Rural Development',
+  'MedTech, HealthTech & Workplace Wellbeing',
+  'Clean & Green Technology (Sustainability)',
+  'Smart Automation & Agentic AI',
+];
+
 const getMinAdditional = (ev) => Math.max(0, (ev?.min || 1) - 1);
 const getMaxAdditional = (ev) => Math.max(0, (ev?.max || 4) - 1);
 
@@ -73,6 +80,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
     leaderEmail: '',
     leaderPhone: '',
     college: '',
+    theme: '',
   });
 
   // Dynamic additional members (Member 2, Member 3, etc.)
@@ -102,6 +110,9 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
   const validate = () => {
     const errs = {};
     if (!form.teamName.trim()) errs.teamName = 'Team name is required';
+    if (selectedEvent?.id === 'hackathon' && !form.theme.trim()) {
+      errs.theme = 'Please select a hackathon theme';
+    }
     if (!form.leaderName.trim()) errs.leaderName = "Leader's full name is required";
     if (!form.leaderEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.leaderEmail))
       errs.leaderEmail = 'Valid leader email is required';
@@ -217,6 +228,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
           phone: form.leaderPhone.trim(),
           college: form.college.trim(),
           teamName: form.teamName.trim(),
+          theme: form.theme.trim() || null,
           members: activeMembers,
           eventId: selectedEvent.id,
           eventName: selectedEvent.name,
@@ -274,6 +286,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                   phone: form.leaderPhone.trim(),
                   college: form.college.trim(),
                   teamName: form.teamName.trim(),
+                  theme: form.theme.trim() || null,
                   members: activeMembers,
                   eventId: selectedEvent.id,
                   eventName: selectedEvent.name,
@@ -287,7 +300,8 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
             if (verifyRes.ok && verifyData.success) {
               onClose();
               const regParam = verifyData.registrationId ? `&reg_id=${verifyData.registrationId}` : '';
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.name)}&team=${encodeURIComponent(form.teamName)}&amount=${selectedEvent.fee}${regParam}`);
+              const themeParam = form.theme ? `&theme=${encodeURIComponent(form.theme)}` : '';
+              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}&amount=${selectedEvent.fee}${regParam}`);
             } else {
               setServerError(verifyData.error || `Payment verification failed. Payment ID: ${response.razorpay_payment_id}`);
               setLoading(false);
@@ -499,6 +513,75 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
 
             {/* Leader & Team Form Fields */}
             <div className="modal-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.9rem' }}>
+              {/* Select Theme for 24-Hour Hackathon */}
+              {selectedEvent?.id === 'hackathon' && (
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label
+                    htmlFor="team-reg-theme"
+                    style={{
+                      display: 'block',
+                      fontSize: '0.75rem',
+                      color: 'var(--color-star-white)',
+                      marginBottom: '0.45rem',
+                      letterSpacing: '0.15em',
+                      fontWeight: 'bold',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Select Theme <span style={{ color: 'var(--color-neon-cyan)' }}>*</span>
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <select
+                      id="team-reg-theme"
+                      name="theme"
+                      value={form.theme}
+                      onChange={handleChange}
+                      disabled={loading}
+                      style={{
+                        width: '100%',
+                        background: 'var(--color-deep-blue)',
+                        border: errors.theme ? '1px solid #ff1744' : '1px solid #333',
+                        borderBottom: errors.theme ? '2px solid #ff1744' : '2px solid var(--color-star-white)',
+                        color: form.theme ? 'var(--color-star-white)' : 'rgba(244, 234, 204, 0.45)',
+                        padding: '0.85rem 2.5rem 0.85rem 1rem',
+                        fontFamily: 'var(--font-primary)',
+                        fontSize: '0.92rem',
+                        cursor: 'pointer',
+                        appearance: 'none',
+                        WebkitAppearance: 'none',
+                        outline: 'none',
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <option value="" disabled style={{ background: '#121212', color: 'rgba(244,234,204,0.45)' }}>
+                        -- Select Theme --
+                      </option>
+                      {HACKATHON_THEMES.map((themeHeading, idx) => (
+                        <option key={idx} value={themeHeading} style={{ background: '#121212', color: '#f4eacc' }}>
+                          {themeHeading}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      size={16}
+                      style={{
+                        position: 'absolute',
+                        right: '1rem',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: 'var(--color-star-white)',
+                        pointerEvents: 'none',
+                      }}
+                    />
+                  </div>
+                  {errors.theme && (
+                    <span style={{ color: '#ff1744', fontSize: '0.75rem', marginTop: '0.35rem', display: 'block' }}>
+                      {errors.theme}
+                    </span>
+                  )}
+                </div>
+              )}
+
               <div style={{ gridColumn: '1 / -1' }}>
                 <FieldInput
                   id="team-reg-teamname"

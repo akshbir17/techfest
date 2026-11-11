@@ -25,6 +25,7 @@ const RegistrationSuccessPage = () => {
   const participantName = searchParams.get('name') || '';
   const teamName = searchParams.get('team') || '';
   const amount = searchParams.get('amount') || '';
+  const theme = searchParams.get('theme') || '';
 
   const eventName = decodeURIComponent(rawEventName);
   const [copiedKey, setCopiedKey] = useState(null);
@@ -632,12 +633,32 @@ const RegistrationSuccessPage = () => {
                 fontSize: '1.65rem',
                 fontWeight: 800,
                 color: 'var(--color-star-white, #f4eacc)',
-                margin: '0.25rem 0 1.25rem 0',
+                margin: '0.25rem 0 0.5rem 0',
                 letterSpacing: '0.04em',
               }}
             >
               {eventName}
             </h2>
+
+            {theme && (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  padding: '0.35rem 0.85rem',
+                  background: 'rgba(211, 47, 47, 0.12)',
+                  border: '1px solid rgba(211, 47, 47, 0.35)',
+                  borderRadius: '4px',
+                  marginBottom: '1rem',
+                  fontSize: '0.8rem',
+                  color: 'var(--color-star-white, #f4eacc)',
+                }}
+              >
+                <span style={{ color: '#d32f2f', fontWeight: 800, letterSpacing: '0.05em' }}>THEME:</span>
+                <span>{theme}</span>
+              </div>
+            )}
 
             {/* Quick Meta Grid matching Registration Highlights */}
             <div

@@ -153,7 +153,9 @@ export default async function handler(req, res) {
         const email = registrationRecord?.email || registrationData?.email || '';
         const phone = registrationRecord?.phone || registrationData?.phone || '';
         const eventName = registrationRecord?.event_name || registrationData?.eventName || '';
-        const teamName = registrationRecord?.team_name || registrationData?.teamName || 'N/A';
+        const rawTeamName = registrationRecord?.team_name || registrationData?.teamName || 'N/A';
+        const themeVal = registrationRecord?.theme || registrationData?.theme || null;
+        const teamName = themeVal && rawTeamName !== 'N/A' ? `${rawTeamName} [Theme: ${themeVal}]` : rawTeamName;
         const amountPaid = Number(registrationRecord?.amount || registrationRecord?.fee || registrationData?.fee || 0);
 
         let membersFormatted = 'N/A';
@@ -183,6 +185,7 @@ export default async function handler(req, res) {
           college: registrationRecord?.college || registrationData?.college || 'N/A',
           event_name: eventName,
           team_name: teamName,
+          theme: themeVal || '',
           team_members: membersFormatted,
           amount_paid: amountPaid,
           razorpay_payment_id: razorpay_payment_id,
