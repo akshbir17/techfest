@@ -84,26 +84,22 @@ function doPost(e) {
     // Fee formatted with INR symbol (e.g. ₹1)
     var feeStr = "₹" + (data.amount_paid !== undefined ? data.amount_paid : 0);
 
-    // Confirmation Email Status
-    var emailStatusText = (emailSent === true) ? "Sent" : "Failed";
-
-    // Append participant registration row to the Google Sheet matching exact column format
-    var row = [
-      timestampStr,
-      data.registration_id || data.order_id || "N/A",
-      participantName,
-      data.email || "N/A",
-      data.phone ? "'" + String(data.phone).replace(/\s+/g, '') : "N/A",
-      data.college || "N/A",
-      data.event_name || "N/A",
-      data.theme || "N/A",
-      data.team_name || "N/A",
-      membersFormatted,
-      feeStr,
-      data.razorpay_payment_id || "N/A",
-      data.payment_status || "PAID",
-      emailStatusText
-    ];
+    // Build row using push statements to guarantee zero syntax or comma errors
+    var row = [];
+    row.push(timestampStr);
+    row.push(data.registration_id || data.order_id || "N/A");
+    row.push(participantName);
+    row.push(data.email || "N/A");
+    row.push(data.phone ? "'" + String(data.phone).replace(/\s+/g, '') : "N/A");
+    row.push(data.college || "N/A");
+    row.push(data.event_name || "N/A");
+    row.push(data.theme || "N/A");
+    row.push(data.team_name || "N/A");
+    row.push(membersFormatted);
+    row.push(feeStr);
+    row.push(data.razorpay_payment_id || "N/A");
+    row.push(data.payment_status || "PAID");
+    row.push(emailSent === true ? "Sent" : "Failed");
 
     sheet.appendRow(row);
 
