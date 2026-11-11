@@ -8,38 +8,16 @@ const HeroSection = () => {
     <section id="event" className="section-container hero-section">
       <div className="hero-content">
         
-        {/* College & Organizing Bodies */}
+        {/* College Subtitle */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-          style={{ marginBottom: '1.25rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
+          style={{ marginBottom: '1rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
-          <span className="hero-subtitle" style={{ display: 'block', marginBottom: '0.65rem', letterSpacing: '0.12em' }}>
-            GURU NANAK DEV ENGINEERING COLLEGE BIDAR
+          <span className="hero-subtitle">
+            GURU NANAK DEV ENGINEERING COLLEGE BIDAR PRESENTS
           </span>
-
-          <p className="hero-organized-by" style={{ marginBottom: '0.65rem' }}>
-            Organized By
-          </p>
-
-          <div className="hero-departments">
-            <div className="hero-dept-item" style={{ maxWidth: '360px' }}>
-              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
-                INSTITUTION INNOVATION COUNCIL
-              </div>
-            </div>
-
-            <span className="hero-dept-amp">
-              &
-            </span>
-
-            <div className="hero-dept-item" style={{ maxWidth: '460px' }}>
-              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
-                GURU NANAK JHIRA ENTREPRENEURSHIP RESEARCH AND BUSINESS INCUBATION FOUNDATION
-              </div>
-            </div>
-          </div>
         </motion.div>
 
         <motion.h1 
@@ -50,12 +28,42 @@ const HeroSection = () => {
         >
           <span className="text-gradient">SPECTRUM</span> 1.0
         </motion.h1>
-        
-        {/* Organizing Departments */}
+
+        {/* Organizing Bodies */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.7, ease: "easeOut" }}
+          transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
+          style={{ marginBottom: '1.75rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
+        >
+          <p className="hero-organized-by">
+            Organized By
+          </p>
+
+          <div className="hero-departments">
+            <div className="hero-dept-item" style={{ maxWidth: '380px' }}>
+              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
+                INSTITUTION INNOVATION COUNCIL
+              </div>
+            </div>
+
+            <span className="hero-dept-amp">
+              &
+            </span>
+
+            <div className="hero-dept-item" style={{ maxWidth: '480px' }}>
+              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
+                GURU NANAK JHIRA ENTREPRENEURSHIP RESEARCH AND BUSINESS INCUBATION FOUNDATION
+              </div>
+            </div>
+          </div>
+        </motion.div>
+        
+        {/* Associated Departments */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
           style={{ marginBottom: '2rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
           <p className="hero-organized-by">
