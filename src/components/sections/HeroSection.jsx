@@ -16,7 +16,10 @@ const HeroSection = () => {
           style={{ marginBottom: '1rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
           <span className="hero-subtitle">
-            GURU NANAK DEV ENGINEERING COLLEGE BIDAR PRESENTS
+            GURU NANAK DEV ENGINEERING COLLEGE BIDAR
+            <span style={{ display: 'block', fontSize: '0.74em', letterSpacing: '0.24em', opacity: 0.85, marginTop: '0.35rem' }}>
+              PRESENTS
+            </span>
           </span>
         </motion.div>
 
@@ -67,7 +70,7 @@ const HeroSection = () => {
           style={{ marginBottom: '2rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
           <p className="hero-organized-by">
-            Associated With
+            In Association With
           </p>
 
           <div className="hero-departments">
