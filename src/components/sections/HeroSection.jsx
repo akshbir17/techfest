@@ -35,7 +35,7 @@ const HeroSection = () => {
           style={{ marginBottom: '2rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
           <p className="hero-organized-by">
-            Organized By
+            Associated With
           </p>
 
           <div className="hero-departments">

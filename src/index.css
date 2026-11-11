@@ -489,15 +489,15 @@ html.lenis { height: auto; }
 }
 
 .hero-organized-by {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: rgba(244, 234, 204, 0.7);
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--color-star-white);
   text-transform: uppercase;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
   -webkit-text-stroke: 0.5px #000000;
   paint-order: stroke fill;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9), 0 0 12px rgba(211, 47, 47, 0.4);
 }
 
 .hero-departments {
