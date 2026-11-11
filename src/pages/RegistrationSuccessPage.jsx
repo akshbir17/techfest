@@ -349,20 +349,22 @@ const RegistrationSuccessPage = () => {
       y += 6;
 
       const coordinators = [
+        { role: 'FACULTY COORDINATOR', name: 'Dr. Praveen Reddy', phone: '+91 99165 42332', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
+        { role: 'CONVENER (IIC)', name: 'Prof. Channa Reddy', phone: '+91 861 881 3191', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
+        { role: 'CEO (INCUBATION CTR)', name: 'Prof. Rakesh Marturkar', phone: '+91 99024 24263', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
         { role: 'STUDENT COORDINATOR', name: 'Armaandeep Singh', phone: '+91 8427027540', border: [13, 148, 136], bg: [240, 253, 250], roleColor: [13, 148, 136] },
         { role: 'STUDENT COORDINATOR', name: 'Sangmesh', phone: '+91 9353142522', border: [13, 148, 136], bg: [240, 253, 250], roleColor: [13, 148, 136] },
         { role: 'STUDENT COORDINATOR', name: 'Abdul Aziz', phone: '+91 8296683831', border: [13, 148, 136], bg: [240, 253, 250], roleColor: [13, 148, 136] },
-        { role: 'FACULTY COORDINATOR', name: 'Dr. Praveen Reddy', phone: '+91 99165 42332', border: [219, 39, 119], bg: [253, 242, 248], roleColor: [219, 39, 119] },
       ];
 
       const coordW = (cw - 4) / 2;
-      const coordH = 15;
+      const coordH = 13;
 
       coordinators.forEach((c, idx) => {
         const col = idx % 2;
         const row = Math.floor(idx / 2);
         const cx = m + col * (coordW + 4);
-        const cy = y + row * (coordH + 4);
+        const cy = y + row * (coordH + 3);
 
         doc.setFillColor(...c.bg);
         doc.setDrawColor(226, 232, 240);

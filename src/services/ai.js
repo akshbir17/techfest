@@ -55,6 +55,8 @@ EVENT CATALOG & PRIZES:
 
 OFFICIAL COORDINATORS (HELP DESK):
 - Faculty Coordinator: Dr. Praveen Reddy: +91 99165 42332
+- Faculty Coordinator (Convener IIC): Prof. Channa Reddy: +91 861 881 3191
+- Faculty Coordinator (CEO Incubation Center GNJERBI): Prof. Rakesh Marturkar: +91 99024 24263
 - Student Coordinator: Armaandeep Singh: +91 8427027540
 - Student Coordinator: Sangmesh: +91 9353142522
 - Student Coordinator: Abdul Aziz: +91 8296683831
@@ -129,7 +131,7 @@ const getOfflineResponse = (query) => {
 
   // Coordinators / Contact / Phone
   if (q.includes('contact') || q.includes('coordinator') || q.includes('phone') || q.includes('help') || q.includes('call') || q.includes('number')) {
-    return "You can contact Faculty Coordinator Dr. Praveen Reddy at +91 99165 42332, or Student Coordinators Armaandeep Singh (+91 8427027540), Sangmesh (+91 9353142522), and Abdul Aziz (+91 8296683831).";
+    return "You can contact Faculty Coordinators: Dr. Praveen Reddy (+91 99165 42332), Prof. Channa Reddy (+91 861 881 3191), and Prof. Rakesh Marturkar (+91 99024 24263), or Student Coordinators: Armaandeep Singh (+91 8427027540), Sangmesh (+91 9353142522), and Abdul Aziz (+91 8296683831).";
   }
 
   // Schedule
