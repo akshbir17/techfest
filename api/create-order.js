@@ -40,6 +40,7 @@ export default async function handler(req, res) {
       eventId,
       teamName = null,
       theme = null,
+      accommodation = null,
       members = [],
     } = req.body || {};
 

@@ -155,6 +155,7 @@ export default async function handler(req, res) {
         const eventName = registrationRecord?.event_name || registrationData?.eventName || '';
         const rawTeamName = registrationRecord?.team_name || registrationData?.teamName || 'N/A';
         const themeVal = registrationRecord?.theme || registrationData?.theme || null;
+        const accommodationVal = registrationRecord?.accommodation || registrationData?.accommodation || (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A');
         const teamName = rawTeamName;
         const amountPaid = Number(registrationRecord?.amount || registrationRecord?.fee || registrationData?.fee || 0);
 
@@ -184,8 +185,9 @@ export default async function handler(req, res) {
           phone: phone,
           college: registrationRecord?.college || registrationData?.college || 'N/A',
           event_name: eventName,
+          theme: themeVal || 'N/A',
+          accommodation: accommodationVal,
           team_name: teamName,
-          theme: themeVal || '',
           team_members: membersFormatted,
           amount_paid: amountPaid,
           razorpay_payment_id: razorpay_payment_id,

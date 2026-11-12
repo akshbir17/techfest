@@ -81,6 +81,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
     leaderPhone: '',
     college: '',
     theme: '',
+    accommodation: 'Yes',
   });
 
   // Dynamic additional members (Member 2, Member 3, etc.)
@@ -229,6 +230,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
           college: form.college.trim(),
           teamName: form.teamName.trim(),
           theme: form.theme.trim() || null,
+          accommodation: selectedEvent?.id === 'hackathon' ? (form.accommodation || 'Yes') : 'N/A',
           members: activeMembers,
           eventId: selectedEvent.id,
           eventName: selectedEvent.name,
@@ -287,6 +289,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                   college: form.college.trim(),
                   teamName: form.teamName.trim(),
                   theme: form.theme.trim() || null,
+                  accommodation: selectedEvent?.id === 'hackathon' ? (form.accommodation || 'Yes') : 'N/A',
                   members: activeMembers,
                   eventId: selectedEvent.id,
                   eventName: selectedEvent.name,
@@ -301,7 +304,8 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
               onClose();
               const regParam = verifyData.registrationId ? `&reg_id=${verifyData.registrationId}` : '';
               const themeParam = form.theme ? `&theme=${encodeURIComponent(form.theme)}` : '';
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}&amount=${selectedEvent.fee}${regParam}`);
+              const accomParam = selectedEvent?.id === 'hackathon' ? `&accommodation=${encodeURIComponent(form.accommodation || 'Yes')}` : '';
+              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}${regParam}`);
             } else {
               setServerError(verifyData.error || `Payment verification failed. Payment ID: ${response.razorpay_payment_id}`);
               setLoading(false);
@@ -579,6 +583,99 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                       {errors.theme}
                     </span>
                   )}
+                </div>
+              )}
+
+              {/* Accommodation Option for 24-Hour Hackathon */}
+              {selectedEvent?.id === 'hackathon' && (
+                <div style={{ gridColumn: '1 / -1', marginTop: '0.15rem', marginBottom: '0.35rem' }}>
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '0.75rem',
+                      color: 'var(--color-star-white)',
+                      marginBottom: '0.45rem',
+                      letterSpacing: '0.15em',
+                      fontWeight: 'bold',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Campus Accommodation Needed? <span style={{ color: 'var(--color-neon-cyan)' }}>*</span>
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => setForm((prev) => ({ ...prev, accommodation: 'Yes' }))}
+                      disabled={loading}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.6rem',
+                        padding: '0.85rem 1rem',
+                        borderRadius: '4px',
+                        background: form.accommodation === 'Yes' ? 'rgba(211, 47, 47, 0.22)' : 'rgba(255, 255, 255, 0.03)',
+                        border: form.accommodation === 'Yes' ? '1.5px solid var(--color-bright-crimson)' : '1px solid rgba(244, 234, 204, 0.2)',
+                        color: form.accommodation === 'Yes' ? 'var(--color-star-white)' : 'rgba(244, 234, 204, 0.65)',
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '0.85rem',
+                        letterSpacing: '0.08em',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                          background: form.accommodation === 'Yes' ? 'var(--color-bright-crimson)' : 'transparent',
+                          border: '2px solid var(--color-bright-crimson)',
+                          display: 'inline-block',
+                          boxShadow: form.accommodation === 'Yes' ? '0 0 8px var(--color-bright-crimson)' : 'none',
+                        }}
+                      />
+                      YES (STAY NEEDED)
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setForm((prev) => ({ ...prev, accommodation: 'No' }))}
+                      disabled={loading}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.6rem',
+                        padding: '0.85rem 1rem',
+                        borderRadius: '4px',
+                        background: form.accommodation === 'No' ? 'rgba(211, 47, 47, 0.22)' : 'rgba(255, 255, 255, 0.03)',
+                        border: form.accommodation === 'No' ? '1.5px solid var(--color-bright-crimson)' : '1px solid rgba(244, 234, 204, 0.2)',
+                        color: form.accommodation === 'No' ? 'var(--color-star-white)' : 'rgba(244, 234, 204, 0.65)',
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '0.85rem',
+                        letterSpacing: '0.08em',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <span
+                        style={{
+                          width: '10px',
+                          height: '10px',
+                          borderRadius: '50%',
+                          background: form.accommodation === 'No' ? 'var(--color-bright-crimson)' : 'transparent',
+                          border: '2px solid var(--color-bright-crimson)',
+                          display: 'inline-block',
+                          boxShadow: form.accommodation === 'No' ? '0 0 8px var(--color-bright-crimson)' : 'none',
+                        }}
+                      />
+                      NO (DAY SCHOLAR / SELF)
+                    </button>
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'rgba(244, 234, 204, 0.55)', marginTop: '0.35rem' }}>
+                    Campus hostel accommodation & meals are provided by GNDEC for hackathon participants.
+                  </div>
                 </div>
               )}
 

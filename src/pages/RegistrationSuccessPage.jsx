@@ -28,6 +28,7 @@ const RegistrationSuccessPage = () => {
   const teamName = searchParams.get('team') || '';
   const amount = searchParams.get('amount') || '';
   const theme = searchParams.get('theme') || '';
+  const accommodation = searchParams.get('accommodation') || searchParams.get('accom') || '';
 
   const eventName = decodeURIComponent(rawEventName);
   const [copiedKey, setCopiedKey] = useState(null);
@@ -255,7 +256,13 @@ const RegistrationSuccessPage = () => {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(6.6);
         doc.setTextColor(191, 192, 197);
-        doc.text(`THEME: ${theme.toUpperCase()}`, m + 7, cardY + 38.5);
+        const accomText = accommodation ? `  |  ACCOMMODATION: ${accommodation.toUpperCase()}` : '';
+        doc.text(`THEME: ${theme.toUpperCase()}${accomText}`, m + 7, cardY + 38.5);
+      } else if (accommodation) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(6.6);
+        doc.setTextColor(191, 192, 197);
+        doc.text(`ACCOMMODATION: ${accommodation.toUpperCase()}`, m + 7, cardY + 38.5);
       }
 
       // Right Zone: Registration Fee & Event Details
@@ -721,25 +728,44 @@ const RegistrationSuccessPage = () => {
               {eventName}
             </h2>
 
-            {theme && (
-              <div
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  padding: '0.35rem 0.85rem',
-                  background: 'rgba(211, 47, 47, 0.12)',
-                  border: '1px solid rgba(211, 47, 47, 0.35)',
-                  borderRadius: '4px',
-                  marginBottom: '1rem',
-                  fontSize: '0.8rem',
-                  color: 'var(--color-star-white, #f4eacc)',
-                }}
-              >
-                <span style={{ color: '#d32f2f', fontWeight: 800, letterSpacing: '0.05em' }}>THEME:</span>
-                <span>{theme}</span>
-              </div>
-            )}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginBottom: '1rem' }}>
+              {theme && (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.35rem 0.85rem',
+                    background: 'rgba(211, 47, 47, 0.12)',
+                    border: '1px solid rgba(211, 47, 47, 0.35)',
+                    borderRadius: '4px',
+                    fontSize: '0.8rem',
+                    color: 'var(--color-star-white, #f4eacc)',
+                  }}
+                >
+                  <span style={{ color: '#d32f2f', fontWeight: 800, letterSpacing: '0.05em' }}>THEME:</span>
+                  <span>{theme}</span>
+                </div>
+              )}
+              {accommodation && (
+                <div
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.35rem 0.85rem',
+                    background: 'rgba(46, 125, 50, 0.15)',
+                    border: '1px solid rgba(46, 125, 50, 0.4)',
+                    borderRadius: '4px',
+                    fontSize: '0.8rem',
+                    color: 'var(--color-star-white, #f4eacc)',
+                  }}
+                >
+                  <span style={{ color: '#4caf50', fontWeight: 800, letterSpacing: '0.05em' }}>ACCOMMODATION:</span>
+                  <span>{accommodation.toUpperCase() === 'YES' ? 'YES (STAY & MEALS INCLUDED)' : 'NO (SELF ARRANGED)'}</span>
+                </div>
+              )}
+            </div>
 
             {/* Quick Meta Grid matching Registration Highlights */}
             <div

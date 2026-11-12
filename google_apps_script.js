@@ -27,12 +27,14 @@ function doPost(e) {
     var headers = [
       "Timestamp",
       "Reg ID",
+      "Confirmation (Order ID)",
       "Participant Name (Leader)",
       "Email",
       "Phone",
       "College",
       "Event Name",
       "Theme",
+      "Accommodation",
       "Team Name",
       "Team Members",
       "Fee",
@@ -41,14 +43,24 @@ function doPost(e) {
       "Confirmation Email"
     ];
 
-    // Ensure header row has official green background and includes Theme
-    var headerRange = sheet.getRange(1, 1, 1, headers.length);
-    headerRange.setValues([headers]);
-    headerRange.setFontWeight("bold");
-    headerRange.setBackground("#2e7d32"); // Green header background
-    headerRange.setFontColor("#ffffff");
-    headerRange.setHorizontalAlignment("center");
-    sheet.setFrozenRows(1);
+    // Inspect current headers in Row 1 of the active sheet
+    var lastCol = sheet.getLastColumn();
+    var currentHeaders = [];
+    if (lastCol > 0) {
+      currentHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    }
+
+    // If sheet is empty or headers are not present, initialize official headers
+    if (sheet.getLastRow() === 0 || currentHeaders.length === 0 || !currentHeaders[0]) {
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      var headerRange = sheet.getRange(1, 1, 1, headers.length);
+      headerRange.setFontWeight("bold");
+      headerRange.setBackground("#2e7d32"); // Green header background
+      headerRange.setFontColor("#ffffff");
+      headerRange.setHorizontalAlignment("center");
+      sheet.setFrozenRows(1);
+      currentHeaders = headers;
+    }
 
     // Send automated confirmation email
     var emailSent = trySendConfirmationEmail(data);
@@ -84,28 +96,103 @@ function doPost(e) {
     // Fee formatted with INR symbol (e.g. ₹1)
     var feeStr = "₹" + (data.amount_paid !== undefined ? data.amount_paid : 0);
 
-    // Build row using push statements to guarantee zero syntax or comma errors
+    // Clean Team Name - strictly ONLY team name
+    var cleanTeamName = "N/A";
+    if (data.team_name && data.team_name !== "N/A" && String(data.team_name).trim() !== "") {
+      cleanTeamName = String(data.team_name).trim();
+    }
+
+    // Accommodation (Yes / No)
+    var isHackathon = (data.event_name && String(data.event_name).toLowerCase().indexOf("hackathon") !== -1);
+    var cleanAccommodation = "N/A";
+    if (data.accommodation && data.accommodation !== "N/A") {
+      cleanAccommodation = String(data.accommodation).trim();
+    } else if (isHackathon) {
+      cleanAccommodation = "Yes";
+    }
+
+    // Master map of all fields by semantic name
+    var fieldsMap = {
+      timestamp: timestampStr,
+      reg_id: data.registration_id || data.order_id || "N/A",
+      order_id: data.order_id || data.registration_id || "N/A",
+      participant_name: participantName,
+      email: data.email || "N/A",
+      phone: data.phone ? "'" + String(data.phone).replace(/\s+/g, '') : "N/A",
+      college: data.college || "N/A",
+      event_name: data.event_name || "N/A",
+      theme: data.theme || (isHackathon ? "General" : "N/A"),
+      accommodation: cleanAccommodation,
+      team_name: cleanTeamName,
+      team_members: membersFormatted,
+      fee: feeStr,
+      razorpay_payment_id: data.razorpay_payment_id || "N/A",
+      status: data.payment_status || "PAID",
+      confirmation_email: emailSent === true ? "Sent" : "Failed"
+    };
+
+    // Dynamically align row values to exact column headers of active sheet
     var row = [];
-    row.push(timestampStr);
-    row.push(data.registration_id || data.order_id || "N/A");
-    row.push(participantName);
-    row.push(data.email || "N/A");
-    row.push(data.phone ? "'" + String(data.phone).replace(/\s+/g, '') : "N/A");
-    row.push(data.college || "N/A");
-    row.push(data.event_name || "N/A");
-    row.push(data.theme || "N/A");
-    row.push(data.team_name || "N/A");
-    row.push(membersFormatted);
-    row.push(feeStr);
-    row.push(data.razorpay_payment_id || "N/A");
-    row.push(data.payment_status || "PAID");
-    row.push(emailSent === true ? "Sent" : "Failed");
+    for (var colIdx = 0; colIdx < currentHeaders.length; colIdx++) {
+      var h = String(currentHeaders[colIdx] || "").toLowerCase().trim();
+      if (!h) {
+        row.push("");
+        continue;
+      }
+      if (h.indexOf("time") !== -1 || h.indexOf("date") !== -1) {
+        row.push(fieldsMap.timestamp);
+      } else if (h.indexOf("reg") !== -1 && h.indexOf("order") === -1) {
+        row.push(fieldsMap.reg_id);
+      } else if (h.indexOf("order") !== -1 || (h.indexOf("confirm") !== -1 && h.indexOf("email") === -1)) {
+        row.push(fieldsMap.order_id);
+      } else if (h.indexOf("participant") !== -1 || h.indexOf("leader") !== -1 || (h.indexOf("name") !== -1 && h.indexOf("team") === -1 && h.indexOf("event") === -1)) {
+        row.push(fieldsMap.participant_name);
+      } else if (h.indexOf("email") !== -1 && h.indexOf("confirm") === -1 && h.indexOf("status") === -1) {
+        row.push(fieldsMap.email);
+      } else if (h.indexOf("phone") !== -1 || h.indexOf("contact") !== -1 || h.indexOf("mobile") !== -1) {
+        row.push(fieldsMap.phone);
+      } else if (h.indexOf("college") !== -1 || h.indexOf("institute") !== -1 || h.indexOf("university") !== -1) {
+        row.push(fieldsMap.college);
+      } else if (h.indexOf("event") !== -1) {
+        row.push(fieldsMap.event_name);
+      } else if (h.indexOf("theme") !== -1) {
+        row.push(fieldsMap.theme);
+      } else if (h.indexOf("accommodat") !== -1 || h.indexOf("stay") !== -1) {
+        row.push(fieldsMap.accommodation);
+      } else if (h === "team name" || (h.indexOf("team") !== -1 && h.indexOf("member") === -1)) {
+        row.push(fieldsMap.team_name);
+      } else if (h.indexOf("member") !== -1) {
+        row.push(fieldsMap.team_members);
+      } else if (h.indexOf("fee") !== -1 || h.indexOf("amount") !== -1 || h.indexOf("price") !== -1) {
+        row.push(fieldsMap.fee);
+      } else if (h.indexOf("razorpay") !== -1 || h.indexOf("payment id") !== -1) {
+        row.push(fieldsMap.razorpay_payment_id);
+      } else if (h.indexOf("status") !== -1 && h.indexOf("email") === -1) {
+        row.push(fieldsMap.status);
+      } else if (h.indexOf("confirm") !== -1 && h.indexOf("email") !== -1 || h.indexOf("email status") !== -1) {
+        row.push(fieldsMap.confirmation_email);
+      } else {
+        row.push("N/A");
+      }
+    }
 
     sheet.appendRow(row);
 
     // Apply color styling to the Confirmation Email cell (Green for Sent, Red for Failed)
     var lastRow = sheet.getLastRow();
-    var emailCell = sheet.getRange(lastRow, headers.length);
+    var emailColIdx = -1;
+    for (var k = 0; k < currentHeaders.length; k++) {
+      var kh = String(currentHeaders[k] || "").toLowerCase();
+      if (kh.indexOf("confirm") !== -1 && kh.indexOf("email") !== -1 || kh.indexOf("email status") !== -1) {
+        emailColIdx = k + 1;
+        break;
+      }
+    }
+    if (emailColIdx === -1) {
+      emailColIdx = currentHeaders.length;
+    }
+
+    var emailCell = sheet.getRange(lastRow, emailColIdx);
     if (emailSent === true) {
       emailCell.setFontColor("#155724");
       emailCell.setBackground("#d4edda");
@@ -254,6 +341,19 @@ function buildHtmlPass(data) {
     parts.push('                      <tr>');
     parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Theme</td>');
     parts.push('                        <td valign="top" style="padding:8px 0; font-size:14px; font-weight:700; color:#DB2777;">' + theme + '</td>');
+    parts.push('                      </tr>');
+  }
+
+  // Accommodation row (conditional for Hackathon)
+  var accom = data.accommodation || "";
+  if (accom && accom !== "N/A") {
+    var isYes = String(accom).toLowerCase().indexOf("yes") !== -1;
+    var badgeColor = isYes ? "#059669" : "#64748B";
+    var badgeBg = isYes ? "#D1FAE5" : "#F1F5F9";
+    var accomLabel = isYes ? "Yes (Campus Stay & Meals)" : "No (Self Arranged)";
+    parts.push('                      <tr>');
+    parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Accommodation</td>');
+    parts.push('                        <td valign="top" style="padding:8px 0;"><span style="display:inline-block; background-color:' + badgeBg + '; color:' + badgeColor + '; font-size:12px; font-weight:700; padding:2px 10px; border-radius:12px;">' + accomLabel + '</span></td>');
     parts.push('                      </tr>');
   }
 
@@ -569,21 +669,24 @@ function testSheet() {
 }
 
 /**
- * Utility function to immediately format the Google Sheet headers to green
- * and add the "Theme" column. Can be run directly from Apps Script editor!
+ * Utility function to immediately format the Google Sheet headers to official Green
+ * and add all columns: Confirmation (Order ID), Theme, Accommodation, Team Name, Team Members, Fee, etc.
+ * Also automatically repairs any misaligned existing rows!
  */
-function formatSheetHeaders() {
+function formatAndFixSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
   var headers = [
     "Timestamp",
     "Reg ID",
+    "Confirmation (Order ID)",
     "Participant Name (Leader)",
     "Email",
     "Phone",
     "College",
     "Event Name",
     "Theme",
+    "Accommodation",
     "Team Name",
     "Team Members",
     "Fee",
@@ -591,6 +694,8 @@ function formatSheetHeaders() {
     "Status",
     "Confirmation Email"
   ];
+
+  // 1. Format official green header row
   var headerRange = sheet.getRange(1, 1, 1, headers.length);
   headerRange.setValues([headers]);
   headerRange.setFontWeight("bold");
@@ -598,6 +703,69 @@ function formatSheetHeaders() {
   headerRange.setFontColor("#ffffff");
   headerRange.setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
+
+  // 2. Scan and repair existing data rows if columns were previously shifted
+  var lastRow = sheet.getLastRow();
+  var lastCol = Math.max(sheet.getLastColumn(), headers.length);
+  if (lastRow > 1) {
+    var dataRange = sheet.getRange(2, 1, lastRow - 1, lastCol);
+    var rows = dataRange.getValues();
+
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r];
+
+      // Identify misplaced data
+      // Check if Team Name column or any column contains phone numbers / member lists
+      var membersStr = "";
+      var paymentIdStr = "";
+      var feeStr = "";
+      var orderIdStr = "";
+
+      for (var c = 0; c < row.length; c++) {
+        var val = String(row[c] || "").trim();
+        if (val.indexOf("pay_") === 0) {
+          paymentIdStr = val;
+        } else if (val.indexOf("order_") === 0) {
+          orderIdStr = val;
+        } else if (val.indexOf("(+91") !== -1 || (val.indexOf(",") !== -1 && /\d{5}/.test(val))) {
+          membersStr = val;
+        } else if (/^₹?\d+(\.\d+)?$/.test(val) && val !== "0" && val !== "N/A") {
+          feeStr = val.indexOf("₹") === 0 ? val : "₹" + val;
+        }
+      }
+
+      // If this row suffered from column shift (e.g. member list in Team Name column)
+      if (membersStr && row[10] === membersStr) {
+        row[10] = "N/A"; // Team Name should only be team name
+        row[11] = membersStr; // Team Members
+      }
+      if (paymentIdStr) {
+        row[13] = paymentIdStr; // Razorpay Payment ID
+      }
+      if (feeStr) {
+        row[12] = feeStr; // Fee
+      }
+      if (orderIdStr && (!row[2] || row[2] === "N/A")) {
+        row[2] = orderIdStr; // Confirmation (Order ID)
+      }
+
+      // Set default Accommodation for Hackathon if blank
+      var eventStr = String(row[7] || "").toLowerCase();
+      if (eventStr.indexOf("hackathon") !== -1 && (!row[9] || row[9] === "N/A" || row[9] === "")) {
+        row[9] = "Yes";
+      } else if (!row[9] || row[9] === "") {
+        row[9] = "N/A";
+      }
+    }
+
+    // Write back cleaned and aligned rows
+    sheet.getRange(2, 1, rows.length, rows[0].length).setValues(rows);
+  }
+
   SpreadsheetApp.flush();
-  Logger.log("Sheet headers updated successfully with Green background and Theme column!");
+  Logger.log("Google Sheet headers and rows formatted and aligned successfully!");
+}
+
+function formatSheetHeaders() {
+  formatAndFixSheet();
 }
