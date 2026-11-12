@@ -52,9 +52,7 @@ const ContactSection = () => {
               <div className="info-block" style={{ marginBottom: '1.75rem' }}>
                 <h3 className="info-label">MYSTIC THREADS</h3>
                 <div className="social-links">
-                  <a href="https://www.instagram.com/gndecbidar/" target="_blank" rel="noopener noreferrer" className="social-link">INSTAGRAM</a>
-                  <a href="https://www.facebook.com/GNDECBidarOfficial/" target="_blank" rel="noopener noreferrer" className="social-link">FACEBOOK</a>
-                  <a href="https://gndecb.ac.in" target="_blank" rel="noopener noreferrer" className="social-link">GNDEC PORTAL</a>
+                  <a href="https://www.instagram.com/spectrum.1.0?utm_source=ig_web_button_share_sheet&obrf=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className="social-link">INSTAGRAM</a>
                 </div>
               </div>
             </div>
