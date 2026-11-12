@@ -116,3 +116,70 @@ export function verifyPassToken(orderId, paymentId, token) {
   return timingSafeMatch(expected, String(token).trim());
 }
 
+const OPTIONAL_COLUMNS = ['unique_id', 'theme', 'accommodation'];
+
+function extractMissingColumn(error) {
+  const msg = String(error?.message || '');
+  const pgrstMatch = msg.match(/Could not find the '([^']+)' column/i);
+  if (pgrstMatch) return pgrstMatch[1];
+  const pgMatch = msg.match(/column ["']?([a-zA-Z0-9_]+)["']?(?: of relation [^ ]+)? does not exist/i);
+  if (pgMatch) return pgMatch[1];
+  return null;
+}
+
+function isSchemaColumnError(error) {
+  const msg = String(error?.message || '');
+  return error?.code === 'PGRST204' || /column .* does not exist/i.test(msg) || /schema cache/i.test(msg);
+}
+
+/**
+ * Resiliently inserts or updates a registration row even if optional columns
+ * (unique_id, theme, accommodation) have not been migrated yet in live Supabase.
+ */
+async function executeWithColumnFallback(runQuery, payload) {
+  let currentPayload = { ...payload };
+  let selectCols = '*';
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const result = await runQuery(currentPayload, selectCols);
+    if (!result.error || !isSchemaColumnError(result.error)) {
+      return result;
+    }
+
+    const missingCol = extractMissingColumn(result.error);
+    console.warn('Supabase schema drift detected; retrying:', result.error.message);
+
+    if (missingCol && Object.prototype.hasOwnProperty.call(currentPayload, missingCol)) {
+      delete currentPayload[missingCol];
+    } else if (missingCol && selectCols === '*') {
+      selectCols = 'id';
+    } else {
+      OPTIONAL_COLUMNS.forEach((col) => delete currentPayload[col]);
+      selectCols = 'id';
+    }
+  }
+
+  return runQuery(currentPayload, 'id');
+}
+
+export async function insertRegistrationSafe(supabase, payload) {
+  return executeWithColumnFallback(
+    (cleanPayload, selectCols) =>
+      supabase.from('registrations').insert([cleanPayload]).select(selectCols).single(),
+    payload
+  );
+}
+
+export async function updateRegistrationSafe(supabase, orderId, payload) {
+  return executeWithColumnFallback(
+    (cleanPayload, selectCols) =>
+      supabase
+        .from('registrations')
+        .update(cleanPayload)
+        .eq('razorpay_order_id', orderId)
+        .select(selectCols)
+        .single(),
+    payload
+  );
+}
+

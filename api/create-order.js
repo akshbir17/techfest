@@ -6,40 +6,11 @@ import {
   checkRateLimit,
   clampString,
   getSupabaseAdmin,
+  insertRegistrationSafe,
 } from './_lib/security.js';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^(\+91|0)?[6-9]\d{9}$/;
-
-async function insertPendingRecord(supabase, payload) {
-  const result = await supabase
-    .from('registrations')
-    .insert([payload])
-    .select('id, unique_id')
-    .single();
-
-  if (!result.error) {
-    return result;
-  }
-
-  // Backward-compatible retry if live Supabase schema hasn't had unique_id/theme/accommodation migrated yet
-  const msg = String(result.error.message || '');
-  if (/column .* does not exist/i.test(msg) || /schema cache/i.test(msg)) {
-    console.warn('Supabase schema drift detected on pending insert; retrying with base columns:', msg);
-    const fallbackPayload = { ...payload };
-    if (/unique_id/i.test(msg)) delete fallbackPayload.unique_id;
-    if (/theme/i.test(msg)) delete fallbackPayload.theme;
-    if (/accommodation/i.test(msg)) delete fallbackPayload.accommodation;
-
-    return supabase
-      .from('registrations')
-      .insert([fallbackPayload])
-      .select('id')
-      .single();
-  }
-
-  return result;
-}
 
 export default async function handler(req, res) {
   applyCors(req, res, 'POST, OPTIONS');
@@ -195,7 +166,7 @@ export default async function handler(req, res) {
           updated_at: new Date().toISOString(),
         };
 
-        const { data: inserted, error: dbErr } = await insertPendingRecord(supabase, recordPayload);
+        const { data: inserted, error: dbErr } = await insertRegistrationSafe(supabase, recordPayload);
 
         if (dbErr) {
           console.error('Supabase pending registration error:', dbErr.message);

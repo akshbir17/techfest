@@ -12,38 +12,11 @@ import {
   checkRateLimit,
   clampString,
   getSupabaseAdmin,
+  insertRegistrationSafe,
   signPassToken,
   timingSafeMatch,
+  updateRegistrationSafe,
 } from './_lib/security.js';
-
-async function insertVerifiedFallbackRecord(supabase, payload) {
-  const result = await supabase
-    .from('registrations')
-    .insert([payload])
-    .select()
-    .single();
-
-  if (!result.error) {
-    return result;
-  }
-
-  const msg = String(result.error.message || '');
-  if (/column .* does not exist/i.test(msg) || /schema cache/i.test(msg)) {
-    console.warn('Supabase schema drift detected on fallback insert; retrying with base columns:', msg);
-    const fallbackPayload = { ...payload };
-    if (/unique_id/i.test(msg)) delete fallbackPayload.unique_id;
-    if (/theme/i.test(msg)) delete fallbackPayload.theme;
-    if (/accommodation/i.test(msg)) delete fallbackPayload.accommodation;
-
-    return supabase
-      .from('registrations')
-      .insert([fallbackPayload])
-      .select()
-      .single();
-  }
-
-  return result;
-}
 
 export default async function handler(req, res) {
   applyCors(req, res, 'POST, OPTIONS');
@@ -163,14 +136,15 @@ export default async function handler(req, res) {
             updatePayload.accommodation = clampString(registrationData.accommodation, 40);
           }
 
-          const { data: updated, error: updateErr } = await supabase
-            .from('registrations')
-            .update(updatePayload)
-            .eq('razorpay_order_id', orderId)
-            .select()
-            .single();
+          const { data: updated, error: updateErr } = await updateRegistrationSafe(
+            supabase,
+            orderId,
+            updatePayload
+          );
 
-          if (!updateErr && updated) {
+          if (updateErr) {
+            console.error('Supabase paid update error:', updateErr.message);
+          } else if (updated) {
             registrationRecord = updated;
           }
         }
@@ -201,7 +175,7 @@ export default async function handler(req, res) {
           clampString(registrationData.accommodation, 40) ||
           (requestedEventId.includes('hackathon') ? 'Yes' : 'N/A');
 
-        const { data: inserted, error: insertErr } = await insertVerifiedFallbackRecord(supabase, {
+        const { data: inserted, error: insertErr } = await insertRegistrationSafe(supabase, {
           unique_id: fallbackUniqueId,
           participant_name: clampString(registrationData.name, 120),
           email: clampString(registrationData.email, 160).toLowerCase(),
@@ -222,7 +196,9 @@ export default async function handler(req, res) {
           updated_at: new Date().toISOString(),
         });
 
-        if (!insertErr && inserted) {
+        if (insertErr) {
+          console.error('Supabase fallback registration insert error:', insertErr.message);
+        } else if (inserted) {
           registrationRecord = inserted;
         }
       }

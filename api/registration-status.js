@@ -47,9 +47,9 @@ export default async function handler(req, res) {
         .eq('payment_status', 'paid')
         .maybeSingle();
 
-      // Handle fallback if unique_id column wasn't migrated on live Supabase yet
+      // Handle fallback if optional columns (unique_id, theme, accommodation) aren't migrated yet
       let verifiedRecord = record;
-      if (error && /unique_id/i.test(String(error.message || ''))) {
+      if (error && (error.code === 'PGRST204' || /column|schema cache/i.test(String(error.message || '')))) {
         const retry = await supabase
           .from('registrations')
           .select(
