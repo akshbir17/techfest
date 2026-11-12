@@ -9,7 +9,7 @@ import { INDIAN_PHONE_REGEX, EMAIL_REGEX } from '../../constants/hackathon';
 const INDIVIDUAL_EVENTS = [
   { id: 'impossible_to_sell', name: 'Impossible to Sell',          fee: 100, description: 'Creative selling challenge — pitch an unusual or bizarre product. Prizes Revealing Soon.' },
   { id: 'killer_game',        name: 'Killer Game',                 fee: 50,  description: 'Social deduction & stealth elimination challenge on Day 1. Prizes Revealing Soon.' },
-  { id: 'photo_booth',        name: 'Photography',                  fee: 100, description: 'Submit your best shot — Google Drive link shared on 10 Dec at 12 PM. Prizes Revealing Soon.' },
+  { id: 'photo_booth',        name: 'Photography',                  fee: 1, description: 'Submit your best shot — Google Drive link shared on 10 Dec at 12 PM. Prizes Revealing Soon.' },
 ];
 
 const IndividualRegModal = ({ onClose, initialEventId }) => {
