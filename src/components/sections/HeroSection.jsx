@@ -51,14 +51,19 @@ const HeroSection = () => {
               <div
                 style={{
                   fontFamily: 'var(--font-heading)',
-                  fontSize: 'clamp(0.88rem, 2.6vw, 1.08rem)',
-                  fontWeight: '800',
-                  letterSpacing: '0.08em',
+                  fontSize: 'clamp(1.15rem, 3.4vw, 1.45rem)',
+                  fontWeight: '900',
+                  letterSpacing: '0.1em',
                   color: 'var(--color-neon-cyan)',
-                  marginTop: '0.35rem',
+                  marginTop: '0.5rem',
                   textTransform: 'uppercase',
-                  lineHeight: '1.3',
-                  textShadow: '0 2px 8px rgba(0, 0, 0, 0.95), 0 0 10px rgba(0, 240, 255, 0.35)',
+                  lineHeight: '1.25',
+                  textShadow: '0 2px 12px rgba(0, 0, 0, 0.95), 0 0 16px rgba(0, 240, 255, 0.65)',
+                  border: '1px solid rgba(0, 240, 255, 0.45)',
+                  background: 'rgba(0, 240, 255, 0.08)',
+                  padding: '0.35rem 0.85rem',
+                  borderRadius: '4px',
+                  display: 'inline-block',
                 }}
               >
                 NIDHI DST iTBI CENTER
