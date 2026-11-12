@@ -337,6 +337,32 @@ function updateSheetHeaders() {
 
 
 /* ============================================================
+   CLEAR SHEET DATA
+   Select 'clearSheetData' in Apps Script and click Run!
+   Clears all test data rows (row 2 and below), keeping the
+   official green 16-column header row intact and ready.
+   ============================================================ */
+
+function clearSheetData() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
+
+  var lastRow = sheet.getLastRow();
+  var lastCol = Math.max(sheet.getLastColumn(), HEADERS.length);
+
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, lastCol).clear();
+    Logger.log("Successfully removed " + (lastRow - 1) + " test rows.");
+  }
+
+  // Ensure row 1 has official green 16-column headers
+  initializeSheet(sheet);
+  SpreadsheetApp.flush();
+  Logger.log("Google Sheet is completely clean and ready for official registrations!");
+}
+
+
+/* ============================================================
    ONE-CLICK REPAIR TOOL
    Run manually to format headers and align all shifted data!
    ============================================================ */
