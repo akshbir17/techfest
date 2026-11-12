@@ -48,6 +48,21 @@ const HeroSection = () => {
               <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
                 GURU NANAK JHIRA ENTREPRENEURSHIP RESEARCH AND BUSINESS INCUBATION FOUNDATION
               </div>
+              <div
+                style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: 'clamp(0.88rem, 2.6vw, 1.08rem)',
+                  fontWeight: '800',
+                  letterSpacing: '0.08em',
+                  color: 'var(--color-neon-cyan)',
+                  marginTop: '0.35rem',
+                  textTransform: 'uppercase',
+                  lineHeight: '1.3',
+                  textShadow: '0 2px 8px rgba(0, 0, 0, 0.95), 0 0 10px rgba(0, 240, 255, 0.35)',
+                }}
+              >
+                NIDHI DST iTBI CENTER
+              </div>
             </div>
 
             <span className="hero-dept-amp">
