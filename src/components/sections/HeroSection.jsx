@@ -55,15 +55,10 @@ const HeroSection = () => {
                   fontWeight: '900',
                   letterSpacing: '0.1em',
                   color: 'var(--color-neon-cyan)',
-                  marginTop: '0.5rem',
+                  marginTop: '0.4rem',
                   textTransform: 'uppercase',
                   lineHeight: '1.25',
                   textShadow: '0 2px 12px rgba(0, 0, 0, 0.95), 0 0 16px rgba(0, 240, 255, 0.65)',
-                  border: '1px solid rgba(0, 240, 255, 0.45)',
-                  background: 'rgba(0, 240, 255, 0.08)',
-                  padding: '0.35rem 0.85rem',
-                  borderRadius: '4px',
-                  display: 'inline-block',
                 }}
               >
                 NIDHI DST iTBI CENTER
