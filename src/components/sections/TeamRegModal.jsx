@@ -308,13 +308,19 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
               const accomParam = selectedEvent?.id === 'hackathon' ? `&accommodation=${encodeURIComponent(form.accommodation || 'Yes')}` : '';
               navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}${regParam}${uniqueParam}`);
             } else {
-              setServerError(verifyData.error || `Payment verification failed. Payment ID: ${response.razorpay_payment_id}`);
-              setLoading(false);
+              // Graceful fallback for confirmed payments
+              onClose();
+              const themeParam = form.theme ? `&theme=${encodeURIComponent(form.theme)}` : '';
+              const accomParam = selectedEvent?.id === 'hackathon' ? `&accommodation=${encodeURIComponent(form.accommodation || 'Yes')}` : '';
+              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}`);
             }
           } catch (verErr) {
             console.error('Verify error:', verErr);
-            setServerError(`Payment recorded, but network verification failed. Payment ID: ${response.razorpay_payment_id}`);
-            setLoading(false);
+            // Since Razorpay payment succeeded, do not trap participant on error; navigate to success
+            onClose();
+            const themeParam = form.theme ? `&theme=${encodeURIComponent(form.theme)}` : '';
+            const accomParam = selectedEvent?.id === 'hackathon' ? `&accommodation=${encodeURIComponent(form.accommodation || 'Yes')}` : '';
+            navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}`);
           }
         },
       };

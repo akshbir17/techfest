@@ -150,6 +150,14 @@ export default async function handler(req, res) {
       }
     }
 
+    // Generate or format authoritative Unique Registration ID
+    const eventName = registrationRecord?.event_name || registrationData?.eventName || '';
+    const eventPrefix = String(eventName).replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || 'SPEC';
+    const rawRegId = registrationRecord?.id || registrationData?.registrationId || '';
+    const uniqueRegId = rawRegId && String(rawRegId).startsWith('SPEC-')
+      ? rawRegId
+      : `SPEC-${eventPrefix}-${(rawRegId ? String(rawRegId).replace(/-/g, '').slice(0, 6) : crypto.randomBytes(3).toString('hex')).toUpperCase()}`;
+
     // 4. Google Sheets Live Webhook Sync (with secret and exact JSON schema)
     const sheetsWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
     const sheetsSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET || '';
@@ -160,12 +168,10 @@ export default async function handler(req, res) {
         const participantName = registrationRecord?.participant_name || registrationRecord?.name || registrationData?.name || '';
         const email = registrationRecord?.email || registrationData?.email || '';
         const phone = registrationRecord?.phone || registrationData?.phone || '';
-        const eventName = registrationRecord?.event_name || registrationData?.eventName || '';
         const rawTeamName = registrationRecord?.team_name || registrationData?.teamName || 'N/A';
         // Theme: use frontend-submitted value first (registrationData), then DB, then fallback
         const themeVal = registrationData?.theme || registrationRecord?.theme || null;
         const accommodationVal = registrationData?.accommodation || registrationRecord?.accommodation || (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A');
-        const teamName = rawTeamName;
         const amountPaid = Number(registrationRecord?.amount || registrationRecord?.fee || registrationData?.fee || 0);
 
         let membersFormatted = 'N/A';
@@ -183,12 +189,6 @@ export default async function handler(req, res) {
             })
             .join(', ');
         }
-
-        const eventPrefix = String(eventName).replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || 'SPEC';
-        const rawRegId = registrationRecord?.id || registrationData?.registrationId || '';
-        const uniqueRegId = rawRegId && String(rawRegId).startsWith('SPEC-')
-          ? rawRegId
-          : `SPEC-${eventPrefix}-${(rawRegId ? String(rawRegId).replace(/-/g, '').slice(0, 6) : crypto.randomBytes(3).toString('hex')).toUpperCase()}`;
 
         // Ensure Team Name strictly contains only the team name (never members)
         const isTeamEvent = Boolean(
