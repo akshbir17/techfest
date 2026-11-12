@@ -318,13 +318,6 @@ html.lenis { height: auto; }
   display: flex;
   align-items: center;
 }
-.navbar-logo-img {
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-.navbar-logo:hover .navbar-logo-img {
-  transform: rotate(8deg) scale(1.08);
-  box-shadow: 0 0 16px rgba(255, 34, 68, 0.7);
-}
 .navbar-logo span {
   font-family: var(--font-heading);
   white-space: nowrap;

@@ -189,20 +189,7 @@ const ContactSection = () => {
           </motion.div>
         </div>
 
-        <footer className="footer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <img 
-            src="/logo.jpg" 
-            alt="Spectrum 1.0 Emblem" 
-            style={{
-              width: '60px',
-              height: '60px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '2px solid rgba(255, 34, 68, 0.7)',
-              boxShadow: '0 0 20px rgba(255, 34, 68, 0.5)',
-              marginBottom: '1rem'
-            }}
-          />
+        <footer className="footer">
           <div
             style={{
               marginBottom: '0.45rem',

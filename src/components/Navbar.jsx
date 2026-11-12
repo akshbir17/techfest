@@ -54,25 +54,10 @@ const Navbar = () => {
             whiteSpace: 'nowrap', 
             flexShrink: 0, 
             display: 'flex', 
-            alignItems: 'center',
-            gap: '12px'
+            alignItems: 'center' 
           }} 
           onClick={() => setIsMenuOpen(false)}
         >
-          <img 
-            src="/logo.jpg" 
-            alt="Spectrum 1.0 Logo" 
-            className="navbar-logo-img"
-            style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '1.5px solid rgba(255, 34, 68, 0.6)',
-              boxShadow: '0 0 12px rgba(255, 34, 68, 0.45)',
-              display: 'block'
-            }}
-          />
           <span 
             className="text-glow" 
             style={{ 
