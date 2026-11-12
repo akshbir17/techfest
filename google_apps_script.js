@@ -73,44 +73,28 @@ function doPost(e) {
     }
 
     // Prepare registration information
-    var participantName = String(
-      data.participant_name || "N/A"
-    ).trim();
+    var participantName = String(data.participant_name || "N/A").trim();
+    var rawTeamName = String(data.team_name || "").trim();
+    var isTeam = rawTeamName !== "" && rawTeamName !== "N/A";
 
-    var teamName = String(data.team_name || "").trim();
-    var isTeam = teamName !== "" && teamName !== "N/A";
-
-    if (
-      isTeam &&
-      participantName !== "N/A" &&
-      participantName.indexOf("(Leader)") === -1
-    ) {
+    if (isTeam && participantName !== "N/A" && participantName.indexOf("(Leader)") === -1) {
       participantName += " (Leader)";
     }
 
     var teamMembers = formatTeamMembers(data.team_members);
-
     var eventName = String(data.event_name || "N/A").trim();
-
-    var isHackathon =
-      eventName.toLowerCase().indexOf("hackathon") !== -1;
+    var isHackathon = eventName.toLowerCase().indexOf("hackathon") !== -1;
 
     var theme = data.theme || (isHackathon ? "General" : "N/A");
-
     var accommodation = data.accommodation || (isHackathon ? "Yes" : "N/A");
 
-    var registrationId =
-      data.registration_id || data.order_id;
-
-    var amount = data.amount_paid !== undefined ? data.amount_paid : 0;
+    var registrationId = data.registration_id || ("SPEC-" + String(data.order_id).slice(-6).toUpperCase());
+    var amount = data.amount_paid !== undefined ? data.amount_paid : (isHackathon ? 1 : 0);
 
     var timestamp = Utilities.formatDate(new Date(), TIMEZONE, "dd/MM/yyyy, hh:mm a");
+    var phone = data.phone ? "'" + String(data.phone).replace(/\s+/g, "") : "N/A";
 
-    var phone = data.phone
-      ? "'" + String(data.phone).replace(/\s+/g, "")
-      : "N/A";
-
-    // Build fields map for robust column alignment
+    // Build fields map for robust dynamic column alignment
     var fieldsMap = {
       timestamp: timestamp,
       reg_id: registrationId,
@@ -122,8 +106,8 @@ function doPost(e) {
       event_name: eventName,
       theme: theme,
       accommodation: accommodation,
-      team_name: isTeam ? teamName : "N/A",
-      team_members: teamMembers,
+      team_name: isTeam ? rawTeamName : "N/A",
+      team_members: isTeam ? teamMembers : "N/A",
       fee: "₹" + amount,
       razorpay_payment_id: data.razorpay_payment_id,
       status: "PAID",
@@ -131,11 +115,11 @@ function doPost(e) {
     };
 
     // Dynamically match row values to existing sheet columns by header name
-    var currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var currentHeaders = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), HEADERS.length)).getValues()[0];
     var row = [];
 
-    for (var colIdx = 0; colIdx < currentHeaders.length; colIdx++) {
-      var h = String(currentHeaders[colIdx] || "").toLowerCase().trim();
+    for (var colIdx = 0; colIdx < HEADERS.length; colIdx++) {
+      var h = String(currentHeaders[colIdx] || HEADERS[colIdx] || "").toLowerCase().trim();
       if (!h) {
         row.push("");
         continue;
@@ -170,7 +154,7 @@ function doPost(e) {
         row.push(fieldsMap.razorpay_payment_id);
       } else if (h.indexOf("status") !== -1 && h.indexOf("email") === -1) {
         row.push(fieldsMap.status);
-      } else if (h.indexOf("confirm") !== -1 && h.indexOf("email") !== -1 || h.indexOf("email status") !== -1) {
+      } else if ((h.indexOf("confirm") !== -1 && h.indexOf("email") !== -1) || h.indexOf("email status") !== -1) {
         row.push(fieldsMap.confirmation_email);
       } else {
         row.push("N/A");
@@ -178,7 +162,6 @@ function doPost(e) {
     }
 
     sheet.appendRow(row);
-
     var lastRow = sheet.getLastRow();
 
     // Send confirmation email
@@ -189,19 +172,19 @@ function doPost(e) {
         participant_name: participantName,
         email: data.email,
         event_name: eventName,
-        team_name: isTeam ? teamName : "N/A",
-        team_members: teamMembers,
+        team_name: isTeam ? rawTeamName : "N/A",
+        team_members: isTeam ? teamMembers : "N/A",
         amount_paid: amount,
         order_id: data.order_id,
         razorpay_payment_id: data.razorpay_payment_id,
         college: data.college || "N/A",
         theme: theme,
-        accommodation: accommodation
+        accommodation: accommodation,
+        registration_id: registrationId
       };
 
       sendConfirmationEmail(emailData);
       emailSent = true;
-
     } catch (mailError) {
       Logger.log("Email error: " + mailError.toString());
     }
@@ -210,12 +193,12 @@ function doPost(e) {
     var emailColIdx = -1;
     for (var k = 0; k < currentHeaders.length; k++) {
       var kh = String(currentHeaders[k] || "").toLowerCase();
-      if (kh.indexOf("confirm") !== -1 && kh.indexOf("email") !== -1 || kh.indexOf("email status") !== -1) {
+      if ((kh.indexOf("confirm") !== -1 && kh.indexOf("email") !== -1) || kh.indexOf("email status") !== -1) {
         emailColIdx = k + 1;
         break;
       }
     }
-    if (emailColIdx === -1) emailColIdx = currentHeaders.length;
+    if (emailColIdx === -1) emailColIdx = 16;
 
     var emailCell = sheet.getRange(lastRow, emailColIdx);
     emailCell.setValue(emailSent ? "Sent" : "Failed");
@@ -326,8 +309,7 @@ function initializeSheet(sheet) {
   if (lastRow === 0) {
     sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
   } else {
-    var currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    // Check if key columns like Order ID or Accommodation are missing
+    var currentHeaders = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), HEADERS.length)).getValues()[0];
     var hasOrderId = false;
     var hasAccom = false;
     for (var i = 0; i < currentHeaders.length; i++) {
@@ -335,8 +317,7 @@ function initializeSheet(sheet) {
       if (h.indexOf("order") !== -1) hasOrderId = true;
       if (h.indexOf("accommodat") !== -1) hasAccom = true;
     }
-    // If missing, automatically update headers to official 16-column layout
-    if (!hasOrderId || !hasAccom || currentHeaders.length !== HEADERS.length) {
+    if (!hasOrderId || !hasAccom || sheet.getLastColumn() < HEADERS.length) {
       sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
     }
   }
@@ -357,80 +338,153 @@ function updateSheetHeaders() {
 
 
 /* ============================================================
-   HEADER UPDATER & REPAIR EXISTING ROWS
-   Run manually to format green headers and repair shifted data
+   ONE-CLICK REPAIR TOOL
+   Run manually to format headers and align all shifted data!
    ============================================================ */
 
 function formatAndFixSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
 
-  // 1. Format official green header row
-  var headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
-  headerRange.setValues([HEADERS]);
-  headerRange.setFontWeight("bold");
-  headerRange.setBackground(SHEET_HEADER_COLOR);
-  headerRange.setFontColor("#ffffff");
-  headerRange.setHorizontalAlignment("center");
-  sheet.setFrozenRows(1);
-
-  // 2. Scan and repair existing rows if columns were previously shifted
   var lastRow = sheet.getLastRow();
-  var lastCol = Math.max(sheet.getLastColumn(), HEADERS.length);
+  var lastCol = sheet.getLastColumn();
+
   if (lastRow > 1) {
-    var dataRange = sheet.getRange(2, 1, lastRow - 1, lastCol);
-    var rows = dataRange.getValues();
+    var rawValues = sheet.getRange(2, 1, lastRow - 1, Math.max(lastCol, HEADERS.length)).getValues();
+    var fixedRows = [];
 
-    for (var r = 0; r < rows.length; r++) {
-      var row = rows[r];
+    for (var r = 0; r < rawValues.length; r++) {
+      var row = rawValues[r];
 
-      var membersStr = "";
-      var paymentIdStr = "";
-      var feeStr = "";
-      var orderIdStr = "";
+      var timestamp = "";
+      var regId = "";
+      var orderId = "";
+      var participantName = "";
+      var email = "";
+      var phone = "";
+      var college = "";
+      var eventName = "";
+      var theme = "";
+      var accommodation = "";
+      var teamName = "";
+      var teamMembers = "";
+      var fee = "";
+      var paymentId = "";
+      var status = "PAID";
+      var emailStatus = "Sent";
 
       for (var c = 0; c < row.length; c++) {
-        var val = String(row[c] || "").trim();
-        if (val.indexOf("pay_") === 0) {
-          paymentIdStr = val;
-        } else if (val.indexOf("order_") === 0) {
-          orderIdStr = val;
+        var rawVal = row[c];
+        var val = String(rawVal || "").trim();
+        if (!val) continue;
+
+        if (/^pay_[A-Za-z0-9]+/.test(val)) {
+          paymentId = val;
+        } else if (/^order_[A-Za-z0-9]+/.test(val)) {
+          orderId = val;
+        } else if (/^SPEC-[A-Za-z0-9-]+/i.test(val)) {
+          regId = val;
+        } else if (val.indexOf("@") !== -1 && val.indexOf(".") !== -1) {
+          email = val;
+        } else if (/^'?(\+91)?[6-9]\d{9}$/.test(val.replace(/\s+/g, ""))) {
+          phone = "'" + val.replace(/['\s]/g, "");
+        } else if (/^₹?\s*\d+(\.\d+)?$/.test(val) && val !== "0") {
+          fee = val.indexOf("₹") === 0 ? val : "₹" + val;
         } else if (val.indexOf("(+91") !== -1 || (val.indexOf(",") !== -1 && /\d{5}/.test(val))) {
-          membersStr = val;
-        } else if (/^₹?\d+(\.\d+)?$/.test(val) && val !== "0" && val !== "N/A") {
-          feeStr = val.indexOf("₹") === 0 ? val : "₹" + val;
+          teamMembers = val;
+        } else if (/^(yes|no)(\s*\(.*\))?$/i.test(val)) {
+          accommodation = /^yes/i.test(val) ? "Yes" : "No";
+        } else if (/^(PAID|PENDING|FAILED)$/i.test(val)) {
+          status = val.toUpperCase();
+        } else if (/^(Sent|Failed|Pending)$/i.test(val)) {
+          emailStatus = val;
+        } else if (/hackathon|techquiz|bgmi|free fire|treasure hunt|photography|mock interview|killer game|impossible to sell/i.test(val)) {
+          eventName = val;
+        } else if (/agriculture|medtech|clean & green|automation|agentic|general/i.test(val)) {
+          theme = val;
+        } else if (Object.prototype.toString.call(rawVal) === "[object Date]" || /\d{1,2}\/\d{1,2}\/\d{4}/.test(val)) {
+          timestamp = val;
         }
       }
 
-      // If this row suffered from column shift (e.g. member list in Team Name column)
-      if (membersStr && row[10] === membersStr) {
-        row[10] = "N/A"; // Team Name should only be team name
-        row[11] = membersStr; // Team Members
-      }
-      if (paymentIdStr) {
-        row[13] = paymentIdStr; // Razorpay Payment ID
-      }
-      if (feeStr) {
-        row[12] = feeStr; // Fee
-      }
-      if (orderIdStr && (!row[2] || row[2] === "N/A")) {
-        row[2] = orderIdStr; // Confirmation (Order ID)
+      // Contextual fallbacks
+      if (!timestamp && row[0]) timestamp = row[0];
+      if (!orderId && row[2] && String(row[2]).indexOf("order_") === 0) orderId = row[2];
+      if (!regId) regId = orderId ? "SPEC-" + orderId.slice(-6).toUpperCase() : "SPEC-REG-" + (r + 1);
+
+      if (!participantName) {
+        for (var pi = 1; pi <= 4; pi++) {
+          var pVal = String(row[pi] || "").trim();
+          if (pVal && pVal !== email && pVal !== phone && pVal.indexOf("order_") !== 0 && pVal.indexOf("pay_") !== 0 && pVal.indexOf("SPEC-") !== 0) {
+            participantName = pVal;
+            break;
+          }
+        }
       }
 
-      // Set default Accommodation for Hackathon if blank
-      var eventStr = String(row[7] || "").toLowerCase();
-      if (eventStr.indexOf("hackathon") !== -1 && (!row[9] || row[9] === "N/A" || row[9] === "")) {
-        row[9] = "Yes";
-      } else if (!row[9] || row[9] === "") {
-        row[9] = "N/A";
+      if (!college) {
+        for (var ci = 4; ci <= 7; ci++) {
+          var cVal = String(row[ci] || "").trim();
+          if (cVal && /gndec|college|institute|university|bidar/i.test(cVal)) {
+            college = cVal;
+            break;
+          }
+        }
       }
+      if (!college) college = "GNDEC Bidar";
+
+      // Team Name: short clean identifier that is distinct from teamMembers
+      for (var ti = 7; ti <= 11; ti++) {
+        var tVal = String(row[ti] || "").trim();
+        if (tVal && tVal !== teamMembers && tVal !== eventName && tVal !== theme && tVal !== fee && tVal !== paymentId && tVal !== "PAID" && tVal.indexOf("(+91") === -1 && tVal.indexOf("@") === -1) {
+          if (!teamName || teamName === "N/A") {
+            teamName = tVal;
+          }
+        }
+      }
+
+      var isHack = String(eventName).toLowerCase().indexOf("hackathon") !== -1;
+      if (!fee) fee = isHack ? "₹1" : "₹100";
+      if (!accommodation) accommodation = isHack ? "Yes" : "N/A";
+      if (!theme) theme = isHack ? "General" : "N/A";
+      if (!teamMembers) teamMembers = "N/A";
+      if (!teamName) teamName = "N/A";
+
+      fixedRows.push([
+        timestamp,
+        regId,
+        orderId || "N/A",
+        participantName || "N/A",
+        email || "N/A",
+        phone || "N/A",
+        college || "N/A",
+        eventName || "N/A",
+        theme || "N/A",
+        accommodation || "N/A",
+        teamName,
+        teamMembers,
+        fee,
+        paymentId || "N/A",
+        status,
+        emailStatus
+      ]);
     }
 
-    sheet.getRange(2, 1, rows.length, rows[0].length).setValues(rows);
+    sheet.getRange(2, 1, fixedRows.length, HEADERS.length).setValues(fixedRows);
   }
 
+  // Set official green headers
+  var headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
+  headerRange
+    .setValues([HEADERS])
+    .setFontWeight("bold")
+    .setBackground(SHEET_HEADER_COLOR)
+    .setFontColor("#ffffff")
+    .setHorizontalAlignment("center");
+
+  sheet.setFrozenRows(1);
   SpreadsheetApp.flush();
-  Logger.log("Spectrum 1.0 headers and rows updated and aligned successfully.");
+  Logger.log("Google Sheet formatted and all rows successfully aligned into 16 standard columns.");
 }
 
 
@@ -505,6 +559,7 @@ function buildHtmlPass(data) {
   var amount = escapeHtml(data.amount_paid || 0);
   var orderId = escapeHtml(data.order_id || "N/A");
   var paymentId = escapeHtml(data.razorpay_payment_id || "N/A");
+  var regId = escapeHtml(data.registration_id || "N/A");
 
   var isYes = accommodation.toLowerCase().indexOf("yes") !== -1;
 
@@ -572,6 +627,7 @@ function buildHtmlPass(data) {
   html += '    <div class="section">■ Your event pass</div>';
   html += '    <div class="card">';
   html += '      <table>';
+  html += '        <tr><td class="label">Reg ID</td><td class="value" style="color:#4338CA;letter-spacing:1px;">' + regId + '</td></tr>';
   html += '        <tr><td class="label">Registered event</td><td class="value">' + event + '</td></tr>';
   html += '        <tr><td class="label">Participant</td><td class="value">' + participant + '</td></tr>';
   html +=          teamRow;
@@ -598,13 +654,12 @@ function buildHtmlPass(data) {
   html += '    <div class="coordinator"><span style="font-size:11px;color:#0D9488;">STUDENT COORDINATOR</span><strong>Armaandeep Singh</strong>+91 8427027540</div>';
   html += '    <div class="coordinator"><span style="font-size:11px;color:#0D9488;">STUDENT COORDINATOR</span><strong>Sangmesh</strong>+91 9353142522</div>';
   html += '    <div class="coordinator"><span style="font-size:11px;color:#0D9488;">STUDENT COORDINATOR</span><strong>Abdul Aziz</strong>+91 8296683831</div>';
-  html += '    <div class="coordinator" style="background:#FDF2F8;border-color:#DB2777;"><span style="font-size:11px;color:#DB2777;">HEAD, CSE - AIML</span><strong>Dr. Praveen Reddy</strong>+91 99165 42332</div>';
-  html += '    <div style="text-align:center;margin-top:28px;">';
-  html += '      <a href="' + WEBSITE_URL + '" style="display:inline-block;background:#4338CA;background-image:linear-gradient(90deg,#4338CA,#DB2777);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:25px;font-weight:bold;">Visit the Spectrum portal</a>';
-  html += '      <p style="font-size:13px;color:#64748B;margin-top:18px;">Questions? Email <a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a></p>';
-  html += '    </div>';
+  html += '    <div class="coordinator"><span style="font-size:11px;color:#0D9488;">STAFF CONVENER</span><strong>Dr. Praveen Reddy</strong>+91 99165 42332</div>';
   html += '  </div>';
-  html += '  <div class="footer"><strong>Spectrum 1.0 · GNDEC Bidar</strong><p style="color:#94A3B8;">Keep this email as your entry reference on campus.</p></div>';
+  html += '  <div class="footer">';
+  html += '    <p>This is an automated confirmation from Spectrum 1.0 at GNDEC Bidar.</p>';
+  html += '    <p><a href="' + WEBSITE_URL + '" style="color:#38BDF8;">' + WEBSITE_URL + '</a> | <a href="mailto:' + SUPPORT_EMAIL + '" style="color:#38BDF8;">' + SUPPORT_EMAIL + '</a></p>';
+  html += '  </div>';
   html += '</div>';
   html += '</body>';
   html += '</html>';
@@ -614,39 +669,29 @@ function buildHtmlPass(data) {
 
 
 /* ============================================================
-   EMAIL DISPATCH
+   EMAIL DISPATCHER
    ============================================================ */
 
 function sendConfirmationEmail(data) {
-  if (!data.email || String(data.email).indexOf("@") === -1) {
-    throw new Error("Invalid recipient email address.");
-  }
-
-  var participant = data.participant_name || "Participant";
-  var event = data.event_name || "Official Event";
-
-  var subject =
-    "Registration Confirmed: SPECTRUM 1.0 - " + event;
+  var subject = "Registration Confirmed - " + (data.event_name || "Spectrum 1.0") + " | Spectrum 1.0 (GNDEC Bidar)";
 
   var plainText =
-    "SPECTRUM 1.0 - REGISTRATION CONFIRMED\n\n" +
-    "Dear " + participant + ",\n\n" +
-    "Your registration has been successfully confirmed!\n\n" +
-    "Event: " + event + "\n" +
-    "Participant: " + participant + "\n" +
-    "Team: " + (data.team_name || "N/A") + "\n" +
-    "Members: " + (data.team_members || "N/A") + "\n" +
-    "College: " + (data.college || "N/A") + "\n" +
-    "Theme: " + (data.theme || "N/A") + "\n" +
-    "Accommodation: " + (data.accommodation || "N/A") + "\n" +
-    "Fee paid: INR " + data.amount_paid + "/-\n" +
-    "Order ID: " + data.order_id + "\n" +
-    "Payment ID: " + data.razorpay_payment_id + "\n" +
-    "Payment Status: PAID & VERIFIED\n\n" +
-    "VENUE AND REPORTING:\n" +
-    "GNDEC Bidar, Karnataka\n" +
-    "December 7 - 9, 2026\n" +
-    "Reporting starts at 8:30 AM on Day 1.\n" +
+    "SPECTRUM 1.0 REGISTRATION CONFIRMED\n" +
+    "Guru Nanak Dev Engineering College, Bidar\n" +
+    "December 7 - 9, 2026\n\n" +
+    "Reg ID: " + (data.registration_id || "N/A") + "\n" +
+    "Participant: " + (data.participant_name || "N/A") + "\n" +
+    "Event: " + (data.event_name || "N/A") + "\n" +
+    (data.team_name && data.team_name !== "N/A" ? "Team: " + data.team_name + "\n" : "") +
+    (data.theme && data.theme !== "N/A" ? "Theme: " + data.theme + "\n" : "") +
+    (data.accommodation && data.accommodation !== "N/A" ? "Accommodation: " + data.accommodation + "\n" : "") +
+    (data.team_members && data.team_members !== "N/A" ? "Members: " + data.team_members + "\n" : "") +
+    "Amount Paid: ₹" + (data.amount_paid || 0) + "/-\n" +
+    "Order ID: " + (data.order_id || "N/A") + "\n" +
+    "Payment ID: " + (data.razorpay_payment_id || "N/A") + "\n\n" +
+    "VENUE & REPORTING:\n" +
+    "GNDEC Bidar, Mailoor Road, Bidar, Karnataka 585403\n" +
+    "Reporting: 8:30 AM, December 7, 2026\n" +
     "Bring your valid college ID card.\n\n" +
     "HELP DESK:\n" +
     "Armaandeep Singh: +91 8427027540\n" +
@@ -692,7 +737,7 @@ function jsonResponse(data) {
 
 
 /* ============================================================
-   MANUAL EMAIL PREVIEW TEST
+   MANUAL TEST RUNNER
    ============================================================ */
 
 function testEmailPreview() {
@@ -712,8 +757,9 @@ function testEmailPreview() {
     order_id: "order_sample_test",
     razorpay_payment_id: "pay_sample_test",
     college: "GNDEC Bidar",
-    theme: "AI & Autonomous Systems",
-    accommodation: "Yes"
+    theme: "Clean & Green Technology",
+    accommodation: "Yes",
+    registration_id: "SPEC-HACK-TEST01"
   };
 
   sendConfirmationEmail(sample);

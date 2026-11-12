@@ -62,19 +62,36 @@ export default async function handler(req, res) {
           .join(', ');
       }
 
+      const eventName = record.event_name || '';
+      const eventPrefix = String(eventName).replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || 'SPEC';
+      const rawRegId = record.id || '';
+      const uniqueRegId = rawRegId && String(rawRegId).startsWith('SPEC-')
+        ? rawRegId
+        : `SPEC-${eventPrefix}-${(rawRegId ? String(rawRegId).replace(/-/g, '').slice(0, 6) : Date.now().toString(36)).toUpperCase()}`;
+
+      const rawTeamName = record.team_name || 'N/A';
+      const isTeamEvent = Boolean(
+        rawTeamName &&
+        rawTeamName !== 'N/A' &&
+        !String(eventName).toLowerCase().includes('impossible') &&
+        !String(eventName).toLowerCase().includes('mock') &&
+        !String(eventName).toLowerCase().includes('killer') &&
+        !String(eventName).toLowerCase().includes('photo')
+      );
+
       const payload = {
         secret: sheetsSecret,
-        registration_id: record.id,
+        registration_id: uniqueRegId,
         order_id: record.razorpay_order_id || record.id || 'N/A',
         participant_name: record.participant_name || record.name || '',
         email: record.email || '',
         phone: record.phone || '',
         college: record.college || 'N/A',
-        event_name: record.event_name || '',
-        theme: record.theme || 'N/A',
-        accommodation: record.accommodation || (String(record.event_name).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A'),
-        team_name: record.team_name || 'N/A',
-        team_members: membersFormatted,
+        event_name: eventName,
+        theme: record.theme || (String(eventName).toLowerCase().includes('hackathon') ? 'General' : 'N/A'),
+        accommodation: record.accommodation || (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A'),
+        team_name: isTeamEvent ? String(rawTeamName).trim() : 'N/A',
+        team_members: isTeamEvent ? membersFormatted : 'N/A',
         amount_paid: Number(record.amount || record.fee || 0),
         razorpay_payment_id: record.razorpay_payment_id || 'N/A',
         payment_status: 'PAID',

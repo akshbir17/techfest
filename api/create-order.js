@@ -102,13 +102,19 @@ export default async function handler(req, res) {
         type: eventType,
         teamName: teamName ? String(teamName).trim() : '',
         theme: theme ? String(theme).trim() : '',
+        accommodation: accommodation ? String(accommodation).trim() : '',
       },
     };
 
     const order = await razorpay.orders.create(orderOptions);
 
+    // Generate unique alphanumeric Registration ID (e.g. SPEC-HACK-8F2A7B)
+    const randomSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
+    const eventPrefix = cleanEventId.replace(/[^a-z0-9]/gi, '').slice(0, 4).toUpperCase();
+    const uniqueRegId = `SPEC-${eventPrefix}-${randomSuffix}`;
+
     // 5. Store pending registration record in Supabase
-    let registrationId = null;
+    let registrationId = uniqueRegId;
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
@@ -133,6 +139,8 @@ export default async function handler(req, res) {
           team_name: teamName ? String(teamName).trim() : null,
           team_members: cleanMembers.length > 0 ? cleanMembers : null,
           amount: verifiedFee,
+          theme: theme ? String(theme).trim() : (cleanEventId.includes('hackathon') ? 'General' : null),
+          accommodation: accommodation ? String(accommodation).trim() : (cleanEventId.includes('hackathon') ? 'Yes' : 'N/A'),
           razorpay_order_id: order.id,
           razorpay_payment_id: null,
           payment_status: 'pending',
@@ -149,7 +157,7 @@ export default async function handler(req, res) {
 
         if (dbErr) {
           console.error('Supabase pending registration error:', dbErr.message);
-        } else if (inserted) {
+        } else if (inserted && inserted.id) {
           registrationId = inserted.id;
         }
       } catch (dbEx) {

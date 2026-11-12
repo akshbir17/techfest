@@ -94,14 +94,22 @@ export default async function handler(req, res) {
             }
           }
 
-          // Update record to paid
+          // Update record to paid (and persist theme/accommodation if provided)
+          const updatePayload = {
+            payment_status: 'paid',
+            razorpay_payment_id: razorpay_payment_id,
+            updated_at: new Date().toISOString(),
+          };
+          if (registrationData?.theme && !existing.theme) {
+            updatePayload.theme = String(registrationData.theme).trim();
+          }
+          if (registrationData?.accommodation && !existing.accommodation) {
+            updatePayload.accommodation = String(registrationData.accommodation).trim();
+          }
+
           const { data: updated, error: updateErr } = await supabase
             .from('registrations')
-            .update({
-              payment_status: 'paid',
-              razorpay_payment_id: razorpay_payment_id,
-              updated_at: new Date().toISOString(),
-            })
+            .update(updatePayload)
             .eq('razorpay_order_id', razorpay_order_id)
             .select()
             .single();
@@ -175,20 +183,37 @@ export default async function handler(req, res) {
             .join(', ');
         }
 
+        const eventPrefix = String(eventName).replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || 'SPEC';
+        const rawRegId = registrationRecord?.id || registrationData?.registrationId || '';
+        const uniqueRegId = rawRegId && String(rawRegId).startsWith('SPEC-')
+          ? rawRegId
+          : `SPEC-${eventPrefix}-${(rawRegId ? String(rawRegId).replace(/-/g, '').slice(0, 6) : crypto.randomBytes(3).toString('hex')).toUpperCase()}`;
+
+        // Ensure Team Name strictly contains only the team name (never members)
+        const isTeamEvent = Boolean(
+          rawTeamName &&
+          rawTeamName !== 'N/A' &&
+          !String(eventName).toLowerCase().includes('impossible') &&
+          !String(eventName).toLowerCase().includes('mock') &&
+          !String(eventName).toLowerCase().includes('killer') &&
+          !String(eventName).toLowerCase().includes('photo')
+        );
+        const teamName = isTeamEvent ? String(rawTeamName).trim() : 'N/A';
+
         // Required JSON fields as requested by Apps Script specification
         const sheetPayload = {
           secret: sheetsSecret,
-          registration_id: registrationRecord?.id || razorpay_order_id,
+          registration_id: uniqueRegId,
           order_id: razorpay_order_id,
           participant_name: participantName,
           email: email,
           phone: phone,
           college: registrationRecord?.college || registrationData?.college || 'N/A',
           event_name: eventName,
-          theme: themeVal || 'N/A',
+          theme: themeVal || (String(eventName).toLowerCase().includes('hackathon') ? 'General' : 'N/A'),
           accommodation: accommodationVal,
           team_name: teamName,
-          team_members: membersFormatted,
+          team_members: isTeamEvent ? membersFormatted : 'N/A',
           amount_paid: amountPaid,
           razorpay_payment_id: razorpay_payment_id,
           payment_status: 'PAID',
