@@ -29,8 +29,8 @@ const scheduleData = [
   {
     dayId: 'day1',
     dayNumber: 'DAY 1',
-    dayName: 'Monday',
-    date: '7 December 2026',
+    dayName: 'Tuesday',
+    date: '8 December 2026',
     title: 'Opening Events and Competitions',
     subtitle: 'High-energy esports, creative challenges, quizzes, and campus-wide quests',
     items: [
@@ -107,13 +107,13 @@ const scheduleData = [
   {
     dayId: 'day2',
     dayNumber: 'DAY 2',
-    dayName: 'Tuesday',
-    date: '8 December 2026',
+    dayName: 'Wednesday',
+    date: '9 December 2026',
     title: '24-Hour Hackathon Launch',
     subtitle: 'Official hackathon commencement, checkpoints & round-the-clock sprint',
     notice: {
       type: 'critical',
-      title: 'Mandatory Hackathon Deadlines — 8 December 2026',
+      title: 'Mandatory Hackathon Deadlines — 9 December 2026',
       points: [
         'ID Card Distribution: 9:00 AM – 11:00 AM strictly. Desk closes at 11:00 AM sharp.',
         'Problem Statement Submission: 11:00 AM – 1:00 PM. No submissions accepted after 1:00 PM.',
@@ -179,13 +179,13 @@ const scheduleData = [
   {
     dayId: 'day3',
     dayNumber: 'DAY 3',
-    dayName: 'Wednesday',
-    date: '9 December 2026',
+    dayName: 'Thursday',
+    date: '10 December 2026',
     title: 'Hackathon Evaluation and Grand Closing Ceremony',
     subtitle: 'Project jury evaluations, cultural performances, dignitary addresses & prize distribution',
     specialAnnouncement: {
       title: 'Special Announcement — Photography Submission',
-      desc: 'The official Google Drive submission link will be shared on 9 December 2026 at 12:00 PM. Please keep your event photographs ready and submit them using the provided link once it is shared.',
+      desc: 'The official Google Drive submission link will be shared on 10 December 2026 at 12:00 PM. Please keep your event photographs ready and submit them using the provided link once it is shared.',
     },
     ceremonyProtocol: [
       { step: '1', role: 'Jury Members', desc: 'Addresses & insights by distinguished industry jury members' },
@@ -261,13 +261,13 @@ const scheduleData = [
 const generalGuidelines = [
   {
     icon: AlertTriangle,
-    title: 'Crucial Deadlines (8 Dec)',
+    title: 'Crucial Deadlines (9 Dec)',
     description: 'ID card distribution: 9:00 AM – 11:00 AM strictly. Problem statement submission: 11:00 AM – 1:00 PM. No submissions accepted after 1:00 PM.',
   },
   {
     icon: Camera,
-    title: 'Photography Submission (9 Dec)',
-    description: 'The official Google Drive submission link will be shared on 9 December at 12:00 PM. Keep your photos ready to submit via the provided link.',
+    title: 'Photography Submission (10 Dec)',
+    description: 'The official Google Drive submission link will be shared on 10 December at 12:00 PM. Keep your photos ready to submit via the provided link.',
   },
   {
     icon: Utensils,
@@ -310,7 +310,7 @@ const ScheduleSection = () => {
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
             <Calendar size={18} color="var(--color-neon-cyan)" />
             <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-neon-cyan)', fontWeight: 700 }}>
-              Official Event Schedule (Revised) • 7–9 December 2026
+              Official Event Schedule (Revised) • 8–10 December 2026
             </span>
           </div>
 

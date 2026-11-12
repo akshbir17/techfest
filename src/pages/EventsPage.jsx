@@ -58,7 +58,7 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
               <div className="text-sm mb-6" style={{ color: 'var(--color-star-white)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <Calendar size={18} color="var(--color-neon-cyan)" />
-                  <span style={{ opacity: 0.8 }}>{event.date || 'Dec 7 – 9, 2026'}</span>
+                  <span style={{ opacity: 0.8 }}>{event.date || 'Dec 8 – 10, 2026'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <Users size={18} color="var(--color-neon-cyan)" />
@@ -118,18 +118,18 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '₹500 per team',
       teamSize: '2 to 4 Members',
-      date: '8th to 9th Dec 2026',
+      date: '9th to 10th Dec 2026',
       venue: 'CSE Advanced Computing Lab',
       prize: 'Revealing Soon',
-      description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Kickoff at 12:00 PM on 8 Dec, Evaluation at 12:30 PM on 9 Dec. College-provided lunch, dinner, breakfast & accommodation included.',
+      description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Kickoff at 12:00 PM on 9 Dec, Evaluation at 12:30 PM on 10 Dec. College-provided lunch, dinner, breakfast & accommodation included.',
       rules: [
         'Teams must consist of 2 to 4 members. Inter-college and inter-branch teams are fully permitted.',
         'Mandatory Day 2 Deadlines: ID card distribution closes at 11:00 AM sharp. Problem statement submission window is 11:00 AM – 1:00 PM (no submissions accepted after 1:00 PM).',
-        'Official 24-hour hackathon begins at 12:00 PM on 8 December 2026. All code and design must be created within this window (standard libraries, APIs & boilerplates allowed).',
+        'Official 24-hour hackathon begins at 12:00 PM on 9 December 2026. All code and design must be created within this window (standard libraries, APIs & boilerplates allowed).',
         'Teams must maintain a public GitHub repository and commit code regularly throughout the hackathon.',
         'Mentors will conduct 2 mandatory checkpoint evaluations (Checkpoint 1: Architecture & Progress at 8 hours; Checkpoint 2: Feature Freeze & Polish at 18 hours).',
-        'Final presentations & parallel theme project evaluation will be conducted at 12:30 PM on 9 December before the Grand Closing Ceremony.',
-        'Complimentary meals (Lunch & Dinner on 8 Dec, Breakfast on 9 Dec) and accommodation are arranged by the college.',
+        'Final presentations & parallel theme project evaluation will be conducted at 12:30 PM on 10 December before the Grand Closing Ceremony.',
+        'Complimentary meals (Lunch & Dinner on 9 Dec, Breakfast on 10 Dec) and accommodation are arranged by the college.',
         'Plagiarism, pre-packaged templates, or unethical conduct will result in immediate disqualification without refund.'
       ],
       judging: [
@@ -147,14 +147,14 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '₹300 per team',
       teamSize: '1 to 3 Members',
-      date: '7th Dec 2026 (R1: 1:00 PM | R2: 4:00 PM)',
+      date: '8th Dec 2026 (R1: 1:00 PM | R2: 4:00 PM)',
       venue: 'Seminar Hall 1',
       prize: 'Revealing Soon',
       description: 'Test your technical acumen, algorithmic thinking, and tech trivia against the sharpest minds across the region.',
       rules: [
         'Teams can consist of 1 to 3 participants.',
-        'Round 1 (Written Prelims): 1:00 PM – 2:00 PM on 7 Dec. 30 questions covering CS fundamentals, logic, algorithms, and emerging tech. Top teams qualify for stage finals.',
-        'Round 2 (Stage Finals): 4:00 PM – 5:00 PM on 7 Dec. Live buzzer rounds, audio-visual rounds, code debugging, and rapid fire on the main stage.',
+        'Round 1 (Written Prelims): 1:00 PM – 2:00 PM on 8 Dec. 30 questions covering CS fundamentals, logic, algorithms, and emerging tech. Top teams qualify for stage finals.',
+        'Round 2 (Stage Finals): 4:00 PM – 5:00 PM on 8 Dec. Live buzzer rounds, audio-visual rounds, code debugging, and rapid fire on the main stage.',
         'Negative marking applies during the Buzzer round (-5 points for each incorrect answer).',
         'Electronic devices (smartphones, smartwatches, calculators) are strictly prohibited during the competition.',
         'Quizmaster\'s decisions are final and incontrovertible.'
@@ -176,14 +176,14 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'individual',
       price: '₹100 per entry',
       teamSize: 'Max 3 entries / person',
-      date: '7th to 9th Dec 2026',
+      date: '8th to 10th Dec 2026',
       venue: 'Spectrum Photo Booth & GNDEC Campus',
       prize: 'Revealing Soon',
       description: 'Capture the essence, aesthetics, and energy of Spectrum 1.0 through your lens. Showcase framing, perspective, and visual storytelling.',
       rules: [
         'Each registration allows submission of 1 photograph (participants may register up to 3 entries at ₹100 each).',
-        'All photographs must be captured during the days of Spectrum 1.0 (Dec 7–9, 2026) within the GNDEC campus or at the official themed photo booth.',
-        'Special Announcement: The official Google Drive submission link will be shared on 9 December 2026 at 12:00 PM. Participants must submit their photographs using the provided link.',
+        'All photographs must be captured during the days of Spectrum 1.0 (Dec 8–10, 2026) within the GNDEC campus or at the official themed photo booth.',
+        'Special Announcement: The official Google Drive submission link will be shared on 10 December 2026 at 12:00 PM. Participants must submit their photographs using the provided link.',
         'Submissions from both smartphones and DSLRs / Mirrorless cameras are welcome.',
         'Basic adjustments (contrast, brightness, cropping, color grading) are permitted. Generative AI fills or manipulative digital filters are prohibited.',
         'Entries will be showcased in the Spectrum Art Gallery and judged by professional guest photographers.'
@@ -202,7 +202,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'individual',
       price: '₹100 per entry',
       teamSize: 'Individual or Duo',
-      date: '7th Dec 2026 (2:00 PM – 4:00 PM)',
+      date: '8th Dec 2026 (2:00 PM – 4:00 PM)',
       venue: 'Main Stage / Seminar Hall 2',
       prize: 'Revealing Soon',
       description: 'A high-voltage creative selling challenge where participants put their persuasion, wit, and salesmanship to the test by pitching an unusual, absurd, or notoriously difficult-to-sell product or concept.',
@@ -230,13 +230,13 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '₹400 per squad',
       teamSize: '4 Members (Squad)',
-      date: '7th Dec 2026 (9:00 AM – 11:00 AM)',
+      date: '8th Dec 2026 (9:00 AM – 11:00 AM)',
       venue: 'Esports Arena / CC Lab 2',
       prize: 'Revealing Soon',
       description: 'Competitive squad-based Battlegrounds Mobile India showdown. Runs in parallel with the Free Fire Tournament from 9:00 AM to 11:00 AM on Day 1.',
       rules: [
         'Squad format (4 players per team; 1 optional substitute registered in advance).',
-        'Runs in parallel with Free Fire Tournament (9:00 AM – 11:00 AM on 7 Dec).',
+        'Runs in parallel with Free Fire Tournament (9:00 AM – 11:00 AM on 8 Dec).',
         'Strictly Mobile Devices Only: Tablets, iPads, triggers, emulators, or Bluetooth controllers are strictly barred. Devices will be physically inspected before matches.',
         'Tournament maps: Erangel, Miramar, and Sanhok (Classic Battle Royale mode).',
         'Official BGIS Scoring Matrix: 1 point per kill + placement points (1st: 10 pts, 2nd: 6 pts, 3rd: 5 pts, 4th: 4 pts, 5th: 3 pts, 6th: 2 pts, 7th-8th: 1 pt).',
@@ -256,13 +256,13 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '₹400 per squad',
       teamSize: '4 Members (Squad)',
-      date: '7th Dec 2026 (9:00 AM – 11:00 AM)',
+      date: '8th Dec 2026 (9:00 AM – 11:00 AM)',
       venue: 'Esports Arena / CC Lab 3',
       prize: 'Revealing Soon',
       description: 'High-octane mobile squad battle royale. Runs in parallel with the BGMI Tournament from 9:00 AM to 11:00 AM on Day 1.',
       rules: [
         'Squad format (4 players per squad).',
-        'Runs in parallel with BGMI Tournament (9:00 AM – 11:00 AM on 7 Dec).',
+        'Runs in parallel with BGMI Tournament (9:00 AM – 11:00 AM on 8 Dec).',
         'Mobile phones only: No PC, emulators, iPad, macros, or external hardware triggers permitted.',
         'Maps: Bermuda, Purgatory, and Kalahari.',
         'Standard competitive settings: Gun attributes ON/OFF as per official FFIC esports guidelines. Character skills allowed.',
@@ -282,7 +282,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'team',
       price: '₹600 per team',
       teamSize: '1 to 4 Members',
-      date: '7th Dec 2026 (11:30 AM – 1:00 PM)',
+      date: '8th Dec 2026 (11:30 AM – 1:00 PM)',
       venue: 'GNDEC Campus Grounds',
       prize: 'Revealing Soon',
       description: 'An exhilarating campus-wide mystery quest! Crack cryptic clues, solve riddles, navigate hidden checkpoints, and race against fellow seekers. Strictly ends at 1:00 PM.',
@@ -308,7 +308,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       type: 'individual',
       price: '₹50 per player',
       teamSize: 'Individual',
-      date: '7th Dec 2026 (1:00 PM – 2:00 PM)',
+      date: '8th Dec 2026 (1:00 PM – 2:00 PM)',
       venue: 'Campus Ground / Open Lawn',
       prize: 'Revealing Soon',
       description: 'An exhilarating social deduction and stealth mystery elimination challenge of strategy, deception, and razor-sharp survival instincts. Runs in parallel with TechQuiz Round 1.',

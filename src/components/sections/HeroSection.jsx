@@ -111,7 +111,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.2 }}
         >
-          7–9 DECEMBER 2026 | BIDAR, KARNATAKA
+          8–10 DECEMBER 2026 | BIDAR, KARNATAKA
         </motion.p>
 
         <motion.div

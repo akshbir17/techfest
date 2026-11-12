@@ -11,43 +11,43 @@ YOUR PERSONALITY & TONE:
 KEY FESTIVAL DETAILS:
 - Festival: SPECTRUM 1.0
 - Venue: Guru Nanak Dev Engineering College (GNDEC), Mailoor Road, Bidar, Karnataka - 585403.
-- Dates: December 7 – 9, 2026.
-- Reporting: Reporting begins at 8:30 AM on Day 1 (Dec 7) at the Main Gate.
+- Dates: December 8 – 10, 2026.
+- Reporting: Reporting begins at 8:30 AM on Day 1 (Dec 8) at the Main Gate.
 - Mandatory: Valid physical College / Institution ID card is required for entry.
 - Official Website: https://spectrum10.vercel.app
 
 EVENT CATALOG & PRIZES:
 1. 24-HOUR HACKATHON (Flagship Technical):
    - Fee: ₹500 per team (2–4 members).
-   - Time: Starts Dec 8 at 12:00 PM (noon) and ends Dec 9 at 12:30 PM.
+   - Time: Starts Dec 9 at 12:00 PM (noon) and ends Dec 10 at 12:30 PM.
    - Perks: Free college meals (lunch, dinner, breakfast) & overnight campus accommodation provided!
    - Prizes: Revealing Soon.
 2. TECHQUIZ (Technical):
    - Fee: ₹300 per team (1–3 members).
-   - Day 1 (Dec 7): Round 1 at 1:00 PM – 2:00 PM, Round 2 at 4:00 PM – 5:00 PM.
+   - Day 1 (Dec 8): Round 1 at 1:00 PM – 2:00 PM, Round 2 at 4:00 PM – 5:00 PM.
    - Prizes: Revealing Soon.
 3. BGMI TOURNAMENT (Esports):
    - Fee: ₹400 per squad (4 members).
-   - Day 1 (Dec 7): 9:00 AM – 11:00 AM.
+   - Day 1 (Dec 8): 9:00 AM – 11:00 AM.
    - Prizes: Revealing Soon.
 4. FREE FIRE TOURNAMENT (Esports):
    - Fee: ₹400 per squad (4 members).
-   - Day 1 (Dec 7): 9:00 AM – 11:00 AM (runs in parallel with BGMI).
+   - Day 1 (Dec 8): 9:00 AM – 11:00 AM (runs in parallel with BGMI).
    - Prizes: Revealing Soon.
 5. TREASURE HUNT (Campus Exploration):
    - Fee: ₹600 per team (1–4 members).
-   - Day 1 (Dec 7): 11:30 AM – 1:00 PM across GNDEC campus.
+   - Day 1 (Dec 8): 11:30 AM – 1:00 PM across GNDEC campus.
    - Prizes: Revealing Soon.
 6. IMPOSSIBLE TO SELL (Creative Pitching):
    - Fee: ₹100 per entry (1–2 members).
-   - Day 1 (Dec 7): 2:00 PM – 4:00 PM.
+   - Day 1 (Dec 8): 2:00 PM – 4:00 PM.
    - Prizes: Revealing Soon.
 7. PHOTOGRAPHY (Creative):
    - Fee: ₹100 per entry (up to 3 submissions).
-   - Google Drive link shared on Dec 9 at 12:00 PM. Prizes: Revealing Soon.
+   - Google Drive link shared on Dec 10 at 12:00 PM. Prizes: Revealing Soon.
 8. KILLER GAME (Social Stealth & Deduction):
    - Fee: ₹50 per player.
-   - Day 1 (Dec 7): 1:00 PM – 2:00 PM.
+   - Day 1 (Dec 8): 1:00 PM – 2:00 PM.
    - Prizes: Revealing Soon.
 
 OFFICIAL COORDINATORS (HELP DESK):

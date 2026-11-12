@@ -189,7 +189,7 @@ const RegistrationSuccessPage = () => {
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(7.6);
       doc.setTextColor(255, 255, 255);
-      doc.text('DEC 7 - 9, 2026', dateX + dateW / 2 + 0.5, 29.4, { align: 'center' });
+      doc.text('DEC 8 - 10, 2026', dateX + dateW / 2 + 0.5, 29.4, { align: 'center' });
 
       // 3. PROMINENT PARTICIPANT PASS CARD (Dark #090909 floating over header bottom)
       const cardY = 41.5;
@@ -531,7 +531,7 @@ const RegistrationSuccessPage = () => {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(6.8);
       doc.setTextColor(191, 192, 197);
-      doc.text('SPECTRUM 1.0  |  DECEMBER 7-9, 2026  |  GNDEC BIDAR', m, footY + 14.8);
+      doc.text('SPECTRUM 1.0  |  DECEMBER 8-10, 2026  |  GNDEC BIDAR', m, footY + 14.8);
 
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(9);
@@ -817,7 +817,7 @@ const RegistrationSuccessPage = () => {
                   <Calendar size={13} color="#d32f2f" /> DATE
                 </div>
                 <div style={{ fontSize: '1.05rem', fontWeight: '800', color: 'var(--color-star-white, #f4eacc)', fontFamily: 'var(--font-heading)', marginTop: '0.25rem' }}>
-                  Dec 7 – 9, 2026
+                  Dec 8 – 10, 2026
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>
                   3-Day National Fest
@@ -1324,7 +1324,7 @@ const RegistrationSuccessPage = () => {
             textAlign: 'center',
           }}
         >
-          SPECTRUM 1.0 • DECEMBER 7–9, 2026 • GNDEC BIDAR
+          SPECTRUM 1.0 • DECEMBER 8–10, 2026 • GNDEC BIDAR
         </p>
       </div>
     </main>

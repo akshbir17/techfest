@@ -4,141 +4,141 @@ import { Clock, MapPin, Radio, Calendar, Sparkles } from 'lucide-react';
 
 // Official Schedule with exact timestamps (IST: UTC+5:30)
 const EVENT_SCHEDULE = [
-  // Day 1 — 7 Dec 2026
+  // Day 1 — 8 Dec 2026
   {
     title: 'BGMI & Free Fire Tournaments',
     venue: 'Esports Arena (CC Lab 2 & 3)',
     category: 'Esports',
-    start: new Date('2026-12-07T09:00:00+05:30').getTime(),
-    end: new Date('2026-12-07T11:00:00+05:30').getTime(),
+    start: new Date('2026-12-08T09:00:00+05:30').getTime(),
+    end: new Date('2026-12-08T11:00:00+05:30').getTime(),
   },
   {
     title: 'Official SPECTRUM 1.0 Poster Reveal',
     venue: 'Main Campus & Central Stage',
     category: 'Ceremony',
-    start: new Date('2026-12-07T11:00:00+05:30').getTime(),
-    end: new Date('2026-12-07T11:30:00+05:30').getTime(),
+    start: new Date('2026-12-08T11:00:00+05:30').getTime(),
+    end: new Date('2026-12-08T11:30:00+05:30').getTime(),
   },
   {
     title: 'Treasure Hunt',
     venue: 'GNDEC Campus Grounds',
     category: 'Games & Adventure',
-    start: new Date('2026-12-07T11:30:00+05:30').getTime(),
-    end: new Date('2026-12-07T13:00:00+05:30').getTime(),
+    start: new Date('2026-12-08T11:30:00+05:30').getTime(),
+    end: new Date('2026-12-08T13:00:00+05:30').getTime(),
   },
   {
     title: 'TechQuiz — Round 1 & Killer Game',
     venue: 'Seminar Hall 1 & Open Lawn',
     category: 'Technical / Fun',
-    start: new Date('2026-12-07T13:00:00+05:30').getTime(),
-    end: new Date('2026-12-07T14:00:00+05:30').getTime(),
+    start: new Date('2026-12-08T13:00:00+05:30').getTime(),
+    end: new Date('2026-12-08T14:00:00+05:30').getTime(),
   },
   {
     title: 'Impossible to Sell',
     venue: 'Main Stage / Seminar Hall 2',
     category: 'Creative Pitch',
-    start: new Date('2026-12-07T14:00:00+05:30').getTime(),
-    end: new Date('2026-12-07T16:00:00+05:30').getTime(),
+    start: new Date('2026-12-08T14:00:00+05:30').getTime(),
+    end: new Date('2026-12-08T16:00:00+05:30').getTime(),
   },
   {
     title: 'TechQuiz — Round 2 (Stage Finals)',
     venue: 'Main Auditorium / Seminar Hall 1',
     category: 'Technical Finals',
-    start: new Date('2026-12-07T16:00:00+05:30').getTime(),
-    end: new Date('2026-12-07T17:00:00+05:30').getTime(),
+    start: new Date('2026-12-08T16:00:00+05:30').getTime(),
+    end: new Date('2026-12-08T17:00:00+05:30').getTime(),
   },
 
-  // Day 2 — 8 Dec 2026
+  // Day 2 — 9 Dec 2026
   {
     title: 'ID Card Distribution (Closes at 11:00 AM)',
     venue: 'Central Registration Desk',
     category: 'Check-in',
-    start: new Date('2026-12-08T09:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T11:00:00+05:30').getTime(),
+    start: new Date('2026-12-09T09:00:00+05:30').getTime(),
+    end: new Date('2026-12-09T11:00:00+05:30').getTime(),
   },
   {
     title: 'Problem Statement Submission Window',
     venue: 'Hackathon Desk / Online Portal',
     category: 'Submissions',
-    start: new Date('2026-12-08T11:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T13:00:00+05:30').getTime(),
+    start: new Date('2026-12-09T11:00:00+05:30').getTime(),
+    end: new Date('2026-12-09T13:00:00+05:30').getTime(),
   },
   {
     title: '24-Hour Hackathon Begins',
     venue: 'CSE Advanced Computing Lab',
     category: 'Flagship Championship',
-    start: new Date('2026-12-08T12:00:00+05:30').getTime(),
-    end: new Date('2026-12-09T12:00:00+05:30').getTime(),
+    start: new Date('2026-12-09T12:00:00+05:30').getTime(),
+    end: new Date('2026-12-10T12:00:00+05:30').getTime(),
   },
   {
     title: 'Lunch (College-Provided)',
     venue: 'Campus Dining Area',
     category: 'Meal',
-    start: new Date('2026-12-08T14:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T15:00:00+05:30').getTime(),
+    start: new Date('2026-12-09T14:00:00+05:30').getTime(),
+    end: new Date('2026-12-09T15:00:00+05:30').getTime(),
   },
   {
     title: 'Dinner (College-Provided)',
     venue: 'Campus Dining Area',
     category: 'Meal',
-    start: new Date('2026-12-08T20:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T21:30:00+05:30').getTime(),
+    start: new Date('2026-12-09T20:00:00+05:30').getTime(),
+    end: new Date('2026-12-09T21:30:00+05:30').getTime(),
   },
   {
     title: 'Entertainment Activity',
     venue: 'Central Campus Stage',
     category: 'Fun & Music',
-    start: new Date('2026-12-08T22:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T23:00:00+05:30').getTime(),
+    start: new Date('2026-12-09T22:00:00+05:30').getTime(),
+    end: new Date('2026-12-09T23:00:00+05:30').getTime(),
   },
 
-  // Day 3 — 9 Dec 2026
+  // Day 3 — 10 Dec 2026
   {
     title: 'Breakfast (College-Provided)',
     venue: 'Campus Dining Area',
     category: 'Meal',
-    start: new Date('2026-12-09T08:00:00+05:30').getTime(),
-    end: new Date('2026-12-09T09:00:00+05:30').getTime(),
+    start: new Date('2026-12-10T08:00:00+05:30').getTime(),
+    end: new Date('2026-12-10T09:00:00+05:30').getTime(),
   },
   {
     title: 'Photography Submission Link Shared',
     venue: 'Official Google Drive Portal',
     category: 'Submissions',
-    start: new Date('2026-12-09T12:00:00+05:30').getTime(),
-    end: new Date('2026-12-09T12:30:00+05:30').getTime(),
+    start: new Date('2026-12-10T12:00:00+05:30').getTime(),
+    end: new Date('2026-12-10T12:30:00+05:30').getTime(),
   },
   {
     title: 'Project Evaluation (Parallel Themes)',
     venue: 'CSE Labs & Evaluation Centers',
     category: 'Jury Evaluation',
-    start: new Date('2026-12-09T12:30:00+05:30').getTime(),
-    end: new Date('2026-12-09T13:30:00+05:30').getTime(),
+    start: new Date('2026-12-10T12:30:00+05:30').getTime(),
+    end: new Date('2026-12-10T13:30:00+05:30').getTime(),
   },
   {
     title: 'Grand Closing Ceremony & Cultural Performances',
     venue: 'Main Auditorium',
     category: 'Closing Ceremony',
-    start: new Date('2026-12-09T14:00:00+05:30').getTime(),
-    end: new Date('2026-12-09T15:00:00+05:30').getTime(),
+    start: new Date('2026-12-10T14:00:00+05:30').getTime(),
+    end: new Date('2026-12-10T15:00:00+05:30').getTime(),
   },
   {
     title: 'Dignitary Speeches & Addresses',
     venue: 'Main Auditorium',
     category: 'Formal Addresses',
-    start: new Date('2026-12-09T15:00:00+05:30').getTime(),
-    end: new Date('2026-12-09T16:00:00+05:30').getTime(),
+    start: new Date('2026-12-10T15:00:00+05:30').getTime(),
+    end: new Date('2026-12-10T16:00:00+05:30').getTime(),
   },
   {
     title: 'Prize Distribution & Formal Conclusion',
     venue: 'Main Auditorium',
     category: 'Prize Distribution',
-    start: new Date('2026-12-09T16:00:00+05:30').getTime(),
-    end: new Date('2026-12-09T17:00:00+05:30').getTime(),
+    start: new Date('2026-12-10T16:00:00+05:30').getTime(),
+    end: new Date('2026-12-10T17:00:00+05:30').getTime(),
   },
 ];
 
-const FEST_START_TIME = new Date('2026-12-07T09:00:00+05:30').getTime();
-const FEST_END_TIME = new Date('2026-12-09T17:00:00+05:30').getTime();
+const FEST_START_TIME = new Date('2026-12-08T09:00:00+05:30').getTime();
+const FEST_END_TIME = new Date('2026-12-10T17:00:00+05:30').getTime();
 
 const LiveCountdownTracker = () => {
   const [now, setNow] = useState(() => Date.now());
@@ -389,7 +389,7 @@ const LiveCountdownTracker = () => {
                   </span>
                 </div>
                 <span style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.65)' }}>
-                  Monday, 7 Dec 2026 • 9:00 AM
+                  Tuesday, 8 Dec 2026 • 9:00 AM
                 </span>
               </div>
 
