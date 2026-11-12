@@ -44,9 +44,9 @@ const HeroSection = () => {
           </p>
 
           <div className="hero-departments">
-            <div className="hero-dept-item" style={{ maxWidth: '380px' }}>
+            <div className="hero-dept-item" style={{ maxWidth: '480px' }}>
               <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
-                INSTITUTION INNOVATION COUNCIL
+                GURU NANAK JHIRA ENTREPRENEURSHIP RESEARCH AND BUSINESS INCUBATION FOUNDATION
               </div>
             </div>
 
@@ -54,9 +54,9 @@ const HeroSection = () => {
               &
             </span>
 
-            <div className="hero-dept-item" style={{ maxWidth: '480px' }}>
+            <div className="hero-dept-item" style={{ maxWidth: '380px' }}>
               <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
-                GURU NANAK JHIRA ENTREPRENEURSHIP RESEARCH AND BUSINESS INCUBATION FOUNDATION
+                INSTITUTION INNOVATION COUNCIL
               </div>
             </div>
           </div>
