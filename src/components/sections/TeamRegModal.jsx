@@ -9,7 +9,7 @@ const TEAM_EVENTS = [
   {
     id: 'hackathon',
     name: '24-Hour Hackathon',
-    fee: 1,
+    fee: 500,
     min: 2,
     max: 4,
     teamSize: '2 to 4 members',

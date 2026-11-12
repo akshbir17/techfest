@@ -89,7 +89,7 @@ function doPost(e) {
     var accommodation = data.accommodation || (isHackathon ? "Yes" : "N/A");
 
     var registrationId = data.registration_id || ("SPEC-" + String(data.order_id).slice(-6).toUpperCase());
-    var amount = data.amount_paid !== undefined ? data.amount_paid : (isHackathon ? 1 : 0);
+    var amount = data.amount_paid !== undefined ? data.amount_paid : (isHackathon ? 500 : 0);
 
     var timestamp = Utilities.formatDate(new Date(), TIMEZONE, "dd/MM/yyyy, hh:mm a");
     var phone = data.phone ? "'" + String(data.phone).replace(/\s+/g, "") : "N/A";
@@ -443,7 +443,7 @@ function formatAndFixSheet() {
       }
 
       var isHack = String(eventName).toLowerCase().indexOf("hackathon") !== -1;
-      if (!fee) fee = isHack ? "₹1" : "₹100";
+      if (!fee) fee = isHack ? "₹500" : "₹100";
       if (!accommodation) accommodation = isHack ? "Yes" : "N/A";
       if (!theme) theme = "General";
       if (!teamMembers) teamMembers = "N/A";
@@ -752,7 +752,7 @@ function testEmailPreview() {
     event_name: "24-Hour Hackathon",
     team_name: "Cyber Knights",
     team_members: "Red (+91 8888888888), Blue (+91 4444444444)",
-    amount_paid: 1,
+    amount_paid: 500,
     order_id: "order_sample_test",
     razorpay_payment_id: "pay_sample_test",
     college: "GNDEC Bidar",
