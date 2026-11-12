@@ -44,9 +44,11 @@ const HeroSection = () => {
           </p>
 
           <div className="hero-departments">
-            <div className="hero-dept-item" style={{ maxWidth: '480px' }}>
-              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
-                GURU NANAK JHIRA ENTREPRENEURSHIP RESEARCH AND BUSINESS INCUBATION FOUNDATION
+            <div className="hero-dept-item" style={{ maxWidth: '520px' }}>
+              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35', textAlign: 'center' }}>
+                GURU NANAK JHIRA ENTREPRENEURSHIP<br />
+                RESEARCH AND BUSINESS INCUBATION<br />
+                FOUNDATION
               </div>
               <div
                 style={{
@@ -58,6 +60,7 @@ const HeroSection = () => {
                   marginTop: '0.4rem',
                   textTransform: 'uppercase',
                   lineHeight: '1.25',
+                  textAlign: 'center',
                   textShadow: '0 2px 12px rgba(0, 0, 0, 0.95), 0 0 16px rgba(0, 240, 255, 0.65)',
                 }}
               >

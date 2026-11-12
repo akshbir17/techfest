@@ -522,7 +522,7 @@ html.lenis { height: auto; }
 
   .hero-departments > .hero-dept-item:first-child {
     justify-self: end;
-    text-align: right;
+    text-align: center;
   }
 
   .hero-departments > .hero-dept-amp {
@@ -532,7 +532,7 @@ html.lenis { height: auto; }
 
   .hero-departments > .hero-dept-item:last-child {
     justify-self: start;
-    text-align: left;
+    text-align: center;
   }
 }
 
