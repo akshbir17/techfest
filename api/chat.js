@@ -1,3 +1,5 @@
+import { applyCors, checkRateLimit } from './_lib/security.js';
+
 // Serverless Backend API Route for Crimson AI Concierge
 // Keeps the Gemini API key 100% hidden and secure on the server (never exposed to browser)
 
@@ -63,10 +65,7 @@ HOW TO REGISTER:
 - Secure instant payment is processed via Razorpay, with instant automated digital pass dispatch directly to their email.`;
 
 export default async function handler(req, res) {
-  // CORS Headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  applyCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -74,6 +73,12 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const limit = checkRateLimit(req, 'chat', 15, 60_000);
+  if (!limit.allowed) {
+    res.setHeader('Retry-After', String(limit.retryAfterSec));
+    return res.status(429).json({ error: 'Rate limit exceeded. Please wait a minute before sending more messages.' });
   }
 
   try {
@@ -85,23 +90,36 @@ export default async function handler(req, res) {
 
     const userMessage = message.trim().slice(0, 500); // Safety limit
 
-    // Authoritative Server-side API key (never sent to client)
-    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+    // Authoritative Server-side API key only (never accept client-exposed VITE_ fallback)
+    const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({ error: 'Gemini API key is not configured on server' });
     }
 
+    const safeHistory = Array.isArray(history)
+      ? history
+          .filter(
+            (msg) =>
+              msg &&
+              typeof msg === 'object' &&
+              (msg.sender === 'user' || msg.sender === 'crimson' || msg.sender === 'model') &&
+              typeof msg.text === 'string' &&
+              msg.text.trim().length > 0
+          )
+          .slice(-4)
+      : [];
+
     // 1. Google Gemini API
     if (!apiKey.startsWith('sk-or-')) {
       const contents = [];
 
-      // Last 4 turns of history
-      (history || []).slice(-4).forEach((msg) => {
-        if (msg.sender === 'user' && msg.text) {
-          contents.push({ role: 'user', parts: [{ text: String(msg.text).slice(0, 500) }] });
-        } else if ((msg.sender === 'crimson' || msg.sender === 'model') && msg.text) {
-          contents.push({ role: 'model', parts: [{ text: String(msg.text).slice(0, 500) }] });
+      // Last 4 turns of validated history
+      safeHistory.forEach((msg) => {
+        if (msg.sender === 'user') {
+          contents.push({ role: 'user', parts: [{ text: msg.text.trim().slice(0, 500) }] });
+        } else {
+          contents.push({ role: 'model', parts: [{ text: msg.text.trim().slice(0, 500) }] });
         }
       });
 
@@ -152,10 +170,10 @@ export default async function handler(req, res) {
 
     // 2. OpenRouter Fallback (if key is sk-or-...)
     const messages = [{ role: 'system', content: SYSTEM_INSTRUCTION }];
-    (history || []).slice(-4).forEach((msg) => {
+    safeHistory.forEach((msg) => {
       messages.push({
         role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: String(msg.text).slice(0, 500),
+        content: msg.text.trim().slice(0, 500),
       });
     });
     messages.push({ role: 'user', content: userMessage });

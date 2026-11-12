@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Calendar, MapPin, Users, Award, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';

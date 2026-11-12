@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { motion } from 'framer-motion';
 import { X, ChevronDown, Loader2, AlertCircle, Users, Plus, Trash2 } from 'lucide-react';
+import { HACKATHON_THEMES, INDIAN_PHONE_REGEX, EMAIL_REGEX } from '../../constants/hackathon';
 
 // Team events configuration
 const TEAM_EVENTS = [
   {
     id: 'hackathon',
     name: '24-Hour Hackathon',
-    fee: 500,
+    fee: 1,
     min: 2,
     max: 4,
     teamSize: '2 to 4 members',
@@ -56,13 +57,6 @@ const TEAM_EVENTS = [
     description: 'Campus-wide mystery quest solving clues & riddles. Prizes Revealing Soon.',
     memberLabel: 'Team Member',
   },
-];
-
-export const HACKATHON_THEMES = [
-  'Agriculture, FoodTech & Rural Development',
-  'MedTech, HealthTech & Workplace Wellbeing',
-  'Clean & Green Technology (Sustainability)',
-  'Smart Automation & Agentic AI',
 ];
 
 const getMinAdditional = (ev) => Math.max(0, (ev?.min || 1) - 1);
@@ -115,9 +109,9 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
       errs.theme = 'Please select a hackathon theme';
     }
     if (!form.leaderName.trim()) errs.leaderName = "Leader's full name is required";
-    if (!form.leaderEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.leaderEmail))
+    if (!form.leaderEmail.trim() || !EMAIL_REGEX.test(form.leaderEmail.trim()))
       errs.leaderEmail = 'Valid leader email is required';
-    if (!form.leaderPhone.trim() || !/^[6-9]\d{9}$/.test(form.leaderPhone.replace(/\s/g, '')))
+    if (!form.leaderPhone.trim() || !INDIAN_PHONE_REGEX.test(form.leaderPhone.replace(/[\s-]+/g, '')))
       errs.leaderPhone = 'Valid 10-digit mobile number is required';
     if (!form.college.trim()) errs.college = 'College / Institution name is required';
 
@@ -134,8 +128,11 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
         if (!m.name.trim()) {
           errs[`member_${idx}_name`] = `Member ${memberNum} name is required`;
         }
-        if (!m.phone.trim()) {
+        const cleanedMemberPhone = m.phone.replace(/[\s-]+/g, '');
+        if (!cleanedMemberPhone) {
           errs[`member_${idx}_phone`] = `Member ${memberNum} contact is required`;
+        } else if (!INDIAN_PHONE_REGEX.test(cleanedMemberPhone)) {
+          errs[`member_${idx}_phone`] = `Member ${memberNum} contact must be a valid 10-digit mobile number`;
         }
       }
     });
@@ -302,25 +299,24 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
             const verifyData = await verifyRes.json();
             if (verifyRes.ok && verifyData.success) {
               onClose();
-              const regParam = verifyData.registrationId ? `&reg_id=${verifyData.registrationId}` : '';
+              const regParam = verifyData.registrationId ? `&reg_id=${encodeURIComponent(verifyData.registrationId)}` : '';
               const uniqueParam = verifyData.uniqueId ? `&unique_id=${encodeURIComponent(verifyData.uniqueId)}` : '';
+              const tokenParam = verifyData.passToken ? `&token=${encodeURIComponent(verifyData.passToken)}` : '';
               const themeParam = form.theme ? `&theme=${encodeURIComponent(form.theme)}` : '';
               const accomParam = selectedEvent?.id === 'hackathon' ? `&accommodation=${encodeURIComponent(form.accommodation || 'Yes')}` : '';
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}${regParam}${uniqueParam}`);
+              navigate(`/registration-success?order_id=${encodeURIComponent(response.razorpay_order_id)}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${encodeURIComponent(response.razorpay_payment_id)}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}${regParam}${uniqueParam}${tokenParam}`);
             } else {
-              // Graceful fallback for confirmed payments
-              onClose();
-              const themeParam = form.theme ? `&theme=${encodeURIComponent(form.theme)}` : '';
-              const accomParam = selectedEvent?.id === 'hackathon' ? `&accommodation=${encodeURIComponent(form.accommodation || 'Yes')}` : '';
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}`);
+              setServerError(
+                `${verifyData?.error || 'Payment verification could not be completed.'} (Payment ID: ${response.razorpay_payment_id}). Please do not pay again — contact organizers with this Payment ID if amount was debited.`
+              );
+              setLoading(false);
             }
           } catch (verErr) {
             console.error('Verify error:', verErr);
-            // Since Razorpay payment succeeded, do not trap participant on error; navigate to success
-            onClose();
-            const themeParam = form.theme ? `&theme=${encodeURIComponent(form.theme)}` : '';
-            const accomParam = selectedEvent?.id === 'hackathon' ? `&accommodation=${encodeURIComponent(form.accommodation || 'Yes')}` : '';
-            navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}`);
+            setServerError(
+              `Network error while verifying payment (Payment ID: ${response.razorpay_payment_id}). If amount was debited, contact coordinators with this Payment ID.`
+            );
+            setLoading(false);
           }
         },
       };
@@ -386,6 +382,9 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
         {/* Modal */}
         <motion.div
           key="team-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="team-modal-title"
           initial={{ opacity: 0, scale: 0.92, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 30 }}
@@ -416,7 +415,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                   <Users size={20} color="var(--color-star-white)" />
                 </div>
                 <div>
-                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: '800', color: 'var(--color-star-white)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
+                  <h2 id="team-modal-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: '800', color: 'var(--color-star-white)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>
                     Team <span style={{ color: 'var(--color-neon-cyan)' }}>Registration</span>
                   </h2>
                   <p style={{ color: 'rgba(244,234,204,0.5)', fontSize: '0.75rem', marginTop: '0.2rem', letterSpacing: '0.05em' }}>
@@ -427,6 +426,8 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
               {!loading && (
                 <button
                   id="team-modal-close-btn"
+                  type="button"
+                  aria-label="Close team registration modal"
                   onClick={onClose}
                   style={{ background: 'transparent', border: 'none', color: 'rgba(244,234,204,0.5)', cursor: 'pointer', padding: '0.25rem', transition: 'color 0.2s' }}
                   onMouseOver={(e) => (e.currentTarget.style.color = 'var(--color-star-white)')}
@@ -470,7 +471,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                     </div>
                   </div>
                   <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-neon-cyan)' }}>
-                    ₹{selectedEvent?.fee || 500}
+                    ₹{selectedEvent?.fee || 1}
                   </div>
                 </div>
               </div>
@@ -968,7 +969,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
 };
 
 // Reusable field component
-const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error, disabled }) => (
+const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error, disabled, maxLength = 150 }) => (
   <div>
     <label htmlFor={id} style={{ display: 'block', fontSize: '0.75rem', color: error ? 'var(--color-neon-cyan)' : 'rgba(244,234,204,0.6)', marginBottom: '0.4rem', letterSpacing: '0.1em', fontWeight: 'bold', textTransform: 'uppercase', transition: 'color 0.2s' }}>
       {label}
@@ -981,6 +982,7 @@ const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error
       value={value}
       onChange={onChange}
       disabled={disabled}
+      maxLength={maxLength}
       style={{
         width: '100%',
         background: 'var(--color-deep-blue)',

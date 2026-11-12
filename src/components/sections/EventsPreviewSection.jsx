@@ -9,9 +9,9 @@ const EventsPreviewSection = () => {
   const navigate = useNavigate();
 
   const previewEvents = [
-    { name: '24-Hour Hackathon', category: 'TECHNICAL', price: '1', teamSize: '2 to 4 Members', date: '8th to 9th Dec 2026' },
-    { name: 'Treasure Hunt', category: 'GAMES', price: '600', teamSize: '1 to 4 Members', date: '7th Dec 2026' },
-    { name: 'BGMI Tournament', category: 'GAMES', price: '400', teamSize: '4 Members (Squad)', date: '7th Dec 2026' },
+    { name: '24-Hour Hackathon', category: 'TECHNICAL', price: '1', teamSize: '2 to 4 Members', date: '9th – 10th Dec 2026' },
+    { name: 'Treasure Hunt', category: 'GAMES', price: '600', teamSize: '1 to 4 Members', date: '8th Dec 2026' },
+    { name: 'BGMI Tournament', category: 'GAMES', price: '400', teamSize: '4 Members (Squad)', date: '8th Dec 2026' },
   ];
 
   return (
@@ -56,7 +56,7 @@ const EventsPreviewSection = () => {
                 <div className="mt-auto mb-4" style={{ color: 'var(--color-star-white)', opacity: 0.8, fontSize: '0.875rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                     <Calendar size={16} color="var(--color-neon-cyan)" />
-                    <span>{event.date || 'Dec 7 – 9, 2026'}</span>
+                    <span>{event.date || 'Dec 8 – 10, 2026'}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <Users size={16} color="var(--color-neon-cyan)" />

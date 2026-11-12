@@ -107,8 +107,8 @@ export function resolveEventData(event) {
   // Fallback to generic fest timing if specific event isn't matched
   return {
     title: `Spectrum 1.0: ${event?.name || 'Fest Event'}`,
-    start: new Date('2026-12-07T09:00:00+05:30'),
-    end: new Date('2026-12-09T17:00:00+05:30'),
+    start: new Date('2026-12-08T09:00:00+05:30'),
+    end: new Date('2026-12-10T17:00:00+05:30'),
     venue: event?.venue || 'Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka',
     description: (event?.description || 'Spectrum 1.0 National Level Technical & Cultural Fest.') + '\n\nWebsite: https://spectrum10.vercel.app',
   };

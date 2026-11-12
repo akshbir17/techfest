@@ -13,6 +13,8 @@ import {
   Info,
   AlertCircle,
   ExternalLink,
+  Loader2,
+  ShieldAlert,
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
@@ -20,39 +22,116 @@ const RegistrationSuccessPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const orderId = searchParams.get('order_id') || 'N/A';
-  const paymentId = searchParams.get('payment_id') || 'N/A';
+  const queryOrderId = searchParams.get('order_id') || '';
+  const queryPaymentId = searchParams.get('payment_id') || '';
+  const passToken = searchParams.get('token') || '';
   const registrationId = searchParams.get('reg_id') || '';
   const uniqueIdFromQuery = searchParams.get('unique_id') || '';
   const rawEventName = searchParams.get('event') || 'Official Event';
-  const participantName = searchParams.get('name') || '';
-  const teamName = searchParams.get('team') || '';
-  const amount = searchParams.get('amount') || '';
-  const theme = searchParams.get('theme') || '';
-  const accommodation = searchParams.get('accommodation') || searchParams.get('accom') || '';
+  const queryParticipantName = searchParams.get('name') || '';
+  const queryTeamName = searchParams.get('team') || '';
+  const queryAmount = searchParams.get('amount') || '';
+  const queryTheme = searchParams.get('theme') || '';
+  const queryAccommodation = searchParams.get('accommodation') || searchParams.get('accom') || '';
 
-  const eventName = decodeURIComponent(rawEventName);
+  const [verificationStatus, setVerificationStatus] = useState(
+    queryOrderId && queryPaymentId ? 'checking' : 'unverified'
+  );
+  const [verificationError, setVerificationError] = useState(
+    queryOrderId && queryPaymentId
+      ? ''
+      : 'Missing Razorpay Order ID or Payment ID. Only verified paid registrations can view an official pass.'
+  );
+  const [verifiedReg, setVerifiedReg] = useState(null);
+
+  const orderId = verifiedReg?.orderId || queryOrderId || 'N/A';
+  const paymentId = verifiedReg?.paymentId || queryPaymentId || 'N/A';
+  const eventName = verifiedReg?.eventName || decodeURIComponent(rawEventName);
+  const participantName = verifiedReg?.participantName || queryParticipantName;
+  const teamName = verifiedReg?.teamName ?? queryTeamName;
+  const amount = verifiedReg?.amount !== undefined && verifiedReg?.amount !== '' ? String(verifiedReg.amount) : queryAmount;
+  const theme = verifiedReg?.theme || queryTheme;
+  const accommodation = verifiedReg?.accommodation || queryAccommodation;
+
   const eventPrefix = String(eventName || 'SPEC').replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || 'SPEC';
-  const uniqueRegId = uniqueIdFromQuery ||
-    (registrationId && registrationId.startsWith('SPEC-') 
-      ? registrationId 
-      : (registrationId 
-          ? `SPEC-${eventPrefix}-${registrationId.replace(/[^a-zA-Z0-9]/g, '').slice(0, 6).toUpperCase()}` 
-          : (orderId && orderId !== 'N/A' 
-              ? `SPEC-${eventPrefix}-${orderId.replace(/[^a-zA-Z0-9]/g, '').slice(-6).toUpperCase()}` 
-              : `SPEC-${eventPrefix}-PASS`)));
+  const uniqueRegId =
+    verifiedReg?.uniqueId ||
+    uniqueIdFromQuery ||
+    (registrationId && registrationId.startsWith('SPEC-')
+      ? registrationId
+      : registrationId
+        ? `SPEC-${eventPrefix}-${registrationId.replace(/[^a-zA-Z0-9]/g, '').slice(0, 6).toUpperCase()}`
+        : orderId && orderId !== 'N/A'
+          ? `SPEC-${eventPrefix}-${orderId.replace(/[^a-zA-Z0-9]/g, '').slice(-6).toUpperCase()}`
+          : `SPEC-${eventPrefix}-PASS`);
   const [copiedKey, setCopiedKey] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
 
-  const handleCopy = (text, key) => {
+    // Prevent indexing personal registration pass URLs in search engines
+    const robotsMeta = document.querySelector('meta[name="robots"]');
+    const prevRobots = robotsMeta ? robotsMeta.getAttribute('content') : null;
+    if (robotsMeta) {
+      robotsMeta.setAttribute('content', 'noindex, nofollow');
+    }
+
+    let cancelled = false;
+    async function verifyPass() {
+      if (!queryOrderId || !queryPaymentId) {
+        return;
+      }
+
+      try {
+        const params = new URLSearchParams({
+          order_id: queryOrderId,
+          payment_id: queryPaymentId,
+        });
+        if (passToken) params.set('token', passToken);
+
+        const res = await fetch(`/api/registration-status?${params.toString()}`);
+        const data = await res.json();
+
+        if (cancelled) return;
+        if (res.ok && data?.verified) {
+          setVerifiedReg(data.registration || null);
+          setVerificationStatus('verified');
+        } else {
+          setVerificationStatus('unverified');
+          setVerificationError(
+            data?.error || 'Could not verify a paid registration for these transaction details.'
+          );
+        }
+      } catch {
+        if (!cancelled) {
+          setVerificationStatus('unverified');
+          setVerificationError(
+            'Unable to reach server to verify your registration pass. Please refresh or contact coordinators.'
+          );
+        }
+      }
+    }
+
+    verifyPass();
+
+    return () => {
+      cancelled = true;
+      if (robotsMeta && prevRobots) {
+        robotsMeta.setAttribute('content', prevRobots);
+      }
+    };
+  }, [queryOrderId, queryPaymentId, passToken]);
+
+  const handleCopy = async (text, key) => {
     if (!text || text === 'N/A') return;
-    navigator.clipboard.writeText(text);
-    setCopiedKey(key);
-    setTimeout(() => setCopiedKey(null), 2000);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 2000);
+    } catch {
+      // Clipboard API unavailable in restricted contexts
+    }
   };
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -551,6 +630,114 @@ const RegistrationSuccessPage = () => {
       setIsDownloading(false);
     }
   };
+
+  if (verificationStatus === 'checking') {
+    return (
+      <main
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem 1.25rem',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '460px',
+            width: '100%',
+            textAlign: 'center',
+            background: 'rgba(8, 8, 8, 0.9)',
+            border: '1px solid rgba(211, 47, 47, 0.5)',
+            borderRadius: '6px',
+            padding: '2.5rem 1.75rem',
+          }}
+        >
+          <Loader2 size={38} color="#d32f2f" style={{ animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', color: 'var(--color-star-white)', letterSpacing: '0.1em' }}>
+            VERIFYING CREDENTIAL...
+          </h1>
+          <p style={{ color: 'rgba(244, 234, 204, 0.7)', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+            Confirming your payment status directly with our registration server.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  if (verificationStatus !== 'verified') {
+    return (
+      <main
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem 1.25rem',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '500px',
+            width: '100%',
+            textAlign: 'center',
+            background: 'rgba(8, 8, 8, 0.92)',
+            border: '1px solid rgba(211, 47, 47, 0.65)',
+            boxShadow: '4px 4px 0px 0px rgba(211, 47, 47, 0.45)',
+            borderRadius: '6px',
+            padding: '2.25rem 1.75rem',
+          }}
+        >
+          <ShieldAlert size={42} color="#ff5252" style={{ margin: '0 auto 1rem' }} />
+          <h1
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: '1.4rem',
+              fontWeight: 800,
+              color: 'var(--color-star-white)',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              marginBottom: '0.75rem',
+            }}
+          >
+            Unverified Registration Pass
+          </h1>
+          <p style={{ color: 'rgba(244, 234, 204, 0.8)', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+            {verificationError || 'This pass link could not be verified as a completed paid registration.'}
+          </p>
+          {queryPaymentId && (
+            <p style={{ color: 'rgba(244, 234, 204, 0.6)', fontSize: '0.8rem', marginBottom: '1.5rem', wordBreak: 'break-all' }}>
+              Reference Payment ID: <code>{queryPaymentId}</code>
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            style={{
+              width: '100%',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              padding: '0.9rem 1.5rem',
+              backgroundColor: '#d32f2f',
+              color: '#080808',
+              border: 'none',
+              borderRadius: '4px',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 800,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+            }}
+          >
+            <Home size={16} />
+            <span>Back to Home</span>
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main

@@ -23,12 +23,14 @@ const CrimsonChat = () => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
 
-    const userMessage = { id: Date.now(), text: inputValue, sender: 'user' };
-    setMessages(prev => [...prev, userMessage]);
+    const textToSend = inputValue.trim();
+    const userMessage = { id: Date.now(), text: textToSend, sender: 'user' };
+    const updatedHistory = [...messages, userMessage];
+    setMessages(updatedHistory);
     setInputValue('');
     setIsLoading(true);
 
-    const responseText = await getCrimsonResponse(inputValue, messages);
+    const responseText = await getCrimsonResponse(textToSend, messages);
     const crimsonMessage = { id: Date.now() + 1, text: responseText, sender: 'crimson' };
     
     setMessages(prev => [...prev, crimsonMessage]);
@@ -38,21 +40,25 @@ const CrimsonChat = () => {
   return (
     <>
       {/* Floating Action Button */}
-      <motion.div 
+      <motion.button
+        type="button"
         className="chatbot-fab"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle Crimson Assistant"
+        aria-label={isOpen ? 'Close Crimson Assistant' : 'Open Crimson Assistant'}
+        aria-expanded={isOpen}
       >
         {isOpen ? <X size={24} /> : <Bird size={26} strokeWidth={2.2} />}
-      </motion.div>
+      </motion.button>
 
       {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             className="chat-window"
+            role="dialog"
+            aria-label="Crimson AI Assistant"
             initial={{ opacity: 0, y: 50, scale: 0.9, x: 20 }}
             animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
             exit={{ opacity: 0, y: 50, scale: 0.9, x: 20 }}
@@ -61,7 +67,9 @@ const CrimsonChat = () => {
             <GlassCard style={{ height: '100%', display: 'flex', flexDirection: 'column', padding: 0 }} className="glass-panel">
               <div className="chat-header">
                 <h3>CRIMSON SENTINEL</h3>
-                <button 
+                <button
+                  type="button"
+                  aria-label="Close Crimson chat"
                   onClick={() => setIsOpen(false)}
                   style={{ background: 'transparent', border: 'none', color: 'var(--color-neon-cyan)', cursor: 'pointer' }}
                 >
@@ -96,6 +104,8 @@ const CrimsonChat = () => {
                   type="text" 
                   className="chat-input"
                   placeholder="Ask the sentinel..."
+                  maxLength={500}
+                  aria-label="Ask Crimson a question"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   disabled={isLoading}
@@ -103,6 +113,7 @@ const CrimsonChat = () => {
                 <button 
                   type="submit" 
                   className="chat-send-btn"
+                  aria-label="Send message"
                   disabled={!inputValue.trim() || isLoading}
                 >
                   <Send size={18} />

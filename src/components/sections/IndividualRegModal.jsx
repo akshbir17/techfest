@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { X, ChevronDown, Loader2, AlertCircle } from 'lucide-react';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { INDIAN_PHONE_REGEX, EMAIL_REGEX } from '../../constants/hackathon';
 
 // List of individual events
 const INDIVIDUAL_EVENTS = [
   { id: 'impossible_to_sell', name: 'Impossible to Sell',          fee: 100, description: 'Creative selling challenge — pitch an unusual or bizarre product. Prizes Revealing Soon.' },
   { id: 'killer_game',        name: 'Killer Game',                 fee: 50,  description: 'Social deduction & stealth elimination challenge on Day 1. Prizes Revealing Soon.' },
-  { id: 'photo_booth',        name: 'Photography',                  fee: 100, description: 'Submit your best shot — Google Drive link shared on 9 Dec at 12 PM. Prizes Revealing Soon.' },
+  { id: 'photo_booth',        name: 'Photography',                  fee: 100, description: 'Submit your best shot — Google Drive link shared on 10 Dec at 12 PM. Prizes Revealing Soon.' },
 ];
 
 const IndividualRegModal = ({ onClose, initialEventId }) => {
@@ -36,9 +37,9 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
   const validate = () => {
     const errs = {};
     if (!form.name.trim()) errs.name = 'Name is required';
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+    if (!form.email.trim() || !EMAIL_REGEX.test(form.email.trim()))
       errs.email = 'Valid email is required';
-    if (!form.phone.trim() || !/^[6-9]\d{9}$/.test(form.phone.replace(/\s/g, '')))
+    if (!form.phone.trim() || !INDIAN_PHONE_REGEX.test(form.phone.replace(/[\s-]+/g, '')))
       errs.phone = 'Valid 10-digit phone number is required';
     if (!form.college.trim()) errs.college = 'College name is required';
     return errs;
@@ -140,19 +141,22 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
             const verifyData = await verifyRes.json();
             if (verifyRes.ok && verifyData.success) {
               onClose();
-              const regParam = verifyData.registrationId ? `&reg_id=${verifyData.registrationId}` : '';
+              const regParam = verifyData.registrationId ? `&reg_id=${encodeURIComponent(verifyData.registrationId)}` : '';
               const uniqueParam = verifyData.uniqueId ? `&unique_id=${encodeURIComponent(verifyData.uniqueId)}` : '';
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.name)}&amount=${selectedEvent.fee}${regParam}${uniqueParam}`);
+              const tokenParam = verifyData.passToken ? `&token=${encodeURIComponent(verifyData.passToken)}` : '';
+              navigate(`/registration-success?order_id=${encodeURIComponent(response.razorpay_order_id)}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${encodeURIComponent(response.razorpay_payment_id)}&name=${encodeURIComponent(form.name)}&amount=${selectedEvent.fee}${regParam}${uniqueParam}${tokenParam}`);
             } else {
-              // Graceful fallback for confirmed payments
-              onClose();
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.name)}&amount=${selectedEvent.fee}`);
+              setServerError(
+                `${verifyData?.error || 'Payment verification could not be completed.'} (Payment ID: ${response.razorpay_payment_id}). Please do not pay again — contact organizers with this Payment ID if amount was debited.`
+              );
+              setLoading(false);
             }
           } catch (verErr) {
             console.error('Verify error:', verErr);
-            // Since Razorpay payment succeeded, do not trap participant on error; navigate to success
-            onClose();
-            navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.name)}&amount=${selectedEvent.fee}`);
+            setServerError(
+              `Network error while verifying payment (Payment ID: ${response.razorpay_payment_id}). If amount was debited, contact coordinators with this Payment ID.`
+            );
+            setLoading(false);
           }
         },
       };
@@ -202,6 +206,9 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
         {/* Modal Window */}
         <motion.div
           key="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="indiv-modal-title"
           initial={{ opacity: 0, scale: 0.92, y: 30 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.92, y: 30 }}
@@ -228,7 +235,7 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
               <div>
-                <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: '800', color: 'var(--color-star-white)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                <h2 id="indiv-modal-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: '800', color: 'var(--color-star-white)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   Individual <span style={{ color: 'var(--color-neon-cyan)' }}>Registration</span>
                 </h2>
                 <p style={{ color: 'rgba(244,234,204,0.5)', fontSize: '0.8rem', marginTop: '0.3rem', letterSpacing: '0.05em' }}>
@@ -237,6 +244,8 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
               </div>
               {!loading && (
                 <button
+                  type="button"
+                  aria-label="Close individual registration modal"
                   onClick={onClose}
                   id="modal-close-btn"
                   style={{ background: 'transparent', border: 'none', color: 'rgba(244,234,204,0.5)', cursor: 'pointer', padding: '0.25rem', transition: 'color 0.2s' }}
@@ -416,7 +425,7 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
 };
 
 // Reusable field component
-const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error, disabled }) => (
+const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error, disabled, maxLength = 150 }) => (
   <div>
     <label htmlFor={id} style={{ display: 'block', fontSize: '0.75rem', color: error ? 'var(--color-neon-cyan)' : 'rgba(244,234,204,0.6)', marginBottom: '0.4rem', letterSpacing: '0.1em', fontWeight: 'bold', textTransform: 'uppercase', transition: 'color 0.2s' }}>
       {label}
@@ -429,6 +438,7 @@ const FieldInput = ({ id, label, name, type, placeholder, value, onChange, error
       value={value}
       onChange={onChange}
       disabled={disabled}
+      maxLength={maxLength}
       style={{
         width: '100%',
         background: 'var(--color-deep-blue)',

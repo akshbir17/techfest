@@ -1,11 +1,52 @@
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
-import { createClient } from '@supabase/supabase-js';
+import {
+  formatTeamMembers,
+  formatUniqueRegId,
+  getEventConfig,
+  isTeamEventName,
+  postToSheetsWebhook,
+} from './_lib/events.js';
+import {
+  applyCors,
+  checkRateLimit,
+  clampString,
+  getSupabaseAdmin,
+  signPassToken,
+  timingSafeMatch,
+} from './_lib/security.js';
+
+async function insertVerifiedFallbackRecord(supabase, payload) {
+  const result = await supabase
+    .from('registrations')
+    .insert([payload])
+    .select()
+    .single();
+
+  if (!result.error) {
+    return result;
+  }
+
+  const msg = String(result.error.message || '');
+  if (/column .* does not exist/i.test(msg) || /schema cache/i.test(msg)) {
+    console.warn('Supabase schema drift detected on fallback insert; retrying with base columns:', msg);
+    const fallbackPayload = { ...payload };
+    if (/unique_id/i.test(msg)) delete fallbackPayload.unique_id;
+    if (/theme/i.test(msg)) delete fallbackPayload.theme;
+    if (/accommodation/i.test(msg)) delete fallbackPayload.accommodation;
+
+    return supabase
+      .from('registrations')
+      .insert([fallbackPayload])
+      .select()
+      .single();
+  }
+
+  return result;
+}
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  applyCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -13,6 +54,12 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const limit = checkRateLimit(req, 'verify-payment', 30, 60_000);
+  if (!limit.allowed) {
+    res.setHeader('Retry-After', String(limit.retryAfterSec));
+    return res.status(429).json({ error: 'Too many verification attempts. Please wait a moment.' });
   }
 
   try {
@@ -23,34 +70,45 @@ export default async function handler(req, res) {
       registrationData,
     } = req.body || {};
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    if (
+      typeof razorpay_order_id !== 'string' ||
+      typeof razorpay_payment_id !== 'string' ||
+      typeof razorpay_signature !== 'string' ||
+      !razorpay_order_id.trim() ||
+      !razorpay_payment_id.trim() ||
+      !razorpay_signature.trim()
+    ) {
       return res.status(400).json({ error: 'Missing required payment verification parameters.' });
     }
+
+    const orderId = razorpay_order_id.trim();
+    const paymentId = razorpay_payment_id.trim();
+    const signature = razorpay_signature.trim();
 
     const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!keySecret) {
-      return res.status(500).json({ error: 'Razorpay secret key not configured on server.' });
+      return res.status(500).json({ error: 'Payment gateway secret is not configured on server.' });
     }
 
-    // 1. Cryptographic HMAC SHA256 Signature Verification
+    // 1. Cryptographic HMAC SHA256 Signature Verification (constant-time)
     const hmac = crypto.createHmac('sha256', keySecret);
-    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    hmac.update(`${orderId}|${paymentId}`);
     const generatedSignature = hmac.digest('hex');
 
-    if (generatedSignature !== razorpay_signature) {
+    if (!timingSafeMatch(generatedSignature, signature)) {
       return res.status(400).json({ error: 'Payment signature verification failed. Tampering detected.' });
     }
 
-    // 2. Fetch Payment from Razorpay API to verify status and order association
+    // 2. Fetch Payment from Razorpay API to verify status, order association & amount
     let fetchedPayment = null;
     if (keyId && keySecret) {
       try {
         const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
-        fetchedPayment = await razorpay.payments.fetch(razorpay_payment_id);
+        fetchedPayment = await razorpay.payments.fetch(paymentId);
 
-        if (fetchedPayment.order_id !== razorpay_order_id) {
+        if (fetchedPayment.order_id !== orderId) {
           return res.status(400).json({ error: 'Payment does not belong to the referenced order ID.' });
         }
 
@@ -59,58 +117,56 @@ export default async function handler(req, res) {
         }
       } catch (rzpErr) {
         console.error('Razorpay payment fetch check failed:', rzpErr.message);
-        // If API fails due to temporary network, HMAC signature was already cryptographically verified
       }
     }
 
-    // 3. Supabase Database Operations (Idempotent update)
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+    // Derive authoritative event config if provided, never trusting frontend fee alone
+    const requestedEventId = clampString(registrationData?.eventId, 50).toLowerCase();
+    const catalogEvent = getEventConfig(requestedEventId);
 
+    // 3. Supabase Database Operations (Idempotent update)
+    const supabase = getSupabaseAdmin();
     let registrationRecord = null;
     let alreadyProcessed = false;
 
-    if (supabaseUrl && supabaseServiceKey) {
-      const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-      // Check existing registration
+    if (supabase) {
       const { data: existing } = await supabase
         .from('registrations')
         .select('*')
-        .eq('razorpay_order_id', razorpay_order_id)
+        .eq('razorpay_order_id', orderId)
         .maybeSingle();
 
       if (existing) {
         registrationRecord = existing;
 
-        if (existing.payment_status === 'paid' && existing.razorpay_payment_id === razorpay_payment_id) {
+        if (existing.payment_status === 'paid' && existing.razorpay_payment_id === paymentId) {
           alreadyProcessed = true;
         } else {
-          // Verify payment amount matches registered amount if available
-          if (fetchedPayment && existing.amount) {
-            const expectedPaise = Math.round(Number(existing.amount) * 100);
+          // Verify payment amount matches DB expected amount (or catalog fee)
+          const authoritativeFee = Number(existing.amount || catalogEvent?.fee || 0);
+          if (fetchedPayment && authoritativeFee > 0) {
+            const expectedPaise = Math.round(authoritativeFee * 100);
             if (fetchedPayment.amount !== expectedPaise) {
               return res.status(400).json({ error: 'Paid amount does not match expected registration fee.' });
             }
           }
 
-          // Update record to paid (and persist theme/accommodation if provided)
           const updatePayload = {
             payment_status: 'paid',
-            razorpay_payment_id: razorpay_payment_id,
+            razorpay_payment_id: paymentId,
             updated_at: new Date().toISOString(),
           };
           if (registrationData?.theme && !existing.theme) {
-            updatePayload.theme = String(registrationData.theme).trim();
+            updatePayload.theme = clampString(registrationData.theme, 160);
           }
           if (registrationData?.accommodation && !existing.accommodation) {
-            updatePayload.accommodation = String(registrationData.accommodation).trim();
+            updatePayload.accommodation = clampString(registrationData.accommodation, 40);
           }
 
           const { data: updated, error: updateErr } = await supabase
             .from('registrations')
             .update(updatePayload)
-            .eq('razorpay_order_id', razorpay_order_id)
+            .eq('razorpay_order_id', orderId)
             .select()
             .single();
 
@@ -118,31 +174,53 @@ export default async function handler(req, res) {
             registrationRecord = updated;
           }
         }
-      } else if (registrationData) {
-        // Fallback: If pending record was missed, insert verified record
-        const { data: inserted, error: insertErr } = await supabase
-          .from('registrations')
-          .insert([
-            {
-              participant_name: registrationData.name,
-              email: registrationData.email,
-              phone: registrationData.phone,
-              college: registrationData.college,
-              event_id: registrationData.eventId,
-              event_name: registrationData.eventName,
-              team_name: registrationData.teamName || null,
-              team_members: registrationData.members || null,
-              amount: registrationData.fee || 0,
-              razorpay_order_id: razorpay_order_id,
-              razorpay_payment_id: razorpay_payment_id,
-              payment_status: 'paid',
-              synced_to_sheets: false,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            },
-          ])
-          .select()
-          .single();
+      } else if (registrationData && typeof registrationData === 'object') {
+        // Fallback: If pending record was missed, verify authoritative fee via catalog or Razorpay payment
+        const authoritativeFee =
+          catalogEvent?.fee ??
+          (fetchedPayment && Number.isFinite(fetchedPayment.amount)
+            ? Number(fetchedPayment.amount) / 100
+            : 0);
+
+        if (fetchedPayment && authoritativeFee > 0) {
+          const expectedPaise = Math.round(authoritativeFee * 100);
+          if (fetchedPayment.amount !== expectedPaise) {
+            return res.status(400).json({ error: 'Paid amount does not match catalog registration fee.' });
+          }
+        }
+
+        const officialEventName =
+          catalogEvent?.name || clampString(registrationData.eventName, 120) || 'Spectrum Event';
+        const fallbackUniqueId = formatUniqueRegId(
+          null,
+          officialEventName,
+          crypto.randomBytes(3).toString('hex')
+        );
+        const cleanTheme = clampString(registrationData.theme, 160) || 'General';
+        const cleanAccommodation =
+          clampString(registrationData.accommodation, 40) ||
+          (requestedEventId.includes('hackathon') ? 'Yes' : 'N/A');
+
+        const { data: inserted, error: insertErr } = await insertVerifiedFallbackRecord(supabase, {
+          unique_id: fallbackUniqueId,
+          participant_name: clampString(registrationData.name, 120),
+          email: clampString(registrationData.email, 160).toLowerCase(),
+          phone: clampString(String(registrationData.phone || '').replace(/[\s-]+/g, ''), 20),
+          college: clampString(registrationData.college, 200),
+          event_id: requestedEventId || 'unknown',
+          event_name: officialEventName,
+          team_name: registrationData.teamName ? clampString(registrationData.teamName, 100) : null,
+          team_members: Array.isArray(registrationData.members) ? registrationData.members.slice(0, 6) : null,
+          amount: authoritativeFee,
+          theme: cleanTheme,
+          accommodation: cleanAccommodation,
+          razorpay_order_id: orderId,
+          razorpay_payment_id: paymentId,
+          payment_status: 'paid',
+          synced_to_sheets: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
 
         if (!insertErr && inserted) {
           registrationRecord = inserted;
@@ -151,114 +229,109 @@ export default async function handler(req, res) {
     }
 
     // Generate or format authoritative Unique Registration ID
-    const eventName = registrationRecord?.event_name || registrationData?.eventName || '';
-    const eventPrefix = String(eventName).replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || 'SPEC';
-    const rawRegId = registrationRecord?.id || registrationData?.registrationId || '';
-    const uniqueRegId = rawRegId && String(rawRegId).startsWith('SPEC-')
-      ? rawRegId
-      : `SPEC-${eventPrefix}-${(rawRegId ? String(rawRegId).replace(/-/g, '').slice(0, 6) : crypto.randomBytes(3).toString('hex')).toUpperCase()}`;
+    const eventName =
+      registrationRecord?.event_name ||
+      catalogEvent?.name ||
+      clampString(registrationData?.eventName, 120) ||
+      '';
+    const rawRegId =
+      registrationRecord?.unique_id ||
+      registrationRecord?.id ||
+      registrationData?.registrationId ||
+      '';
+    const uniqueRegId = formatUniqueRegId(
+      rawRegId,
+      eventName,
+      crypto.randomBytes(3).toString('hex')
+    );
 
     // 4. Google Sheets Live Webhook Sync (with secret and exact JSON schema)
     const sheetsWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
     const sheetsSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET || '';
-    let sheetsSynced = registrationRecord?.synced_to_sheets || false;
+    let sheetsSynced = Boolean(registrationRecord?.synced_to_sheets);
 
     if (sheetsWebhookUrl && (!alreadyProcessed || !sheetsSynced)) {
       try {
-        const participantName = registrationRecord?.participant_name || registrationRecord?.name || registrationData?.name || '';
-        const email = registrationRecord?.email || registrationData?.email || '';
-        const phone = registrationRecord?.phone || registrationData?.phone || '';
-        const rawTeamName = registrationRecord?.team_name || registrationData?.teamName || 'N/A';
-        // Theme: use frontend-submitted value first (registrationData), then DB, then fallback
-        const themeVal = registrationData?.theme || registrationRecord?.theme || null;
-        const accommodationVal = registrationData?.accommodation || registrationRecord?.accommodation || (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A');
-        const amountPaid = Number(registrationRecord?.amount || registrationRecord?.fee || registrationData?.fee || 0);
-
-        let membersFormatted = 'N/A';
-        const rawMembers = registrationRecord?.team_members || registrationData?.members;
-        if (Array.isArray(rawMembers) && rawMembers.length > 0) {
-          membersFormatted = rawMembers
-            .map((m, i) => {
-              if (typeof m === 'string') return m;
-              let phoneStr = '';
-              if (m.phone) {
-                const clean = String(m.phone).trim();
-                phoneStr = clean.startsWith('+91') ? clean : `+91 ${clean.replace(/^0+/, '')}`;
-              }
-              return `${m.name || `Member ${i + 2}`}${phoneStr ? ` (${phoneStr})` : ''}`;
-            })
-            .join(', ');
-        }
-
-        // Ensure Team Name strictly contains only the team name (never members)
-        const isTeamEvent = Boolean(
-          rawTeamName &&
-          rawTeamName !== 'N/A' &&
-          !String(eventName).toLowerCase().includes('impossible') &&
-          !String(eventName).toLowerCase().includes('killer') &&
-          !String(eventName).toLowerCase().includes('photo')
+        const participantName =
+          registrationRecord?.participant_name ||
+          registrationRecord?.name ||
+          clampString(registrationData?.name, 120) ||
+          '';
+        const email =
+          registrationRecord?.email || clampString(registrationData?.email, 160).toLowerCase() || '';
+        const phone = registrationRecord?.phone || clampString(registrationData?.phone, 20) || '';
+        const rawTeamName =
+          registrationRecord?.team_name || clampString(registrationData?.teamName, 100) || 'N/A';
+        const themeVal =
+          registrationRecord?.theme || clampString(registrationData?.theme, 160) || null;
+        const accommodationVal =
+          registrationRecord?.accommodation ||
+          clampString(registrationData?.accommodation, 40) ||
+          (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A');
+        const amountPaid = Number(
+          registrationRecord?.amount ||
+            catalogEvent?.fee ||
+            (fetchedPayment ? fetchedPayment.amount / 100 : 0)
         );
+
+        const rawMembers = registrationRecord?.team_members || registrationData?.members;
+        const membersFormatted = formatTeamMembers(rawMembers);
+        const isTeamEvent = isTeamEventName(eventName, rawTeamName);
         const teamName = isTeamEvent ? String(rawTeamName).trim() : 'N/A';
 
-        // Required JSON fields as requested by Apps Script specification
         const sheetPayload = {
           secret: sheetsSecret,
           registration_id: uniqueRegId,
-          order_id: razorpay_order_id,
+          order_id: orderId,
           participant_name: participantName,
           email: email,
           phone: phone,
-          college: registrationRecord?.college || registrationData?.college || 'N/A',
+          college: registrationRecord?.college || clampString(registrationData?.college, 200) || 'N/A',
           event_name: eventName,
           theme: themeVal || 'General',
           accommodation: accommodationVal,
           team_name: teamName,
           team_members: isTeamEvent ? membersFormatted : 'N/A',
           amount_paid: amountPaid,
-          razorpay_payment_id: razorpay_payment_id,
+          razorpay_payment_id: paymentId,
           payment_status: 'PAID',
         };
 
-        const sheetResponse = await fetch(sheetsWebhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(sheetPayload),
-          redirect: 'follow',
-        });
+        const sheetResult = await postToSheetsWebhook(sheetsWebhookUrl, sheetPayload);
 
-        if (sheetResponse.ok) {
+        if (sheetResult.ok) {
           sheetsSynced = true;
 
-          // Mark synced in Supabase
-          if (supabaseUrl && supabaseServiceKey && registrationRecord?.id) {
-            const supabase = createClient(supabaseUrl, supabaseServiceKey);
+          if (supabase && registrationRecord?.id) {
             await supabase
               .from('registrations')
               .update({ synced_to_sheets: true })
               .eq('id', registrationRecord.id);
           }
         } else {
-          console.warn('Google Sheets Webhook non-200 response:', sheetResponse.status);
+          console.warn('Google Sheets Webhook error:', sheetResult.status, sheetResult.error);
         }
       } catch (sheetErr) {
         console.error('Google Sheets sync exception:', sheetErr.message);
-        // Do not fail the transaction; Supabase remains the primary source of truth
       }
     }
+
+    const passToken = signPassToken(orderId, paymentId);
 
     return res.status(200).json({
       success: true,
       message: 'Payment verified and registration confirmed successfully',
       registrationId: registrationRecord?.id || null,
       uniqueId: uniqueRegId,
-      orderId: razorpay_order_id,
-      paymentId: razorpay_payment_id,
+      orderId: orderId,
+      paymentId: paymentId,
+      passToken: passToken,
       sheetsSynced: sheetsSynced,
     });
   } catch (error) {
     console.error('Payment verification error:', error);
     return res.status(500).json({
-      error: error.message || 'Payment verification encountered an internal server error',
+      error: 'Payment verification encountered an internal server error.',
     });
   }
 }

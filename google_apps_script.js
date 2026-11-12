@@ -33,6 +33,28 @@ var TIMEZONE = "Asia/Kolkata";
    MAIN WEBHOOK
    ============================================================ */
 
+function timingSafeEquals(a, b) {
+  var strA = String(a || "");
+  var strB = String(b || "");
+  if (strA.length !== strB.length) return false;
+  var diff = 0;
+  for (var i = 0; i < strA.length; i++) {
+    diff |= strA.charCodeAt(i) ^ strB.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
+function sanitizeSheetCell(value) {
+  if (value === null || value === undefined) return "N/A";
+  var str = String(value).trim();
+  if (!str) return "N/A";
+  // Prevent Spreadsheet Formula Injection (=, +, -, @, tab, CR)
+  if (/^[=+\-@\t\r]/.test(str)) {
+    return "'" + str;
+  }
+  return str;
+}
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
 
@@ -40,6 +62,15 @@ function doPost(e) {
     lock.waitLock(30000);
 
     var data = parseRequest(e);
+
+    // Verify shared webhook secret from Script Properties
+    var expectedSecret = PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET");
+    if (!expectedSecret) {
+      throw new Error("Server misconfiguration: WEBHOOK_SECRET property is not set in Script Properties.");
+    }
+    if (!data.secret || !timingSafeEquals(String(data.secret), String(expectedSecret))) {
+      throw new Error("Unauthorized webhook request.");
+    }
 
     if (!data.email || !data.razorpay_payment_id || !data.order_id) {
       throw new Error("Missing email, Razorpay payment ID or order ID.");
@@ -94,22 +125,22 @@ function doPost(e) {
     var timestamp = Utilities.formatDate(new Date(), TIMEZONE, "dd/MM/yyyy, hh:mm a");
     var phone = data.phone ? "'" + String(data.phone).replace(/\s+/g, "") : "N/A";
 
-    // Build fields map for robust dynamic column alignment
+    // Build fields map for robust dynamic column alignment (formula-injection safe)
     var fieldsMap = {
       timestamp: timestamp,
-      reg_id: registrationId,
-      order_id: data.order_id,
-      participant_name: participantName,
-      email: data.email,
+      reg_id: sanitizeSheetCell(registrationId),
+      order_id: sanitizeSheetCell(data.order_id),
+      participant_name: sanitizeSheetCell(participantName),
+      email: sanitizeSheetCell(data.email),
       phone: phone,
-      college: data.college || "N/A",
-      event_name: eventName,
-      theme: theme,
-      accommodation: accommodation,
-      team_name: isTeam ? rawTeamName : "N/A",
-      team_members: isTeam ? teamMembers : "N/A",
+      college: sanitizeSheetCell(data.college || "N/A"),
+      event_name: sanitizeSheetCell(eventName),
+      theme: sanitizeSheetCell(theme),
+      accommodation: sanitizeSheetCell(accommodation),
+      team_name: isTeam ? sanitizeSheetCell(rawTeamName) : "N/A",
+      team_members: isTeam ? sanitizeSheetCell(teamMembers) : "N/A",
       fee: "₹" + amount,
-      razorpay_payment_id: data.razorpay_payment_id,
+      razorpay_payment_id: sanitizeSheetCell(data.razorpay_payment_id),
       status: "PAID",
       confirmation_email: "Pending"
     };
@@ -752,8 +783,10 @@ function jsonResponse(data) {
 
 function testHackathonRegistration() {
   var testSuffix = Math.floor(1000 + Math.random() * 9000);
+  var scriptSecret = PropertiesService.getScriptProperties().getProperty("WEBHOOK_SECRET") || "";
 
   var testPayload = {
+    secret: scriptSecret,
     order_id: "order_test_hackathon_" + testSuffix,
     razorpay_payment_id: "pay_test_hackathon_" + testSuffix,
     registration_id: "SPEC-HACK-" + testSuffix,

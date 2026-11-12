@@ -342,9 +342,9 @@ const ScheduleSection = () => {
         >
           {[
             { id: 'all', label: 'ALL DAYS' },
-            { id: 'day1', label: 'DAY 1 • 7 DEC', sub: 'Opening & Competitions' },
-            { id: 'day2', label: 'DAY 2 • 8 DEC', sub: '24-Hour Hackathon' },
-            { id: 'day3', label: 'DAY 3 • 9 DEC', sub: 'Evaluation & Closing' },
+            { id: 'day1', label: 'DAY 1 • 8 DEC', sub: 'Opening & Competitions' },
+            { id: 'day2', label: 'DAY 2 • 9 DEC', sub: '24-Hour Hackathon' },
+            { id: 'day3', label: 'DAY 3 • 10 DEC', sub: 'Evaluation & Closing' },
             { id: 'guidelines', label: 'GUIDELINES', sub: 'Deadlines & Notes' },
           ].map((tab) => {
             const isActive = activeTab === tab.id;

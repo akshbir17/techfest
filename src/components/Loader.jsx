@@ -18,6 +18,8 @@ const Loader = ({ onLoaded }) => {
     const steps = duration / interval;
     let step = 0;
 
+    let timeoutId = null;
+
     const timer = setInterval(() => {
       step++;
       const currentProgress = Math.min((step / steps) * 100, 100);
@@ -30,13 +32,16 @@ const Loader = ({ onLoaded }) => {
 
       if (step >= steps) {
         clearInterval(timer);
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           onLoaded();
         }, 150);
       }
     }, interval);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, [onLoaded, loadingTexts.length]);
 
   return (

@@ -52,9 +52,9 @@ const ContactSection = () => {
               <div className="info-block" style={{ marginBottom: '1.75rem' }}>
                 <h3 className="info-label">MYSTIC THREADS</h3>
                 <div className="social-links">
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-link">INSTAGRAM</a>
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-link">LINKEDIN</a>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="social-link">GITHUB</a>
+                  <a href="https://www.instagram.com/gndecbidar/" target="_blank" rel="noopener noreferrer" className="social-link">INSTAGRAM</a>
+                  <a href="https://www.facebook.com/GNDECBidarOfficial/" target="_blank" rel="noopener noreferrer" className="social-link">FACEBOOK</a>
+                  <a href="https://gndecb.ac.in" target="_blank" rel="noopener noreferrer" className="social-link">GNDEC PORTAL</a>
                 </div>
               </div>
             </div>
@@ -67,8 +67,8 @@ const ContactSection = () => {
                 height: '200px',
                 borderRadius: '8px',
                 overflow: 'hidden',
-                border: '1px solid rgba(0, 240, 255, 0.4)',
-                boxShadow: '0 0 15px rgba(0, 240, 255, 0.15)',
+                border: '1px solid rgba(211, 47, 47, 0.45)',
+                boxShadow: '0 0 15px rgba(211, 47, 47, 0.15)',
                 marginTop: '0.5rem',
               }}
             >

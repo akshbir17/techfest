@@ -1,27 +1,48 @@
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
-import { createClient } from '@supabase/supabase-js';
+import { getEventConfig, formatUniqueRegId } from './_lib/events.js';
+import {
+  applyCors,
+  checkRateLimit,
+  clampString,
+  getSupabaseAdmin,
+} from './_lib/security.js';
 
-// Server-side authoritative event catalog and pricing (never trust frontend amount)
-const EVENT_CATALOG = {
-  // Individual Events
-  'impossible_to_sell': { name: 'Impossible to Sell', fee: 100, type: 'individual' },
-  'killer_game':        { name: 'Killer Game', fee: 50, type: 'individual' },
-  'photo_booth':        { name: 'Photography', fee: 100, type: 'individual' },
-  'photography':        { name: 'Photography', fee: 100, type: 'individual' },
-  // Team Events
-  'hackathon':          { name: '24-Hour Hackathon', fee: 500, type: 'team' },
-  'tech_quiz':          { name: 'TechQuiz', fee: 300, type: 'team' },
-  'bgmi':               { name: 'BGMI Tournament', fee: 400, type: 'team' },
-  'free_fire':          { name: 'Free Fire Tournament', fee: 400, type: 'team' },
-  'treasure_hunt':      { name: 'Treasure Hunt', fee: 600, type: 'team' },
-};
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_REGEX = /^(\+91|0)?[6-9]\d{9}$/;
+
+async function insertPendingRecord(supabase, payload) {
+  const result = await supabase
+    .from('registrations')
+    .insert([payload])
+    .select('id, unique_id')
+    .single();
+
+  if (!result.error) {
+    return result;
+  }
+
+  // Backward-compatible retry if live Supabase schema hasn't had unique_id/theme/accommodation migrated yet
+  const msg = String(result.error.message || '');
+  if (/column .* does not exist/i.test(msg) || /schema cache/i.test(msg)) {
+    console.warn('Supabase schema drift detected on pending insert; retrying with base columns:', msg);
+    const fallbackPayload = { ...payload };
+    if (/unique_id/i.test(msg)) delete fallbackPayload.unique_id;
+    if (/theme/i.test(msg)) delete fallbackPayload.theme;
+    if (/accommodation/i.test(msg)) delete fallbackPayload.accommodation;
+
+    return supabase
+      .from('registrations')
+      .insert([fallbackPayload])
+      .select('id')
+      .single();
+  }
+
+  return result;
+}
 
 export default async function handler(req, res) {
-  // Security CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  applyCors(req, res, 'POST, OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -29,6 +50,12 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const limit = checkRateLimit(req, 'create-order', 20, 60_000);
+  if (!limit.allowed) {
+    res.setHeader('Retry-After', String(limit.retryAfterSec));
+    return res.status(429).json({ error: 'Too many requests. Please wait a minute and try again.' });
   }
 
   try {
@@ -44,41 +71,70 @@ export default async function handler(req, res) {
       members = [],
     } = req.body || {};
 
-    // 1. Validate required participant fields
+    // 1. Validate and sanitize required participant fields
     if (!name || !email || !phone || !college || !eventId) {
       return res.status(400).json({ error: 'Missing required participant fields (name, email, phone, college, eventId).' });
     }
 
-    const trimmedName = String(name).trim();
-    const trimmedEmail = String(email).trim().toLowerCase();
-    const trimmedPhone = String(phone).replace(/\s/g, '').trim();
-    const trimmedCollege = String(college).trim();
-    const cleanEventId = String(eventId).trim().toLowerCase();
+    const trimmedName = clampString(name, 120);
+    const trimmedEmail = clampString(email, 160).toLowerCase();
+    const trimmedPhone = clampString(String(phone).replace(/[\s-]+/g, ''), 20);
+    const trimmedCollege = clampString(college, 200);
+    const cleanEventId = clampString(eventId, 50).toLowerCase();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(trimmedEmail)) {
+    if (!trimmedName || !trimmedCollege) {
+      return res.status(400).json({ error: 'Participant name and college cannot be empty.' });
+    }
+
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
       return res.status(400).json({ error: 'Invalid email address provided.' });
     }
 
+    if (!PHONE_REGEX.test(trimmedPhone)) {
+      return res.status(400).json({ error: 'Invalid 10-digit Indian mobile number provided.' });
+    }
+
     // 2. Authoritative event lookup & price calculation on backend
-    const eventConfig = EVENT_CATALOG[cleanEventId];
+    const eventConfig = getEventConfig(cleanEventId);
     if (!eventConfig) {
-      return res.status(400).json({ error: `Event '${cleanEventId}' is not recognized in official event catalog.` });
+      return res.status(400).json({ error: 'Selected event is not recognized in official event catalog.' });
+    }
+
+    const cleanTeamName = teamName ? clampString(teamName, 100) : null;
+    if (eventConfig.type === 'team' && !cleanTeamName) {
+      return res.status(400).json({ error: 'Team name is required for team events.' });
+    }
+
+    const cleanMembers = Array.isArray(members)
+      ? members
+          .slice(0, 6)
+          .filter((m) => m && typeof m === 'object' && clampString(m.name, 120))
+          .map((m) => ({
+            name: clampString(m.name, 120),
+            phone: clampString(String(m.phone || '').replace(/[\s-]+/g, ''), 20),
+          }))
+      : [];
+
+    for (const member of cleanMembers) {
+      if (member.phone && !PHONE_REGEX.test(member.phone)) {
+        return res.status(400).json({ error: `Invalid phone number for team member '${member.name}'.` });
+      }
     }
 
     const verifiedFee = eventConfig.fee;
     const officialEventName = eventConfig.name;
     const eventType = eventConfig.type;
     const amountInPaise = Math.round(verifiedFee * 100);
+    const cleanTheme = clampString(theme, 160) || 'General';
+    const cleanAccommodation =
+      clampString(accommodation, 40) || (cleanEventId.includes('hackathon') ? 'Yes' : 'N/A');
 
     // 3. Initialize Razorpay SDK
     const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!keyId || !keySecret) {
-      return res.status(500).json({
-        error: 'Razorpay keys not configured on server. Please ensure RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are set in Vercel.',
-      });
+      return res.status(500).json({ error: 'Payment gateway is temporarily unavailable.' });
     }
 
     const razorpay = new Razorpay({
@@ -100,47 +156,37 @@ export default async function handler(req, res) {
         phone: trimmedPhone,
         college: trimmedCollege,
         type: eventType,
-        teamName: teamName ? String(teamName).trim() : '',
-        theme: theme ? String(theme).trim() : '',
-        accommodation: accommodation ? String(accommodation).trim() : '',
+        teamName: cleanTeamName || '',
+        theme: cleanTheme,
+        accommodation: cleanAccommodation,
       },
     };
 
     const order = await razorpay.orders.create(orderOptions);
 
-    // Generate unique alphanumeric Registration ID (e.g. SPEC-HACK-8F2A7B)
+    // Authoritative Unique Registration ID persisted upfront
     const randomSuffix = crypto.randomBytes(3).toString('hex').toUpperCase();
-    const eventPrefix = cleanEventId.replace(/[^a-z0-9]/gi, '').slice(0, 4).toUpperCase();
-    const uniqueRegId = `SPEC-${eventPrefix}-${randomSuffix}`;
+    const uniqueRegId = formatUniqueRegId(null, officialEventName, randomSuffix);
 
     // 5. Store pending registration record in Supabase
     let registrationId = uniqueRegId;
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+    const supabase = getSupabaseAdmin();
 
-    if (supabaseUrl && supabaseServiceKey) {
+    if (supabase) {
       try {
-        const supabase = createClient(supabaseUrl, supabaseServiceKey);
-        
-        const cleanMembers = Array.isArray(members)
-          ? members.filter((m) => m && m.name && m.name.trim()).map((m) => ({
-              name: String(m.name).trim(),
-              phone: String(m.phone || '').trim(),
-            }))
-          : [];
-
         const recordPayload = {
+          unique_id: uniqueRegId,
           participant_name: trimmedName,
           email: trimmedEmail,
           phone: trimmedPhone,
           college: trimmedCollege,
           event_id: cleanEventId,
           event_name: officialEventName,
-          team_name: teamName ? String(teamName).trim() : null,
+          team_name: cleanTeamName,
           team_members: cleanMembers.length > 0 ? cleanMembers : null,
           amount: verifiedFee,
-          theme: theme ? String(theme).trim() : 'General',
-          accommodation: accommodation ? String(accommodation).trim() : (cleanEventId.includes('hackathon') ? 'Yes' : 'N/A'),
+          theme: cleanTheme,
+          accommodation: cleanAccommodation,
           razorpay_order_id: order.id,
           razorpay_payment_id: null,
           payment_status: 'pending',
@@ -149,20 +195,18 @@ export default async function handler(req, res) {
           updated_at: new Date().toISOString(),
         };
 
-        const { data: inserted, error: dbErr } = await supabase
-          .from('registrations')
-          .insert([recordPayload])
-          .select('id')
-          .single();
+        const { data: inserted, error: dbErr } = await insertPendingRecord(supabase, recordPayload);
 
         if (dbErr) {
           console.error('Supabase pending registration error:', dbErr.message);
         } else if (inserted && inserted.id) {
-          registrationId = inserted.id;
+          registrationId = inserted.unique_id || formatUniqueRegId(inserted.id, officialEventName);
         }
       } catch (dbEx) {
         console.error('Supabase client exception:', dbEx.message);
       }
+    } else {
+      console.warn('SUPABASE_SERVICE_ROLE_KEY not configured; skipping pending DB record.');
     }
 
     return res.status(200).json({
@@ -175,7 +219,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Create order error:', error);
     return res.status(500).json({
-      error: error.message || 'Failed to initialize payment order',
+      error: 'Failed to initialize payment order. Please try again.',
     });
   }
 }
