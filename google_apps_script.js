@@ -114,55 +114,50 @@ function doPost(e) {
       confirmation_email: "Pending"
     };
 
-    // Dynamically match row values to existing sheet columns by header name
-    var currentHeaders = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), HEADERS.length)).getValues()[0];
-    var row = [];
+    // Guarantee official 16 green headers on row 1
+    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    sheet.getRange(1, 1, 1, HEADERS.length)
+      .setFontWeight("bold")
+      .setBackground(SHEET_HEADER_COLOR)
+      .setFontColor("#ffffff")
+      .setHorizontalAlignment("center");
+    sheet.setFrozenRows(1);
 
-    for (var colIdx = 0; colIdx < HEADERS.length; colIdx++) {
-      var h = String(currentHeaders[colIdx] || HEADERS[colIdx] || "").toLowerCase().trim();
-      if (!h) {
-        row.push("");
-        continue;
-      }
-      if (h.indexOf("time") !== -1 || h.indexOf("date") !== -1) {
-        row.push(fieldsMap.timestamp);
-      } else if (h.indexOf("reg") !== -1 && h.indexOf("order") === -1) {
-        row.push(fieldsMap.reg_id);
-      } else if (h.indexOf("order") !== -1 || (h.indexOf("confirm") !== -1 && h.indexOf("email") === -1)) {
-        row.push(fieldsMap.order_id);
-      } else if (h.indexOf("participant") !== -1 || h.indexOf("leader") !== -1 || (h.indexOf("name") !== -1 && h.indexOf("team") === -1 && h.indexOf("event") === -1)) {
-        row.push(fieldsMap.participant_name);
-      } else if (h.indexOf("email") !== -1 && h.indexOf("confirm") === -1 && h.indexOf("status") === -1) {
-        row.push(fieldsMap.email);
-      } else if (h.indexOf("phone") !== -1 || h.indexOf("contact") !== -1 || h.indexOf("mobile") !== -1) {
-        row.push(fieldsMap.phone);
-      } else if (h.indexOf("college") !== -1 || h.indexOf("institute") !== -1 || h.indexOf("university") !== -1) {
-        row.push(fieldsMap.college);
-      } else if (h.indexOf("event") !== -1) {
-        row.push(fieldsMap.event_name);
-      } else if (h.indexOf("theme") !== -1) {
-        row.push(fieldsMap.theme);
-      } else if (h.indexOf("accommodat") !== -1 || h.indexOf("stay") !== -1) {
-        row.push(fieldsMap.accommodation);
-      } else if (h === "team name" || (h.indexOf("team") !== -1 && h.indexOf("member") === -1)) {
-        row.push(fieldsMap.team_name);
-      } else if (h.indexOf("member") !== -1) {
-        row.push(fieldsMap.team_members);
-      } else if (h.indexOf("fee") !== -1 || h.indexOf("amount") !== -1 || h.indexOf("price") !== -1) {
-        row.push(fieldsMap.fee);
-      } else if (h.indexOf("razorpay") !== -1 || h.indexOf("payment id") !== -1) {
-        row.push(fieldsMap.razorpay_payment_id);
-      } else if (h.indexOf("status") !== -1 && h.indexOf("email") === -1) {
-        row.push(fieldsMap.status);
-      } else if ((h.indexOf("confirm") !== -1 && h.indexOf("email") !== -1) || h.indexOf("email status") !== -1) {
-        row.push(fieldsMap.confirmation_email);
-      } else {
-        row.push("N/A");
-      }
-    }
+    // Standard 16-column row mapped strictly to official HEADERS
+    var row = [
+      fieldsMap.timestamp,
+      fieldsMap.reg_id,
+      fieldsMap.order_id,
+      fieldsMap.participant_name,
+      fieldsMap.email,
+      fieldsMap.phone,
+      fieldsMap.college,
+      fieldsMap.event_name,
+      fieldsMap.theme,
+      fieldsMap.accommodation,
+      fieldsMap.team_name,
+      fieldsMap.team_members,
+      fieldsMap.fee,
+      fieldsMap.razorpay_payment_id,
+      fieldsMap.status,
+      fieldsMap.confirmation_email
+    ];
 
     sheet.appendRow(row);
     var lastRow = sheet.getLastRow();
+
+    // Auto-format the newly appended row immediately so manual repair is never needed
+    var rowRange = sheet.getRange(lastRow, 1, 1, HEADERS.length);
+    rowRange.setFontFamily("Arial").setFontSize(10).setVerticalAlignment("middle");
+    sheet.getRange(lastRow, 1).setHorizontalAlignment("center");
+    sheet.getRange(lastRow, 2).setHorizontalAlignment("center").setFontWeight("bold");
+    sheet.getRange(lastRow, 3).setHorizontalAlignment("center");
+    sheet.getRange(lastRow, 6).setHorizontalAlignment("center");
+    sheet.getRange(lastRow, 9).setHorizontalAlignment("center");
+    sheet.getRange(lastRow, 10).setHorizontalAlignment("center");
+    sheet.getRange(lastRow, 13).setHorizontalAlignment("center").setFontWeight("bold");
+    sheet.getRange(lastRow, 14).setHorizontalAlignment("center");
+    sheet.getRange(lastRow, 15).setHorizontalAlignment("center").setFontWeight("bold").setFontColor("#155724");
 
     // Send confirmation email
     var emailSent = false;
@@ -188,19 +183,9 @@ function doPost(e) {
       Logger.log("Email error: " + mailError.toString());
     }
 
-    // Locate Confirmation Email column dynamically
-    var emailColIdx = -1;
-    for (var k = 0; k < currentHeaders.length; k++) {
-      var kh = String(currentHeaders[k] || "").toLowerCase();
-      if ((kh.indexOf("confirm") !== -1 && kh.indexOf("email") !== -1) || kh.indexOf("email status") !== -1) {
-        emailColIdx = k + 1;
-        break;
-      }
-    }
-    if (emailColIdx === -1) emailColIdx = 16;
-
-    var emailCell = sheet.getRange(lastRow, emailColIdx);
-    emailCell.setValue(emailSent ? "Sent" : "Failed");
+    // Set Confirmation Email status in Column 16
+    var emailCell = sheet.getRange(lastRow, 16);
+    emailCell.setValue(emailSent ? "Sent Successfully" : "Failed");
     emailCell
       .setFontColor(emailSent ? "#155724" : "#721c24")
       .setBackground(emailSent ? "#d4edda" : "#f8d7da")
