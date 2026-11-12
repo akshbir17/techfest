@@ -15,6 +15,7 @@ import {
   ExternalLink,
   Loader2,
   ShieldAlert,
+  MessageCircle,
 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
@@ -1368,6 +1369,80 @@ const RegistrationSuccessPage = () => {
               }}
             >
               <span>REGISTER</span>
+              <ExternalLink size={18} color="#080808" strokeWidth={2.5} />
+            </a>
+          </div>
+
+          {/* WhatsApp Community / Group Link */}
+          <div
+            style={{
+              width: '100%',
+              background: 'rgba(37, 211, 102, 0.08)',
+              border: '1px solid rgba(37, 211, 102, 0.45)',
+              borderRadius: '6px',
+              padding: '1rem',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '0.65rem',
+              boxShadow: '0 0 20px rgba(37, 211, 102, 0.15)',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                color: '#25D366',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                fontFamily: 'var(--font-heading)',
+              }}
+            >
+              <MessageCircle size={16} color="#25D366" />
+              <span>Official Participant Group</span>
+            </div>
+
+            <a
+              id="whatsapp-group-join-btn"
+              href="https://chat.whatsapp.com/GHXUSdZrSwl7Mg08ZxyX1O"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.65rem',
+                padding: '0.95rem 2rem',
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 800,
+                fontSize: '1rem',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                color: '#080808',
+                backgroundColor: '#25D366',
+                border: '2px solid #25D366',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                textDecoration: 'none',
+                boxShadow: '4px 4px 0px 0px rgba(244, 234, 204, 0.5)',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)';
+                e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(244, 234, 204, 0.7)';
+                e.currentTarget.style.backgroundColor = '#20ba5a';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(244, 234, 204, 0.5)';
+                e.currentTarget.style.backgroundColor = '#25D366';
+              }}
+            >
+              <span>JOIN THE WHATSAPP GROUP</span>
               <ExternalLink size={18} color="#080808" strokeWidth={2.5} />
             </a>
           </div>
