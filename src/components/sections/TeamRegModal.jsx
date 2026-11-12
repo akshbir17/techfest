@@ -463,7 +463,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                     </div>
                   </div>
                   <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-neon-cyan)' }}>
-                    ₹1
+                    ₹{selectedEvent?.fee || 500}
                   </div>
                 </div>
               </div>
