@@ -512,11 +512,27 @@ html.lenis { height: auto; }
 
 @media (min-width: 900px) {
   .hero-departments {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1.75rem;
     align-items: center;
-    justify-content: center;
+    justify-items: center;
+    max-width: 1100px;
+  }
+
+  .hero-departments > .hero-dept-item:first-child {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .hero-departments > .hero-dept-amp {
+    justify-self: center;
+    text-align: center;
+  }
+
+  .hero-departments > .hero-dept-item:last-child {
+    justify-self: start;
+    text-align: left;
   }
 }
 
