@@ -739,6 +739,35 @@ function jsonResponse(data) {
    MANUAL TEST RUNNER
    ============================================================ */
 
+function testHackathonRegistration() {
+  var testSuffix = Math.floor(1000 + Math.random() * 9000);
+
+  var testPayload = {
+    order_id: "order_test_hackathon_" + testSuffix,
+    razorpay_payment_id: "pay_test_hackathon_" + testSuffix,
+    registration_id: "SPEC-HACK-" + testSuffix,
+    participant_name: "The DClaw Gaming",
+    email: "thedclaw.gaming@gmail.com",
+    phone: "9876543210",
+    college: "Guru Nanak Dev Engineering College (GNDEC), Bidar",
+    event_name: "24-Hour Hackathon",
+    theme: "MedTech, HealthTech & Workplace Wellbeing",
+    accommodation: "Yes",
+    team_name: "DClaw Gaming Squad",
+    team_members: "Member 2 (+91 9111111111), Member 3 (+91 9222222222)",
+    amount_paid: 500
+  };
+
+  var fakeEvent = {
+    postData: {
+      contents: JSON.stringify(testPayload)
+    }
+  };
+
+  var response = doPost(fakeEvent);
+  Logger.log("Hackathon Test Result: " + response.getContent());
+}
+
 function testEmailPreview() {
   var email = Session.getActiveUser().getEmail();
 
@@ -756,7 +785,7 @@ function testEmailPreview() {
     order_id: "order_sample_test",
     razorpay_payment_id: "pay_sample_test",
     college: "GNDEC Bidar",
-    theme: "Clean & Green Technology",
+    theme: "MedTech, HealthTech & Workplace Wellbeing",
     accommodation: "Yes",
     registration_id: "SPEC-HACK-TEST01"
   };
