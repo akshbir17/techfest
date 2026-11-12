@@ -1,138 +1,139 @@
-// ==============================================================================
-// SPECTRUM 1.0 — GOOGLE APPS SCRIPT WEB APP & AUTOMATED CONFIRMATION EMAIL ENGINE
-// ==============================================================================
-// 1. Logs confirmed registrations to Google Sheets
-// 2. Automatically delivers an official HTML digital confirmation pass to participant's email
-// 3. Includes event coordinators (Armaandeep Singh, Sangmesh, Abdul Aziz, Dr. Praveen Reddy)
-// ==============================================================================
+/* ============================================================
+   SPECTRUM 1.0
+   GOOGLE APPS SCRIPT REGISTRATION & EMAIL ENGINE
+   GNDEC BIDAR | DECEMBER 7-9, 2026
+   ============================================================ */
+
+var HEADERS = [
+  "Timestamp",
+  "Reg ID",
+  "Confirmation (Order ID)",
+  "Participant Name (Leader)",
+  "Email",
+  "Phone",
+  "College",
+  "Event Name",
+  "Theme",
+  "Accommodation",
+  "Team Name",
+  "Team Members",
+  "Fee",
+  "Razorpay Payment ID",
+  "Status",
+  "Confirmation Email"
+];
+
+var SHEET_HEADER_COLOR = "#2e7d32";
+var WEBSITE_URL = "https://spectrum10.vercel.app";
+var SUPPORT_EMAIL = "Spectrum101213@gmail.com";
+var TIMEZONE = "Asia/Kolkata";
+
+
+/* ============================================================
+   MAIN WEBHOOK
+   ============================================================ */
 
 function doPost(e) {
+  var lock = LockService.getScriptLock();
+
   try {
-    var contents = (e && e.postData && e.postData.contents) ? e.postData.contents : "";
-    var data = {};
-    if (contents) {
-      try {
-        data = JSON.parse(contents);
-      } catch (parseErr) {
-        data = {};
-      }
-    } else if (e && e.parameter) {
-      data = e.parameter;
+    lock.waitLock(30000);
+
+    var data = parseRequest(e);
+
+    if (!data.email || !data.razorpay_payment_id || !data.order_id) {
+      throw new Error("Missing email, Razorpay payment ID or order ID.");
     }
 
+    // Get spreadsheet
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (!ss) {
+      throw new Error("No active spreadsheet found.");
+    }
+
     var sheet = ss.getActiveSheet();
 
-    // Standardized Official Spectrum 1.0 Google Sheet Column Headers
-    var headers = [
-      "Timestamp",
-      "Reg ID",
-      "Confirmation (Order ID)",
-      "Participant Name (Leader)",
-      "Email",
-      "Phone",
-      "College",
-      "Event Name",
-      "Theme",
-      "Accommodation",
-      "Team Name",
-      "Team Members",
-      "Fee",
-      "Razorpay Payment ID",
-      "Status",
-      "Confirmation Email"
-    ];
+    // Initialize or adapt sheet headers
+    initializeSheet(sheet);
 
-    // Inspect current headers in Row 1 of the active sheet
-    var lastCol = sheet.getLastColumn();
-    var currentHeaders = [];
-    if (lastCol > 0) {
-      currentHeaders = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    // Prevent duplicate payment processing
+    var existingRow = findExistingPayment(
+      sheet,
+      data.razorpay_payment_id,
+      data.order_id
+    );
+
+    if (existingRow) {
+      return jsonResponse({
+        result: "success",
+        duplicate: true,
+        row: existingRow,
+        message: "Registration already processed."
+      });
     }
 
-    // If sheet is empty or headers are not present, initialize official headers
-    if (sheet.getLastRow() === 0 || currentHeaders.length === 0 || !currentHeaders[0]) {
-      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-      var headerRange = sheet.getRange(1, 1, 1, headers.length);
-      headerRange.setFontWeight("bold");
-      headerRange.setBackground("#2e7d32"); // Green header background
-      headerRange.setFontColor("#ffffff");
-      headerRange.setHorizontalAlignment("center");
-      sheet.setFrozenRows(1);
-      currentHeaders = headers;
+    // Prepare registration information
+    var participantName = String(
+      data.participant_name || "N/A"
+    ).trim();
+
+    var teamName = String(data.team_name || "").trim();
+    var isTeam = teamName !== "" && teamName !== "N/A";
+
+    if (
+      isTeam &&
+      participantName !== "N/A" &&
+      participantName.indexOf("(Leader)") === -1
+    ) {
+      participantName += " (Leader)";
     }
 
-    // Send automated confirmation email
-    var emailSent = trySendConfirmationEmail(data);
+    var teamMembers = formatTeamMembers(data.team_members);
 
-    // Format Leader/Participant name
-    var isTeam = (data.team_name && data.team_name !== "N/A" && String(data.team_name).trim() !== "");
-    var participantName = data.participant_name || "N/A";
-    if (isTeam && participantName !== "N/A" && participantName.indexOf("(Leader)") === -1) {
-      participantName = participantName + " (Leader)";
-    }
+    var eventName = String(data.event_name || "N/A").trim();
 
-    // Format Team Members: Red (+91 8888888888), Blue (+91 4444444444)
-    var membersFormatted = "N/A";
-    if (data.team_members && data.team_members !== "N/A") {
-      if (Array.isArray(data.team_members)) {
-        membersFormatted = data.team_members.map(function(m, idx) {
-          if (typeof m === "string") return m;
-          var phoneStr = "";
-          if (m.phone) {
-            var raw = String(m.phone).trim();
-            phoneStr = raw.indexOf("+91") === 0 ? raw : "+91 " + raw.replace(/^0+/, "");
-          }
-          return (m.name || "Member " + (idx + 2)) + (phoneStr ? " (" + phoneStr + ")" : "");
-        }).join(", ");
-      } else {
-        membersFormatted = String(data.team_members);
-      }
-    }
+    var isHackathon =
+      eventName.toLowerCase().indexOf("hackathon") !== -1;
 
-    // Timestamp: dd/MM/yyyy, hh:mm a in Indian Standard Time (IST)
-    var timestampStr = Utilities.formatDate(new Date(), "Asia/Kolkata", "dd/MM/yyyy, hh:mm a");
+    var theme = data.theme || (isHackathon ? "General" : "N/A");
 
-    // Fee formatted with INR symbol (e.g. ₹1)
-    var feeStr = "₹" + (data.amount_paid !== undefined ? data.amount_paid : 0);
+    var accommodation = data.accommodation || (isHackathon ? "Yes" : "N/A");
 
-    // Clean Team Name - strictly ONLY team name
-    var cleanTeamName = "N/A";
-    if (data.team_name && data.team_name !== "N/A" && String(data.team_name).trim() !== "") {
-      cleanTeamName = String(data.team_name).trim();
-    }
+    var registrationId =
+      data.registration_id || data.order_id;
 
-    // Accommodation (Yes / No)
-    var isHackathon = (data.event_name && String(data.event_name).toLowerCase().indexOf("hackathon") !== -1);
-    var cleanAccommodation = "N/A";
-    if (data.accommodation && data.accommodation !== "N/A") {
-      cleanAccommodation = String(data.accommodation).trim();
-    } else if (isHackathon) {
-      cleanAccommodation = "Yes";
-    }
+    var amount = data.amount_paid !== undefined ? data.amount_paid : 0;
 
-    // Master map of all fields by semantic name
+    var timestamp = Utilities.formatDate(new Date(), TIMEZONE, "dd/MM/yyyy, hh:mm a");
+
+    var phone = data.phone
+      ? "'" + String(data.phone).replace(/\s+/g, "")
+      : "N/A";
+
+    // Build fields map for robust column alignment
     var fieldsMap = {
-      timestamp: timestampStr,
-      reg_id: data.registration_id || data.order_id || "N/A",
-      order_id: data.order_id || data.registration_id || "N/A",
+      timestamp: timestamp,
+      reg_id: registrationId,
+      order_id: data.order_id,
       participant_name: participantName,
-      email: data.email || "N/A",
-      phone: data.phone ? "'" + String(data.phone).replace(/\s+/g, '') : "N/A",
+      email: data.email,
+      phone: phone,
       college: data.college || "N/A",
-      event_name: data.event_name || "N/A",
-      theme: data.theme || (isHackathon ? "General" : "N/A"),
-      accommodation: cleanAccommodation,
-      team_name: cleanTeamName,
-      team_members: membersFormatted,
-      fee: feeStr,
-      razorpay_payment_id: data.razorpay_payment_id || "N/A",
-      status: data.payment_status || "PAID",
-      confirmation_email: emailSent === true ? "Sent" : "Failed"
+      event_name: eventName,
+      theme: theme,
+      accommodation: accommodation,
+      team_name: isTeam ? teamName : "N/A",
+      team_members: teamMembers,
+      fee: "₹" + amount,
+      razorpay_payment_id: data.razorpay_payment_id,
+      status: "PAID",
+      confirmation_email: "Pending"
     };
 
-    // Dynamically align row values to exact column headers of active sheet
+    // Dynamically match row values to existing sheet columns by header name
+    var currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     var row = [];
+
     for (var colIdx = 0; colIdx < currentHeaders.length; colIdx++) {
       var h = String(currentHeaders[colIdx] || "").toLowerCase().trim();
       if (!h) {
@@ -178,8 +179,34 @@ function doPost(e) {
 
     sheet.appendRow(row);
 
-    // Apply color styling to the Confirmation Email cell (Green for Sent, Red for Failed)
     var lastRow = sheet.getLastRow();
+
+    // Send confirmation email
+    var emailSent = false;
+
+    try {
+      var emailData = {
+        participant_name: participantName,
+        email: data.email,
+        event_name: eventName,
+        team_name: isTeam ? teamName : "N/A",
+        team_members: teamMembers,
+        amount_paid: amount,
+        order_id: data.order_id,
+        razorpay_payment_id: data.razorpay_payment_id,
+        college: data.college || "N/A",
+        theme: theme,
+        accommodation: accommodation
+      };
+
+      sendConfirmationEmail(emailData);
+      emailSent = true;
+
+    } catch (mailError) {
+      Logger.log("Email error: " + mailError.toString());
+    }
+
+    // Locate Confirmation Email column dynamically
     var emailColIdx = -1;
     for (var k = 0; k < currentHeaders.length; k++) {
       var kh = String(currentHeaders[k] || "").toLowerCase();
@@ -188,525 +215,168 @@ function doPost(e) {
         break;
       }
     }
-    if (emailColIdx === -1) {
-      emailColIdx = currentHeaders.length;
-    }
+    if (emailColIdx === -1) emailColIdx = currentHeaders.length;
 
     var emailCell = sheet.getRange(lastRow, emailColIdx);
-    if (emailSent === true) {
-      emailCell.setFontColor("#155724");
-      emailCell.setBackground("#d4edda");
-    } else {
-      emailCell.setFontColor("#721c24");
-      emailCell.setBackground("#f8d7da");
-    }
-    emailCell.setHorizontalAlignment("center");
-    emailCell.setFontWeight("bold");
+    emailCell.setValue(emailSent ? "Sent" : "Failed");
+    emailCell
+      .setFontColor(emailSent ? "#155724" : "#721c24")
+      .setBackground(emailSent ? "#d4edda" : "#f8d7da")
+      .setHorizontalAlignment("center")
+      .setFontWeight("bold");
 
-    return ContentService.createTextOutput(JSON.stringify({
+    SpreadsheetApp.flush();
+
+    return jsonResponse({
       result: "success",
       row: lastRow,
-      email_sent: emailSent
-    })).setMimeType(ContentService.MimeType.JSON);
+      email_sent: emailSent,
+      registration_id: registrationId
+    });
 
   } catch (err) {
-    Logger.log("Critical doPost error: " + err.toString());
-    return ContentService.createTextOutput(JSON.stringify({
+    Logger.log("Registration error: " + err.toString());
+    return jsonResponse({
       result: "error",
-      error: err.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-// Safely attempts to send confirmation email and returns true/false without crashing
-function trySendConfirmationEmail(data) {
-  try {
-    if (!data || !data.email || String(data.email).indexOf("@") === -1) {
-      return false;
-    }
-    sendConfirmationEmail(data);
-    return true;
-  } catch (mailErr) {
-    Logger.log("Email dispatch failed: " + mailErr.toString());
-    return false;
-  }
-}
-
-// Allows testing GET requests from browser or health checks
-function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({
-    status: "active",
-    message: "Spectrum 1.0 Webhook & Automated Email Engine is live!"
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
-// ==============================================================================
-// REDESIGNED HTML EMAIL PASS BUILDER — Clean, Light, Professional Design
-// Modern gradient header, ticket-style pass, numbered instructions, coordinator cards
-// 100% Google Apps Script Compatible (no nested backticks, ES5 string concat)
-// ==============================================================================
-function buildHtmlPass(data) {
-  data = data || {};
-  var participantName = data.participant_name || "Participant";
-  var firstName = participantName.split(" ")[0] || participantName;
-  var eventName = data.event_name || "Official Event";
-  var teamName = data.team_name && data.team_name !== "N/A" ? data.team_name : "";
-  var teamMembers = data.team_members && data.team_members !== "N/A" ? data.team_members : "";
-  var amount = data.amount_paid !== undefined ? data.amount_paid : 0;
-  var orderId = data.order_id || data.registration_id || "N/A";
-  var paymentId = data.razorpay_payment_id || "N/A";
-  var college = data.college || "N/A";
-
-  var parts = [];
-
-  // DOCTYPE and opening
-  parts.push('<!DOCTYPE html>');
-  parts.push('<html lang="en">');
-  parts.push('<head>');
-  parts.push('  <meta charset="UTF-8">');
-  parts.push('  <meta name="viewport" content="width=device-width, initial-scale=1.0">');
-  parts.push('  <meta name="color-scheme" content="light">');
-  parts.push('  <title>Spectrum 1.0 - Registration Confirmed</title>');
-  parts.push('</head>');
-  parts.push('<body style="margin:0; padding:0; background-color:#EEF2F7; font-family:\'Segoe UI\', Helvetica, Arial, sans-serif; color:#0F172A; -webkit-text-size-adjust:100%;">');
-
-  // Preheader (hidden preview text)
-  parts.push('  <div style="display:none; max-height:0; overflow:hidden; opacity:0; color:transparent;">');
-  parts.push('    Your spot at Spectrum 1.0 is confirmed. Here are your pass details.');
-  parts.push('  </div>');
-
-  // Outer wrapper table
-  parts.push('  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EEF2F7" style="background-color:#EEF2F7;">');
-  parts.push('    <tr>');
-  parts.push('      <td align="center" style="padding:24px 12px;">');
-
-  // Main card container
-  parts.push('        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%; max-width:600px; background-color:#FFFFFF; border-radius:16px;" bgcolor="#FFFFFF">');
-
-  // ──── HEADER (Gradient Banner) ────
-  parts.push('          <tr>');
-  parts.push('            <td bgcolor="#4338CA" style="background-color:#4338CA; background-image:linear-gradient(120deg, #4338CA 0%, #7C3AED 55%, #DB2777 100%); border-radius:16px 16px 0 0; padding:34px 32px 30px 32px; text-align:center;">');
-  parts.push('              <div style="font-size:12px; font-weight:700; letter-spacing:2px; color:#FCE7F3; text-transform:uppercase;">National Level Technical &amp; Cultural Festival</div>');
-  parts.push('              <div style="font-size:40px; font-weight:800; color:#FFFFFF; line-height:1.1; margin-top:8px;">Spectrum 1.0</div>');
-  parts.push('              <div style="font-size:14px; color:#FDF2F8; margin-top:8px;">Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka</div>');
-  parts.push('              <div style="margin-top:18px;">');
-  parts.push('                <span style="display:inline-block; background-color:#FBBF24; color:#0F172A; font-size:13px; font-weight:700; padding:7px 16px; border-radius:20px;">Dec 7 &ndash; 9, 2026</span>');
-  parts.push('                <span style="display:inline-block; background-color:#10B981; color:#FFFFFF; font-size:13px; font-weight:700; padding:7px 16px; border-radius:20px; margin-left:6px;">&#10003; Payment verified</span>');
-  parts.push('              </div>');
-  parts.push('            </td>');
-  parts.push('          </tr>');
-
-  // ──── GREETING ────
-  parts.push('          <tr>');
-  parts.push('            <td style="padding:32px 32px 8px 32px;">');
-  parts.push('              <div style="font-size:22px; font-weight:700; color:#0F172A;">You\'re registered, ' + firstName + '!</div>');
-  parts.push('              <div style="font-size:15px; line-height:1.6; color:#475569; margin-top:10px;">');
-  parts.push('                Your spot at <strong style="color:#4338CA;">Spectrum 1.0</strong> is secured. Keep this email handy and bring your college ID when you arrive on campus.');
-  parts.push('              </div>');
-  parts.push('            </td>');
-  parts.push('          </tr>');
-
-  // ──── EVENT PASS CARD (Ticket Style) ────
-  parts.push('          <tr>');
-  parts.push('            <td style="padding:20px 32px 8px 32px;">');
-  parts.push('              <div style="font-size:13px; font-weight:700; color:#DB2777; padding-bottom:10px;">&#9632;&nbsp; Your event pass</div>');
-  parts.push('              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FFFFFF; border:1px solid #E2E8F0; border-left:6px solid #DB2777; border-radius:12px;">');
-  parts.push('                <tr>');
-  parts.push('                  <td style="padding:20px 22px;">');
-  parts.push('                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">');
-
-  // Event row
-  parts.push('                      <tr>');
-  parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Registered event</td>');
-  parts.push('                        <td valign="top" style="padding:8px 0; font-size:15px; font-weight:700; color:#0F172A;">' + eventName + '</td>');
-  parts.push('                      </tr>');
-
-  // Participant row
-  parts.push('                      <tr>');
-  parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Participant</td>');
-  parts.push('                        <td valign="top" style="padding:8px 0; font-size:15px; font-weight:700; color:#4338CA;">' + participantName + '</td>');
-  parts.push('                      </tr>');
-
-  // Team row (conditional)
-  if (teamName) {
-    parts.push('                      <tr>');
-    parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Team</td>');
-    parts.push('                        <td valign="top" style="padding:8px 0; font-size:15px; font-weight:700; color:#0D9488;">' + teamName + '</td>');
-    parts.push('                      </tr>');
-  }
-
-  // Theme row (conditional for Hackathon)
-  var theme = data.theme || "";
-  if (theme && theme !== "N/A") {
-    parts.push('                      <tr>');
-    parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Theme</td>');
-    parts.push('                        <td valign="top" style="padding:8px 0; font-size:14px; font-weight:700; color:#DB2777;">' + theme + '</td>');
-    parts.push('                      </tr>');
-  }
-
-  // Accommodation row (conditional for Hackathon)
-  var accom = data.accommodation || "";
-  if (accom && accom !== "N/A") {
-    var isYes = String(accom).toLowerCase().indexOf("yes") !== -1;
-    var badgeColor = isYes ? "#059669" : "#64748B";
-    var badgeBg = isYes ? "#D1FAE5" : "#F1F5F9";
-    var accomLabel = isYes ? "Yes (Campus Stay & Meals)" : "No (Self Arranged)";
-    parts.push('                      <tr>');
-    parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Accommodation</td>');
-    parts.push('                        <td valign="top" style="padding:8px 0;"><span style="display:inline-block; background-color:' + badgeBg + '; color:' + badgeColor + '; font-size:12px; font-weight:700; padding:2px 10px; border-radius:12px;">' + accomLabel + '</span></td>');
-    parts.push('                      </tr>');
-  }
-
-  // Team members row (conditional)
-  if (teamMembers && teamMembers !== "N/A") {
-    parts.push('                      <tr>');
-    parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">Team members</td>');
-    parts.push('                        <td valign="top" style="padding:8px 0; font-size:14px; color:#0F172A;">' + teamMembers + '</td>');
-    parts.push('                      </tr>');
-  }
-
-  // College row
-  parts.push('                      <tr>');
-  parts.push('                        <td width="38%" valign="top" style="padding:8px 0; font-size:13px; color:#64748B;">College</td>');
-  parts.push('                        <td valign="top" style="padding:8px 0; font-size:14px; color:#0F172A;">' + college + '</td>');
-  parts.push('                      </tr>');
-  parts.push('                    </table>');
-
-  // Dashed ticket divider
-  parts.push('                    <div style="border-top:2px dashed #E2E8F0; margin:14px 0 14px 0; height:0; line-height:0; font-size:0;">&nbsp;</div>');
-
-  // Fee & payment details
-  parts.push('                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">');
-  parts.push('                      <tr>');
-  parts.push('                        <td width="38%" valign="top" style="padding:6px 0; font-size:13px; color:#64748B;">Fee paid</td>');
-  parts.push('                        <td valign="top" style="padding:6px 0;">');
-  parts.push('                          <span style="display:inline-block; background-color:#D1FAE5; color:#047857; font-size:14px; font-weight:700; padding:4px 12px; border-radius:20px;">&#8377;' + amount + '/-</span>');
-  parts.push('                        </td>');
-  parts.push('                      </tr>');
-  parts.push('                      <tr>');
-  parts.push('                        <td width="38%" valign="top" style="padding:6px 0; font-size:13px; color:#64748B;">Order ID</td>');
-  parts.push('                        <td valign="top" style="padding:6px 0; font-family:Consolas, \'Courier New\', monospace; font-size:13px; color:#B45309;">' + orderId + '</td>');
-  parts.push('                      </tr>');
-  parts.push('                      <tr>');
-  parts.push('                        <td width="38%" valign="top" style="padding:6px 0; font-size:13px; color:#64748B;">Payment ID</td>');
-  parts.push('                        <td valign="top" style="padding:6px 0; font-family:Consolas, \'Courier New\', monospace; font-size:13px; color:#BE185D;">' + paymentId + '</td>');
-  parts.push('                      </tr>');
-  parts.push('                    </table>');
-  parts.push('                  </td>');
-  parts.push('                </tr>');
-  parts.push('              </table>');
-  parts.push('            </td>');
-  parts.push('          </tr>');
-
-  // ──── CAMPUS INSTRUCTIONS (Numbered Steps) ────
-  parts.push('          <tr>');
-  parts.push('            <td style="padding:24px 32px 8px 32px;">');
-  parts.push('              <div style="font-size:13px; font-weight:700; color:#EA580C; padding-bottom:12px;">&#9632;&nbsp; Campus instructions</div>');
-  parts.push('              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">');
-
-  // Step 1
-  parts.push('                <tr>');
-  parts.push('                  <td width="36" valign="top" style="padding:0 0 12px 0;">');
-  parts.push('                    <div style="width:26px; height:26px; line-height:26px; border-radius:13px; background-color:#4338CA; color:#FFFFFF; font-size:13px; font-weight:700; text-align:center;">1</div>');
-  parts.push('                  </td>');
-  parts.push('                  <td valign="top" style="padding:0 0 12px 0; font-size:14px; line-height:1.55; color:#334155;">');
-  parts.push('                    <strong style="color:#0F172A;">Dates and reporting:</strong> December 7 &ndash; 9, 2026. Reporting starts at 8:30 AM on Day 1.');
-  parts.push('                  </td>');
-  parts.push('                </tr>');
-
-  // Step 2
-  parts.push('                <tr>');
-  parts.push('                  <td width="36" valign="top" style="padding:0 0 12px 0;">');
-  parts.push('                    <div style="width:26px; height:26px; line-height:26px; border-radius:13px; background-color:#0D9488; color:#FFFFFF; font-size:13px; font-weight:700; text-align:center;">2</div>');
-  parts.push('                  </td>');
-  parts.push('                  <td valign="top" style="padding:0 0 12px 0; font-size:14px; line-height:1.55; color:#334155;">');
-  parts.push('                    <strong style="color:#0F172A;">Venue:</strong> GNDEC Bidar, Main Gate, Bidar, Karnataka.');
-  parts.push('                  </td>');
-  parts.push('                </tr>');
-
-  // Step 3
-  parts.push('                <tr>');
-  parts.push('                  <td width="36" valign="top" style="padding:0 0 12px 0;">');
-  parts.push('                    <div style="width:26px; height:26px; line-height:26px; border-radius:13px; background-color:#DB2777; color:#FFFFFF; font-size:13px; font-weight:700; text-align:center;">3</div>');
-  parts.push('                  </td>');
-  parts.push('                  <td valign="top" style="padding:0 0 12px 0; font-size:14px; line-height:1.55; color:#334155;">');
-  parts.push('                    <strong style="color:#0F172A;">ID required:</strong> Carry a valid physical college or institution ID card. It is compulsory for entry.');
-  parts.push('                  </td>');
-  parts.push('                </tr>');
-
-  // Step 4
-  parts.push('                <tr>');
-  parts.push('                  <td width="36" valign="top" style="padding:0;">');
-  parts.push('                    <div style="width:26px; height:26px; line-height:26px; border-radius:13px; background-color:#F97316; color:#FFFFFF; font-size:13px; font-weight:700; text-align:center;">4</div>');
-  parts.push('                  </td>');
-  parts.push('                  <td valign="top" style="padding:0; font-size:14px; line-height:1.55; color:#334155;">');
-  parts.push('                    <strong style="color:#0F172A;">Hackathon teams:</strong> Overnight accommodation and meals are provided for registered teams.');
-  parts.push('                  </td>');
-  parts.push('                </tr>');
-  parts.push('              </table>');
-  parts.push('            </td>');
-  parts.push('          </tr>');
-
-  // ──── COORDINATOR HELP DESK ────
-  parts.push('          <tr>');
-  parts.push('            <td style="padding:24px 32px 8px 32px;">');
-  parts.push('              <div style="font-size:13px; font-weight:700; color:#7C3AED; padding-bottom:12px;">&#9632;&nbsp; Help desk</div>');
-  parts.push('              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">');
-
-  // Row 1: Armaandeep + Sangmesh
-  parts.push('                <tr>');
-  parts.push('                  <td width="50%" valign="top" style="padding:0 6px 10px 0;">');
-  parts.push('                    <div style="background-color:#F0FDFA; border-left:4px solid #0D9488; border-radius:8px; padding:12px 14px;">');
-  parts.push('                      <div style="font-size:11px; font-weight:700; color:#0D9488;">Student coordinator</div>');
-  parts.push('                      <div style="font-size:14px; font-weight:700; color:#0F172A; margin-top:3px;">Armaandeep Singh</div>');
-  parts.push('                      <div style="font-size:13px; color:#475569; margin-top:2px;">+91 8427027540</div>');
-  parts.push('                    </div>');
-  parts.push('                  </td>');
-  parts.push('                  <td width="50%" valign="top" style="padding:0 0 10px 6px;">');
-  parts.push('                    <div style="background-color:#F0FDFA; border-left:4px solid #0D9488; border-radius:8px; padding:12px 14px;">');
-  parts.push('                      <div style="font-size:11px; font-weight:700; color:#0D9488;">Student coordinator</div>');
-  parts.push('                      <div style="font-size:14px; font-weight:700; color:#0F172A; margin-top:3px;">Sangmesh</div>');
-  parts.push('                      <div style="font-size:13px; color:#475569; margin-top:2px;">+91 9353142522</div>');
-  parts.push('                    </div>');
-  parts.push('                  </td>');
-  parts.push('                </tr>');
-
-  // Row 2: Abdul Aziz + Dr. Praveen Reddy
-  parts.push('                <tr>');
-  parts.push('                  <td width="50%" valign="top" style="padding:0 6px 0 0;">');
-  parts.push('                    <div style="background-color:#F0FDFA; border-left:4px solid #0D9488; border-radius:8px; padding:12px 14px;">');
-  parts.push('                      <div style="font-size:11px; font-weight:700; color:#0D9488;">Student coordinator</div>');
-  parts.push('                      <div style="font-size:14px; font-weight:700; color:#0F172A; margin-top:3px;">Abdul Aziz</div>');
-  parts.push('                      <div style="font-size:13px; color:#475569; margin-top:2px;">+91 8296683831</div>');
-  parts.push('                    </div>');
-  parts.push('                  </td>');
-  parts.push('                  <td width="50%" valign="top" style="padding:0 0 0 6px;">');
-  parts.push('                    <div style="background-color:#FDF2F8; border-left:4px solid #DB2777; border-radius:8px; padding:12px 14px;">');
-  parts.push('                      <div style="font-size:11px; font-weight:700; color:#DB2777;">Head, CSE - AIML</div>');
-  parts.push('                      <div style="font-size:14px; font-weight:700; color:#0F172A; margin-top:3px;">Dr. Praveen Reddy</div>');
-  parts.push('                      <div style="font-size:13px; color:#475569; margin-top:2px;">+91 99165 42332</div>');
-  parts.push('                    </div>');
-  parts.push('                  </td>');
-  parts.push('                </tr>');
-  parts.push('              </table>');
-  parts.push('            </td>');
-  parts.push('          </tr>');
-
-  // ──── ACTION BUTTON ────
-  parts.push('          <tr>');
-  parts.push('            <td align="center" style="padding:26px 32px 8px 32px;">');
-  parts.push('              <a href="https://spectrum10.vercel.app" style="display:inline-block; background-color:#4338CA; background-image:linear-gradient(90deg, #4338CA, #DB2777); color:#FFFFFF; text-decoration:none; font-size:15px; font-weight:700; padding:13px 28px; border-radius:24px;">Visit the Spectrum portal</a>');
-  parts.push('              <div style="font-size:13px; color:#64748B; margin-top:14px;">');
-  parts.push('                Questions? Email <a href="mailto:Spectrum101213@gmail.com" style="color:#4338CA; font-weight:700; text-decoration:none;">Spectrum101213@gmail.com</a>');
-  parts.push('              </div>');
-  parts.push('            </td>');
-  parts.push('          </tr>');
-
-  // ──── FOOTER ────
-  parts.push('          <tr>');
-  parts.push('            <td bgcolor="#0F172A" style="background-color:#0F172A; border-radius:0 0 16px 16px; padding:20px 32px; text-align:center; margin-top:24px;">');
-  parts.push('              <div style="font-size:13px; font-weight:700; color:#FFFFFF;">Spectrum 1.0 &middot; GNDEC Bidar</div>');
-  parts.push('              <div style="font-size:12px; color:#94A3B8; margin-top:4px;">Keep this email as your entry reference on campus.</div>');
-  parts.push('            </td>');
-  parts.push('          </tr>');
-
-  // Close tables
-  parts.push('        </table>');
-  parts.push('      </td>');
-  parts.push('    </tr>');
-  parts.push('  </table>');
-  parts.push('</body>');
-  parts.push('</html>');
-
-  return parts.join("\n");
-}
-
-// ==============================================================================
-// EMAIL DISPATCH HELPER
-// ==============================================================================
-function sendConfirmationEmail(data) {
-  data = data || {};
-  
-  // Safe defaults if run directly from Apps Script editor toolbar without arguments
-  if (!data.email || String(data.email).indexOf("@") === -1) {
-    try {
-      data.email = Session.getActiveUser().getEmail() || "thedclaw.gaming@gmail.com";
-    } catch (e) {
-      data.email = "thedclaw.gaming@gmail.com";
-    }
-    data.participant_name = data.participant_name || "Akshbir Singh Seehra";
-    data.event_name = data.event_name || "24-Hour Hackathon";
-    data.theme = data.theme || "AI & Autonomous Systems";
-    data.amount_paid = data.amount_paid !== undefined ? data.amount_paid : 1;
-    data.order_id = data.order_id || "order_manual_test_01";
-    data.razorpay_payment_id = data.razorpay_payment_id || "pay_manual_test_01";
-    data.college = data.college || "Guru Nanak Dev Engineering College (GNDEC), Bidar";
-  }
-
-  var recipientEmail = String(data.email).trim();
-  var participantName = data.participant_name || "Participant";
-  var eventName = data.event_name || "Official Event";
-  var teamName = data.team_name && data.team_name !== "N/A" ? data.team_name : "";
-  var teamMembers = data.team_members && data.team_members !== "N/A" ? data.team_members : "";
-  var amount = data.amount_paid !== undefined ? data.amount_paid : 0;
-  var orderId = data.order_id || data.registration_id || "N/A";
-  var paymentId = data.razorpay_payment_id || "N/A";
-  var college = data.college || "N/A";
-
-  var subject = "🎟️ Registration Confirmed: SPECTRUM 1.0 - " + eventName;
-
-  var plainText = "SPECTRUM 1.0 — REGISTRATION CONFIRMED\n\n"
-    + "Dear " + participantName + ",\n\n"
-    + "Your registration for SPECTRUM 1.0 has been successfully confirmed!\n\n"
-    + "Event: " + eventName + "\n"
-    + "Participant: " + participantName + "\n"
-    + (teamName ? ("Team: " + teamName + "\n") : "")
-    + (teamMembers && teamMembers !== "N/A" ? ("Members: " + teamMembers + "\n") : "")
-    + "College / Institution: " + college + "\n"
-    + "Registration Fee: INR " + amount + "/-\n"
-    + "Confirmation / Order ID: " + orderId + "\n"
-    + "Razorpay Payment ID: " + paymentId + "\n"
-    + "Payment Status: PAID & VERIFIED\n\n"
-    + "VENUE & REPORTING INSTRUCTIONS:\n"
-    + "• Venue: Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka\n"
-    + "• Dates: December 7 – 9, 2026 (Reporting starts at 8:30 AM on Day 1)\n"
-    + "• Mandatory: Carry your valid College / Institution ID card\n"
-    + "• Hackathon: Overnight campus accommodation and meals provided\n\n"
-    + "OFFICIAL COORDINATORS (HELP DESK):\n"
-    + "• Armaandeep Singh: +91 8427027540 (Student Coordinator)\n"
-    + "• Sangmesh: +91 9353142522 (Student Coordinator)\n"
-    + "• Abdul Aziz: +91 8296683831 (Student Coordinator)\n"
-    + "• Dr. Praveen Reddy: +91 99165 42332 (Head, CSE - AIML)\n\n"
-    + "Official Portal: https://spectrum10.vercel.app\n"
-    + "Help Desk Email: Spectrum101213@gmail.com\n";
-
-  var htmlBody = buildHtmlPass(data);
-
-  var mailOptions = {
-    to: recipientEmail,
-    subject: subject,
-    body: plainText,
-    htmlBody: htmlBody,
-    name: "SPECTRUM 1.0 (GNDEC Bidar)"
-  };
-
-  try {
-    GmailApp.sendEmail(recipientEmail, subject, plainText, {
-      htmlBody: htmlBody,
-      name: "SPECTRUM 1.0 (GNDEC Bidar)"
+      error: err.message || String(err)
     });
-  } catch (gmailErr) {
-    Logger.log("GmailApp failed (" + gmailErr + "), trying MailApp...");
-    MailApp.sendEmail(mailOptions);
-  }
-}
-
-// ==============================================================================
-// 1-CLICK HEADER UPDATER
-// Run this function from the Apps Script editor to update your sheet headers to the exact format
-// ==============================================================================
-function updateSheetHeaders() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getActiveSheet();
-  var headers = [
-    "Timestamp",
-    "Reg ID",
-    "Participant Name (Leader)",
-    "Email",
-    "Phone",
-    "College",
-    "Event Name",
-    "Team Name",
-    "Team Members",
-    "Fee",
-    "Razorpay Payment ID",
-    "Status",
-    "Confirmation Email"
-  ];
-  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-  var headerRange = sheet.getRange(1, 1, 1, headers.length);
-  headerRange.setFontWeight("bold");
-  headerRange.setBackground("#d32f2f");
-  headerRange.setFontColor("#ffffff");
-  headerRange.setHorizontalAlignment("center");
-  sheet.setFrozenRows(1);
-  Logger.log("Headers updated successfully to 13 official columns!");
-}
-
-// ==============================================================================
-// OPTIONAL TEST HELPER
-// You can select 'testSheet' and click 'Run' anytime to verify your setup.
-// ==============================================================================
-function testSheet() {
-  var activeEmail = "";
-  try {
-    activeEmail = Session.getActiveUser().getEmail();
-  } catch (e) {
-    activeEmail = "";
-  }
-
-  var fakeEvent = {
-    postData: {
-      contents: JSON.stringify({
-        registration_id: "REG-104921",
-        order_id: "order_sample_pass_01",
-        participant_name: "Ash",
-        email: activeEmail || "ash@gmail.com",
-        phone: "9999999999",
-        college: "GNDEC Bidar",
-        event_name: "24-Hour Hackathon",
-        team_name: "Cyber Knights",
-        team_members: "Red (+91 8888888888), Blue (+91 4444444444)",
-        amount_paid: 500,
-        razorpay_payment_id: "pay_P1a2b3c4",
-        payment_status: "PAID"
-      })
+  } finally {
+    if (lock.hasLock()) {
+      lock.releaseLock();
     }
-  };
-
-  var res = doPost(fakeEvent);
-  Logger.log("Test Result: " + res.getContent());
+  }
 }
 
-/**
- * Utility function to immediately format the Google Sheet headers to official Green
- * and add all columns: Confirmation (Order ID), Theme, Accommodation, Team Name, Team Members, Fee, etc.
- * Also automatically repairs any misaligned existing rows!
- */
+
+/* ============================================================
+   REQUEST PARSER
+   ============================================================ */
+
+function parseRequest(e) {
+  if (!e) {
+    throw new Error("Invalid webhook request.");
+  }
+
+  var contents =
+    e.postData && e.postData.contents
+      ? e.postData.contents
+      : "";
+
+  if (contents) {
+    try {
+      return JSON.parse(contents);
+    } catch (err) {
+      throw new Error("Invalid JSON request.");
+    }
+  }
+
+  if (e.parameter) {
+    return e.parameter;
+  }
+
+  throw new Error("Empty request.");
+}
+
+
+/* ============================================================
+   DUPLICATE PAYMENT PROTECTION
+   ============================================================ */
+
+function findExistingPayment(sheet, paymentId, orderId) {
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return null;
+
+  var currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var payColIdx = -1;
+  var orderColIdx = -1;
+
+  for (var c = 0; c < currentHeaders.length; c++) {
+    var h = String(currentHeaders[c] || "").toLowerCase();
+    if (h.indexOf("razorpay") !== -1 || h.indexOf("payment id") !== -1) payColIdx = c;
+    if (h.indexOf("order") !== -1) orderColIdx = c;
+  }
+
+  if (payColIdx === -1 && orderColIdx === -1) return null;
+
+  var rows = sheet.getRange(2, 1, lastRow - 1, sheet.getLastColumn()).getDisplayValues();
+
+  for (var i = 0; i < rows.length; i++) {
+    var existingPayment = payColIdx !== -1 ? rows[i][payColIdx] : "";
+    var existingOrder = orderColIdx !== -1 ? rows[i][orderColIdx] : "";
+
+    if (
+      (paymentId && existingPayment === paymentId) ||
+      (orderId && existingOrder === orderId)
+    ) {
+      return i + 2;
+    }
+  }
+
+  return null;
+}
+
+
+/* ============================================================
+   GOOGLE SHEETS INITIALIZATION & HEADER UPDATE
+   ============================================================ */
+
+function initializeSheet(sheet) {
+  var lastRow = sheet.getLastRow();
+
+  if (lastRow === 0) {
+    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+  } else {
+    var currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    // Check if key columns like Order ID or Accommodation are missing
+    var hasOrderId = false;
+    var hasAccom = false;
+    for (var i = 0; i < currentHeaders.length; i++) {
+      var h = String(currentHeaders[i] || "").toLowerCase();
+      if (h.indexOf("order") !== -1) hasOrderId = true;
+      if (h.indexOf("accommodat") !== -1) hasAccom = true;
+    }
+    // If missing, automatically update headers to official 16-column layout
+    if (!hasOrderId || !hasAccom || currentHeaders.length !== HEADERS.length) {
+      sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    }
+  }
+
+  var headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
+  headerRange
+    .setFontWeight("bold")
+    .setBackground(SHEET_HEADER_COLOR)
+    .setFontColor("#ffffff")
+    .setHorizontalAlignment("center");
+
+  sheet.setFrozenRows(1);
+}
+
+function updateSheetHeaders() {
+  formatAndFixSheet();
+}
+
+
+/* ============================================================
+   HEADER UPDATER & REPAIR EXISTING ROWS
+   Run manually to format green headers and repair shifted data
+   ============================================================ */
+
 function formatAndFixSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
-  var headers = [
-    "Timestamp",
-    "Reg ID",
-    "Confirmation (Order ID)",
-    "Participant Name (Leader)",
-    "Email",
-    "Phone",
-    "College",
-    "Event Name",
-    "Theme",
-    "Accommodation",
-    "Team Name",
-    "Team Members",
-    "Fee",
-    "Razorpay Payment ID",
-    "Status",
-    "Confirmation Email"
-  ];
 
   // 1. Format official green header row
-  var headerRange = sheet.getRange(1, 1, 1, headers.length);
-  headerRange.setValues([headers]);
+  var headerRange = sheet.getRange(1, 1, 1, HEADERS.length);
+  headerRange.setValues([HEADERS]);
   headerRange.setFontWeight("bold");
-  headerRange.setBackground("#2e7d32"); // Green header background
+  headerRange.setBackground(SHEET_HEADER_COLOR);
   headerRange.setFontColor("#ffffff");
   headerRange.setHorizontalAlignment("center");
   sheet.setFrozenRows(1);
 
-  // 2. Scan and repair existing data rows if columns were previously shifted
+  // 2. Scan and repair existing rows if columns were previously shifted
   var lastRow = sheet.getLastRow();
-  var lastCol = Math.max(sheet.getLastColumn(), headers.length);
+  var lastCol = Math.max(sheet.getLastColumn(), HEADERS.length);
   if (lastRow > 1) {
     var dataRange = sheet.getRange(2, 1, lastRow - 1, lastCol);
     var rows = dataRange.getValues();
@@ -714,8 +384,6 @@ function formatAndFixSheet() {
     for (var r = 0; r < rows.length; r++) {
       var row = rows[r];
 
-      // Identify misplaced data
-      // Check if Team Name column or any column contains phone numbers / member lists
       var membersStr = "";
       var paymentIdStr = "";
       var feeStr = "";
@@ -758,14 +426,296 @@ function formatAndFixSheet() {
       }
     }
 
-    // Write back cleaned and aligned rows
     sheet.getRange(2, 1, rows.length, rows[0].length).setValues(rows);
   }
 
   SpreadsheetApp.flush();
-  Logger.log("Google Sheet headers and rows formatted and aligned successfully!");
+  Logger.log("Spectrum 1.0 headers and rows updated and aligned successfully.");
 }
 
-function formatSheetHeaders() {
-  formatAndFixSheet();
+
+/* ============================================================
+   TEAM MEMBER FORMATTER
+   ============================================================ */
+
+function formatTeamMembers(members) {
+  if (!members || members === "N/A") {
+    return "N/A";
+  }
+
+  if (!Array.isArray(members)) {
+    return String(members);
+  }
+
+  return members.map(function(member, index) {
+    if (typeof member === "string") {
+      return member;
+    }
+
+    var name = member.name || "Member " + (index + 2);
+    var phone = "";
+
+    if (member.phone) {
+      var raw = String(member.phone)
+        .replace(/\s+/g, "")
+        .replace(/^0+/, "");
+
+      phone = raw.indexOf("+91") === 0
+        ? raw
+        : "+91 " + raw;
+    }
+
+    return name + (phone ? " (" + phone + ")" : "");
+  }).join(", ");
+}
+
+
+/* ============================================================
+   HTML SECURITY
+   ============================================================ */
+
+function escapeHtml(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+
+/* ============================================================
+   HTML CONFIRMATION PASS
+   ============================================================ */
+
+function buildHtmlPass(data) {
+  data = data || {};
+
+  var participant = escapeHtml(data.participant_name || "Participant");
+  var firstName = escapeHtml(
+    String(data.participant_name || "Participant").split(" ")[0]
+  );
+
+  var event = escapeHtml(data.event_name || "Official Event");
+  var team = escapeHtml(data.team_name || "");
+  var members = escapeHtml(data.team_members || "");
+  var college = escapeHtml(data.college || "N/A");
+  var theme = escapeHtml(data.theme || "");
+  var accommodation = escapeHtml(data.accommodation || "");
+  var amount = escapeHtml(data.amount_paid || 0);
+  var orderId = escapeHtml(data.order_id || "N/A");
+  var paymentId = escapeHtml(data.razorpay_payment_id || "N/A");
+
+  var isYes = accommodation.toLowerCase().indexOf("yes") !== -1;
+
+  var teamRow = team && team !== "N/A"
+    ? '<tr><td class="label">Team</td><td class="value">' + team + '</td></tr>'
+    : "";
+
+  var themeRow = theme && theme !== "N/A"
+    ? '<tr><td class="label">Theme</td><td class="value">' + theme + '</td></tr>'
+    : "";
+
+  var accommodationRow = accommodation && accommodation !== "N/A"
+    ? '<tr><td class="label">Accommodation</td><td class="value">' +
+      (isYes ? "Yes (Campus Stay &amp; Meals)" : "No (Self Arranged)") +
+      '</td></tr>'
+    : "";
+
+  var membersRow = members && members !== "N/A"
+    ? '<tr><td class="label">Team members</td><td class="value">' + members + '</td></tr>'
+    : "";
+
+  var html = "";
+  html += '<!DOCTYPE html>';
+  html += '<html lang="en">';
+  html += '<head>';
+  html += '<meta charset="UTF-8">';
+  html += '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+  html += '<meta name="color-scheme" content="light">';
+  html += '<title>Spectrum 1.0 - Registration Confirmed</title>';
+  html += '<style>';
+  html += 'body { margin:0; padding:0; background:#EEF2F7; font-family:Arial,Helvetica,sans-serif; color:#0F172A; }';
+  html += '.container { max-width:600px; margin:25px auto; background:#ffffff; border-radius:16px; overflow:hidden; }';
+  html += '.header { background:#4338CA; background-image:linear-gradient(120deg,#4338CA,#7C3AED,#DB2777); color:#ffffff; text-align:center; padding:35px 20px; }';
+  html += '.header h1 { font-size:40px; margin:10px 0; }';
+  html += '.header p { font-size:14px; }';
+  html += '.content { padding:25px 30px; }';
+  html += '.card { border:1px solid #E2E8F0; border-left:5px solid #DB2777; border-radius:12px; padding:18px; }';
+  html += 'table { width:100%; border-collapse:collapse; }';
+  html += 'td { padding:10px 4px; vertical-align:top; font-size:14px; }';
+  html += '.label { width:38%; color:#64748B; }';
+  html += '.value { color:#0F172A; font-weight:bold; word-break:break-word; }';
+  html += '.section { color:#DB2777; font-weight:bold; margin-bottom:12px; }';
+  html += '.steps { line-height:1.7; color:#334155; font-size:14px; }';
+  html += '.coordinator { background:#F0FDFA; border-left:4px solid #0D9488; padding:12px; margin:5px 0; border-radius:7px; }';
+  html += '.coordinator strong { display:block; margin:5px 0; }';
+  html += '.footer { background:#0F172A; color:#ffffff; text-align:center; padding:22px; font-size:13px; }';
+  html += 'a { color:#4338CA; }';
+  html += '@media screen and (max-width:480px) { .content { padding:20px 16px; } .header h1 { font-size:32px; } }';
+  html += '</style>';
+  html += '</head>';
+  html += '<body>';
+  html += '<div class="container">';
+  html += '  <div class="header">';
+  html += '    <div style="font-size:12px;font-weight:bold;letter-spacing:2px;">NATIONAL LEVEL TECHNICAL &amp; CULTURAL FESTIVAL</div>';
+  html += '    <h1>Spectrum 1.0</h1>';
+  html += '    <p>Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka</p>';
+  html += '    <div style="margin-top:18px;">';
+  html += '      <span style="background:#FBBF24;color:#0F172A;padding:8px 15px;border-radius:20px;font-weight:bold;">Dec 7 - 9, 2026</span>&nbsp;';
+  html += '      <span style="background:#10B981;color:#ffffff;padding:8px 15px;border-radius:20px;font-weight:bold;">&#10003; Payment Verified</span>';
+  html += '    </div>';
+  html += '  </div>';
+  html += '  <div class="content">';
+  html += '    <h2 style="font-size:22px;">You\'re registered, ' + firstName + '!</h2>';
+  html += '    <p style="color:#475569;line-height:1.7;">Your spot at <strong style="color:#4338CA;">Spectrum 1.0</strong> is secured. Keep this email handy and bring your college ID when you arrive on campus.</p>';
+  html += '    <div class="section">■ Your event pass</div>';
+  html += '    <div class="card">';
+  html += '      <table>';
+  html += '        <tr><td class="label">Registered event</td><td class="value">' + event + '</td></tr>';
+  html += '        <tr><td class="label">Participant</td><td class="value">' + participant + '</td></tr>';
+  html +=          teamRow;
+  html +=          themeRow;
+  html +=          accommodationRow;
+  html +=          membersRow;
+  html += '        <tr><td class="label">College</td><td class="value">' + college + '</td></tr>';
+  html += '      </table>';
+  html += '      <hr style="border:0;border-top:2px dashed #E2E8F0;margin:15px 0;">';
+  html += '      <table>';
+  html += '        <tr><td class="label">Fee paid</td><td class="value" style="color:#047857;">&#8377;' + amount + '/-</td></tr>';
+  html += '        <tr><td class="label">Order ID</td><td class="value">' + orderId + '</td></tr>';
+  html += '        <tr><td class="label">Payment ID</td><td class="value">' + paymentId + '</td></tr>';
+  html += '      </table>';
+  html += '    </div>';
+  html += '    <div style="margin-top:28px;" class="section">■ Campus instructions</div>';
+  html += '    <div class="steps">';
+  html += '      <p><strong>1. Dates and reporting:</strong> December 7 - 9, 2026. Reporting starts at 8:30 AM on Day 1.</p>';
+  html += '      <p><strong>2. Venue:</strong> GNDEC Bidar, Main Gate, Bidar, Karnataka.</p>';
+  html += '      <p><strong>3. ID required:</strong> Carry a valid physical college or institution ID card. It is compulsory for entry.</p>';
+  html += '      <p><strong>4. Hackathon teams:</strong> Overnight accommodation and meals are provided for registered teams that have confirmed accommodation.</p>';
+  html += '    </div>';
+  html += '    <div style="margin-top:25px;" class="section">■ Help desk</div>';
+  html += '    <div class="coordinator"><span style="font-size:11px;color:#0D9488;">STUDENT COORDINATOR</span><strong>Armaandeep Singh</strong>+91 8427027540</div>';
+  html += '    <div class="coordinator"><span style="font-size:11px;color:#0D9488;">STUDENT COORDINATOR</span><strong>Sangmesh</strong>+91 9353142522</div>';
+  html += '    <div class="coordinator"><span style="font-size:11px;color:#0D9488;">STUDENT COORDINATOR</span><strong>Abdul Aziz</strong>+91 8296683831</div>';
+  html += '    <div class="coordinator" style="background:#FDF2F8;border-color:#DB2777;"><span style="font-size:11px;color:#DB2777;">HEAD, CSE - AIML</span><strong>Dr. Praveen Reddy</strong>+91 99165 42332</div>';
+  html += '    <div style="text-align:center;margin-top:28px;">';
+  html += '      <a href="' + WEBSITE_URL + '" style="display:inline-block;background:#4338CA;background-image:linear-gradient(90deg,#4338CA,#DB2777);color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:25px;font-weight:bold;">Visit the Spectrum portal</a>';
+  html += '      <p style="font-size:13px;color:#64748B;margin-top:18px;">Questions? Email <a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a></p>';
+  html += '    </div>';
+  html += '  </div>';
+  html += '  <div class="footer"><strong>Spectrum 1.0 · GNDEC Bidar</strong><p style="color:#94A3B8;">Keep this email as your entry reference on campus.</p></div>';
+  html += '</div>';
+  html += '</body>';
+  html += '</html>';
+
+  return html;
+}
+
+
+/* ============================================================
+   EMAIL DISPATCH
+   ============================================================ */
+
+function sendConfirmationEmail(data) {
+  if (!data.email || String(data.email).indexOf("@") === -1) {
+    throw new Error("Invalid recipient email address.");
+  }
+
+  var participant = data.participant_name || "Participant";
+  var event = data.event_name || "Official Event";
+
+  var subject =
+    "Registration Confirmed: SPECTRUM 1.0 - " + event;
+
+  var plainText =
+    "SPECTRUM 1.0 - REGISTRATION CONFIRMED\n\n" +
+    "Dear " + participant + ",\n\n" +
+    "Your registration has been successfully confirmed!\n\n" +
+    "Event: " + event + "\n" +
+    "Participant: " + participant + "\n" +
+    "Team: " + (data.team_name || "N/A") + "\n" +
+    "Members: " + (data.team_members || "N/A") + "\n" +
+    "College: " + (data.college || "N/A") + "\n" +
+    "Theme: " + (data.theme || "N/A") + "\n" +
+    "Accommodation: " + (data.accommodation || "N/A") + "\n" +
+    "Fee paid: INR " + data.amount_paid + "/-\n" +
+    "Order ID: " + data.order_id + "\n" +
+    "Payment ID: " + data.razorpay_payment_id + "\n" +
+    "Payment Status: PAID & VERIFIED\n\n" +
+    "VENUE AND REPORTING:\n" +
+    "GNDEC Bidar, Karnataka\n" +
+    "December 7 - 9, 2026\n" +
+    "Reporting starts at 8:30 AM on Day 1.\n" +
+    "Bring your valid college ID card.\n\n" +
+    "HELP DESK:\n" +
+    "Armaandeep Singh: +91 8427027540\n" +
+    "Sangmesh: +91 9353142522\n" +
+    "Abdul Aziz: +91 8296683831\n" +
+    "Dr. Praveen Reddy: +91 99165 42332\n\n" +
+    "Official Portal: " + WEBSITE_URL + "\n" +
+    "Email: " + SUPPORT_EMAIL;
+
+  var htmlBody = buildHtmlPass(data);
+
+  MailApp.sendEmail({
+    to: String(data.email).trim(),
+    subject: subject,
+    body: plainText,
+    htmlBody: htmlBody,
+    name: "SPECTRUM 1.0 (GNDEC Bidar)"
+  });
+}
+
+
+/* ============================================================
+   GET HEALTH CHECK
+   ============================================================ */
+
+function doGet() {
+  return jsonResponse({
+    status: "active",
+    message: "Spectrum 1.0 Registration and Email Engine is live!"
+  });
+}
+
+
+/* ============================================================
+   JSON RESPONSE
+   ============================================================ */
+
+function jsonResponse(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+/* ============================================================
+   MANUAL EMAIL PREVIEW TEST
+   ============================================================ */
+
+function testEmailPreview() {
+  var email = Session.getActiveUser().getEmail();
+
+  if (!email) {
+    throw new Error("Could not identify your Google account email.");
+  }
+
+  var sample = {
+    email: email,
+    participant_name: "Spectrum Test Participant",
+    event_name: "24-Hour Hackathon",
+    team_name: "Cyber Knights",
+    team_members: "Red (+91 8888888888), Blue (+91 4444444444)",
+    amount_paid: 1,
+    order_id: "order_sample_test",
+    razorpay_payment_id: "pay_sample_test",
+    college: "GNDEC Bidar",
+    theme: "AI & Autonomous Systems",
+    accommodation: "Yes"
+  };
+
+  sendConfirmationEmail(sample);
+  Logger.log("Preview email sent to: " + email);
 }
