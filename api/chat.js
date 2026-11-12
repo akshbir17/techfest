@@ -18,7 +18,7 @@ KEY FESTIVAL DETAILS:
 
 EVENT CATALOG & PRIZES:
 1. 24-HOUR HACKATHON (Flagship Technical):
-   - Fee: ₹500 per team (2–4 members).
+   - Fee: ₹1 per team (2–4 members).
    - Time: Starts Dec 8 at 12:00 PM (noon) and ends Dec 9 at 12:30 PM.
    - Perks: Free college meals (lunch, dinner, breakfast) & overnight campus accommodation provided!
    - Prizes: Revealing Soon.

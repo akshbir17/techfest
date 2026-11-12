@@ -10,7 +10,7 @@ const EVENT_CATALOG = {
   'photo_booth':        { name: 'Photography', fee: 100, type: 'individual' },
   'photography':        { name: 'Photography', fee: 100, type: 'individual' },
   // Team Events
-  'hackathon':          { name: '24-Hour Hackathon', fee: 500, type: 'team' },
+  'hackathon':          { name: '24-Hour Hackathon', fee: 1, type: 'team' },
   'tech_quiz':          { name: 'TechQuiz', fee: 300, type: 'team' },
   'bgmi':               { name: 'BGMI Tournament', fee: 400, type: 'team' },
   'free_fire':          { name: 'Free Fire Tournament', fee: 400, type: 'team' },
