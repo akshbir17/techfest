@@ -7,6 +7,9 @@ import NeonButton from '../ui/NeonButton';
 import IndividualRegModal from './IndividualRegModal';
 import TeamRegModal from './TeamRegModal';
 
+// Flip to true when Fest Event Participation registrations are ready to go live
+const FEST_EVENTS_OPEN = false;
+
 const RegistrationSection = () => {
   const [showModal, setShowModal] = useState(false);
   const [showTeamModal, setShowTeamModal] = useState(false);
@@ -134,32 +137,59 @@ const RegistrationSection = () => {
                 </div>
               </div>
               
-              <button
-                id="fest-events-register-btn"
-                type="button"
-                className="transition-all duration-300"
-                onClick={() => setShowFestChoice(true)}
-                style={{
-                  width: '100%',
-                  maxWidth: '380px',
-                  padding: '1rem 2rem',
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '1rem',
-                  fontWeight: '800',
-                  color: 'var(--color-space-black)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.15em',
-                  backgroundColor: 'var(--color-star-white)',
-                  border: '2px solid var(--color-star-white)',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  boxShadow: '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'
-                }}
-                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)'; e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(244, 234, 204, 0.5)'; }}
-                onMouseOut={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'; }}
-              >
-                REGISTER FOR FEST EVENTS
-              </button>
+              {FEST_EVENTS_OPEN ? (
+                <button
+                  id="fest-events-register-btn"
+                  type="button"
+                  className="transition-all duration-300"
+                  onClick={() => setShowFestChoice(true)}
+                  style={{
+                    width: '100%',
+                    maxWidth: '380px',
+                    padding: '1rem 2rem',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '1rem',
+                    fontWeight: '800',
+                    color: 'var(--color-space-black)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.15em',
+                    backgroundColor: 'var(--color-star-white)',
+                    border: '2px solid var(--color-star-white)',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    boxShadow: '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px) translateX(-2px)'; e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(244, 234, 204, 0.5)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(244, 234, 204, 0.5)'; }}
+                >
+                  REGISTER FOR FEST EVENTS
+                </button>
+              ) : (
+                <button
+                  id="fest-events-register-btn"
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                  style={{
+                    width: '100%',
+                    maxWidth: '380px',
+                    padding: '1rem 2rem',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '1rem',
+                    fontWeight: '800',
+                    color: 'var(--color-neon-cyan)',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.18em',
+                    backgroundColor: 'rgba(0, 240, 255, 0.08)',
+                    border: '2px solid rgba(0, 240, 255, 0.45)',
+                    borderRadius: '4px',
+                    cursor: 'not-allowed',
+                    opacity: 0.85,
+                  }}
+                >
+                  COMING SOON
+                </button>
+              )}
             </GlassCard>
           </motion.div>
 
@@ -171,7 +201,7 @@ const RegistrationSection = () => {
         <>
           {/* Fest Event Type Selection Modal */}
           <AnimatePresence>
-            {showFestChoice && (
+            {FEST_EVENTS_OPEN && showFestChoice && (
               <motion.div
                 key="fest-choice-backdrop"
                 initial={{ opacity: 0 }}
@@ -350,7 +380,7 @@ const RegistrationSection = () => {
           </AnimatePresence>
 
           <AnimatePresence>
-            {showModal && <IndividualRegModal key="ind-modal" onClose={() => setShowModal(false)} />}
+            {FEST_EVENTS_OPEN && showModal && <IndividualRegModal key="ind-modal" onClose={() => setShowModal(false)} />}
           </AnimatePresence>
           <AnimatePresence>
             {showTeamModal && (
