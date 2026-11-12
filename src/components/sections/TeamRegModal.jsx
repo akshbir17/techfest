@@ -341,6 +341,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
     form.leaderEmail.trim() &&
     form.leaderPhone.trim() &&
     form.college.trim() &&
+    (selectedEvent?.id !== 'hackathon' || form.theme.trim()) &&
     members.every((m, idx) => {
       const isReq = idx < minAdd;
       if (isReq) return m.name.trim() && m.phone.trim();
