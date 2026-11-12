@@ -162,8 +162,9 @@ export default async function handler(req, res) {
         const phone = registrationRecord?.phone || registrationData?.phone || '';
         const eventName = registrationRecord?.event_name || registrationData?.eventName || '';
         const rawTeamName = registrationRecord?.team_name || registrationData?.teamName || 'N/A';
-        const themeVal = registrationRecord?.theme || registrationData?.theme || null;
-        const accommodationVal = registrationRecord?.accommodation || registrationData?.accommodation || (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A');
+        // Theme: use frontend-submitted value first (registrationData), then DB, then fallback
+        const themeVal = registrationData?.theme || registrationRecord?.theme || null;
+        const accommodationVal = registrationData?.accommodation || registrationRecord?.accommodation || (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A');
         const teamName = rawTeamName;
         const amountPaid = Number(registrationRecord?.amount || registrationRecord?.fee || registrationData?.fee || 0);
 
@@ -210,7 +211,7 @@ export default async function handler(req, res) {
           phone: phone,
           college: registrationRecord?.college || registrationData?.college || 'N/A',
           event_name: eventName,
-          theme: themeVal || (String(eventName).toLowerCase().includes('hackathon') ? 'General' : 'N/A'),
+          theme: themeVal || 'General',
           accommodation: accommodationVal,
           team_name: teamName,
           team_members: isTeamEvent ? membersFormatted : 'N/A',

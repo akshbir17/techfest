@@ -88,7 +88,7 @@ export default async function handler(req, res) {
         phone: record.phone || '',
         college: record.college || 'N/A',
         event_name: eventName,
-        theme: record.theme || (String(eventName).toLowerCase().includes('hackathon') ? 'General' : 'N/A'),
+        theme: record.theme || 'General',
         accommodation: record.accommodation || (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A'),
         team_name: isTeamEvent ? String(rawTeamName).trim() : 'N/A',
         team_members: isTeamEvent ? membersFormatted : 'N/A',

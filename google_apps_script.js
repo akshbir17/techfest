@@ -85,7 +85,7 @@ function doPost(e) {
     var eventName = String(data.event_name || "N/A").trim();
     var isHackathon = eventName.toLowerCase().indexOf("hackathon") !== -1;
 
-    var theme = data.theme || (isHackathon ? "General" : "N/A");
+    var theme = data.theme || "General";
     var accommodation = data.accommodation || (isHackathon ? "Yes" : "N/A");
 
     var registrationId = data.registration_id || ("SPEC-" + String(data.order_id).slice(-6).toUpperCase());
@@ -179,8 +179,7 @@ function doPost(e) {
         razorpay_payment_id: data.razorpay_payment_id,
         college: data.college || "N/A",
         theme: theme,
-        accommodation: accommodation,
-        registration_id: registrationId
+        accommodation: accommodation
       };
 
       sendConfirmationEmail(emailData);
@@ -446,7 +445,7 @@ function formatAndFixSheet() {
       var isHack = String(eventName).toLowerCase().indexOf("hackathon") !== -1;
       if (!fee) fee = isHack ? "₹1" : "₹100";
       if (!accommodation) accommodation = isHack ? "Yes" : "N/A";
-      if (!theme) theme = isHack ? "General" : "N/A";
+      if (!theme) theme = "General";
       if (!teamMembers) teamMembers = "N/A";
       if (!teamName) teamName = "N/A";
 

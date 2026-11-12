@@ -140,7 +140,7 @@ export default async function handler(req, res) {
           team_name: teamName ? String(teamName).trim() : null,
           team_members: cleanMembers.length > 0 ? cleanMembers : null,
           amount: verifiedFee,
-          theme: theme ? String(theme).trim() : (cleanEventId.includes('hackathon') ? 'General' : null),
+          theme: theme ? String(theme).trim() : 'General',
           accommodation: accommodation ? String(accommodation).trim() : (cleanEventId.includes('hackathon') ? 'Yes' : 'N/A'),
           razorpay_order_id: order.id,
           razorpay_payment_id: null,
