@@ -9,7 +9,7 @@ const EventsPreviewSection = () => {
   const navigate = useNavigate();
 
   const previewEvents = [
-    { name: '24-Hour Hackathon', category: 'TECHNICAL', price: '1', teamSize: '2 to 4 Members', date: '9th – 10th Dec 2026' },
+    { name: '24-Hour Hackathon', category: 'TECHNICAL', price: '500', teamSize: '2 to 4 Members', date: '9th – 10th Dec 2026' },
     { name: 'Treasure Hunt', category: 'GAMES', price: '600', teamSize: '1 to 4 Members', date: '8th Dec 2026' },
     { name: 'BGMI Tournament', category: 'GAMES', price: '400', teamSize: '4 Members (Squad)', date: '8th Dec 2026' },
   ];
