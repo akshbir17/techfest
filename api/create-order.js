@@ -6,7 +6,6 @@ import { createClient } from '@supabase/supabase-js';
 const EVENT_CATALOG = {
   // Individual Events
   'impossible_to_sell': { name: 'Impossible to Sell', fee: 100, type: 'individual' },
-  'mock_interview':     { name: 'Mock Interview', fee: 100, type: 'individual' },
   'killer_game':        { name: 'Killer Game', fee: 50, type: 'individual' },
   'photo_booth':        { name: 'Photography', fee: 100, type: 'individual' },
   'photography':        { name: 'Photography', fee: 100, type: 'individual' },

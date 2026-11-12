@@ -74,7 +74,6 @@ export default async function handler(req, res) {
         rawTeamName &&
         rawTeamName !== 'N/A' &&
         !String(eventName).toLowerCase().includes('impossible') &&
-        !String(eventName).toLowerCase().includes('mock') &&
         !String(eventName).toLowerCase().includes('killer') &&
         !String(eventName).toLowerCase().includes('photo')
       );

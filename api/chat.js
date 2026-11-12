@@ -42,14 +42,10 @@ EVENT CATALOG & PRIZES:
    - Fee: ₹100 per entry (1–2 members).
    - Day 1 (Dec 7): 2:00 PM – 4:00 PM.
    - Prizes: Revealing Soon.
-7. MOCK INTERVIEW (Career Simulation):
-   - Fee: ₹100 per individual.
-   - Day 1 (Dec 7). Technical & HR simulation with corporate scorecards.
-   - Prizes: Revealing Soon.
-8. PHOTOGRAPHY (Creative):
+7. PHOTOGRAPHY (Creative):
    - Fee: ₹100 per entry (up to 3 submissions).
    - Google Drive link shared on Dec 9 at 12:00 PM. Prizes: Revealing Soon.
-9. KILLER GAME (Social Stealth & Deduction):
+8. KILLER GAME (Social Stealth & Deduction):
    - Fee: ₹50 per player.
    - Day 1 (Dec 7): 1:00 PM – 2:00 PM.
    - Prizes: Revealing Soon.

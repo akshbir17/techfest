@@ -7,7 +7,6 @@ import { useScrollLock } from '../../hooks/useScrollLock';
 // List of individual events
 const INDIVIDUAL_EVENTS = [
   { id: 'impossible_to_sell', name: 'Impossible to Sell',          fee: 100, description: 'Creative selling challenge — pitch an unusual or bizarre product. Prizes Revealing Soon.' },
-  { id: 'mock_interview',     name: 'Mock Interview',              fee: 100, description: 'Simulate a real interview and get evaluated by corporate panelists. Prizes Revealing Soon.' },
   { id: 'killer_game',        name: 'Killer Game',                 fee: 50,  description: 'Social deduction & stealth elimination challenge on Day 1. Prizes Revealing Soon.' },
   { id: 'photo_booth',        name: 'Photography',                  fee: 100, description: 'Submit your best shot — Google Drive link shared on 9 Dec at 12 PM. Prizes Revealing Soon.' },
 ];
@@ -142,7 +141,8 @@ const IndividualRegModal = ({ onClose, initialEventId }) => {
             if (verifyRes.ok && verifyData.success) {
               onClose();
               const regParam = verifyData.registrationId ? `&reg_id=${verifyData.registrationId}` : '';
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.name)}&amount=${selectedEvent.fee}${regParam}`);
+              const uniqueParam = verifyData.uniqueId ? `&unique_id=${encodeURIComponent(verifyData.uniqueId)}` : '';
+              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.name)}&amount=${selectedEvent.fee}${regParam}${uniqueParam}`);
             } else {
               setServerError(verifyData.error || `Payment verification failed. Payment ID: ${response.razorpay_payment_id}`);
               setLoading(false);

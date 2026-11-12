@@ -303,9 +303,10 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
             if (verifyRes.ok && verifyData.success) {
               onClose();
               const regParam = verifyData.registrationId ? `&reg_id=${verifyData.registrationId}` : '';
+              const uniqueParam = verifyData.uniqueId ? `&unique_id=${encodeURIComponent(verifyData.uniqueId)}` : '';
               const themeParam = form.theme ? `&theme=${encodeURIComponent(form.theme)}` : '';
               const accomParam = selectedEvent?.id === 'hackathon' ? `&accommodation=${encodeURIComponent(form.accommodation || 'Yes')}` : '';
-              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}${regParam}`);
+              navigate(`/registration-success?order_id=${response.razorpay_order_id}&event=${encodeURIComponent(selectedEvent.name)}&payment_id=${response.razorpay_payment_id}&name=${encodeURIComponent(form.leaderName)}&team=${encodeURIComponent(form.teamName)}${themeParam}${accomParam}&amount=${selectedEvent.fee}${regParam}${uniqueParam}`);
             } else {
               setServerError(verifyData.error || `Payment verification failed. Payment ID: ${response.razorpay_payment_id}`);
               setLoading(false);

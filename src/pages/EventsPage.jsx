@@ -170,32 +170,6 @@ const EventsPage = ({ isEmbedded = false }) => {
 
   const creativeEvents = [
     {
-      id: 'mock_interview',
-      name: 'Mock Interview',
-      category: 'Creative',
-      type: 'individual',
-      price: '₹100 per individual',
-      teamSize: 'Individual',
-      date: '7th Dec 2026',
-      venue: 'Training & Placement Cell, GNDEC',
-      prize: 'Revealing Soon',
-      description: 'Simulate high-stakes corporate HR and Technical interviews conducted by seasoned tech recruiters and corporate evaluators.',
-      rules: [
-        'Individual participation only. Open to students of all years and branches.',
-        'Dress code: Formal business attire is mandatory.',
-        'Participants must bring 2 hard copies of their Resume / CV and college ID card.',
-        'Round 1 (Aptitude & Technical Screening): 20-minute multiple-choice and situational problem solving.',
-        'Round 2 (Face-to-Face Interview): 15-minute 1-on-1 panel interview with HR and Technical evaluation, covering projects, behavioral scenarios, and problem solving.',
-        'Every participant will receive a comprehensive personalized performance scorecard and constructive feedback report.'
-      ],
-      judging: [
-        'Technical Domain Knowledge (30%)',
-        'Communication & Articulation (25%)',
-        'Problem Solving & Analytical Thinking (25%)',
-        'Professional Demeanor & Resume Quality (20%)'
-      ]
-    },
-    {
       id: 'photo_booth',
       name: 'Photography',
       category: 'Creative',

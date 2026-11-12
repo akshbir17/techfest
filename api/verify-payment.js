@@ -195,7 +195,6 @@ export default async function handler(req, res) {
           rawTeamName &&
           rawTeamName !== 'N/A' &&
           !String(eventName).toLowerCase().includes('impossible') &&
-          !String(eventName).toLowerCase().includes('mock') &&
           !String(eventName).toLowerCase().includes('killer') &&
           !String(eventName).toLowerCase().includes('photo')
         );
@@ -251,6 +250,7 @@ export default async function handler(req, res) {
       success: true,
       message: 'Payment verified and registration confirmed successfully',
       registrationId: registrationRecord?.id || null,
+      uniqueId: uniqueRegId,
       orderId: razorpay_order_id,
       paymentId: razorpay_payment_id,
       sheetsSynced: sheetsSynced,

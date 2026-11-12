@@ -423,7 +423,7 @@ function formatAndFixSheet() {
           status = val.toUpperCase();
         } else if (/^(Sent|Failed|Pending)$/i.test(val)) {
           emailStatus = val;
-        } else if (/hackathon|techquiz|bgmi|free fire|treasure hunt|photography|mock interview|killer game|impossible to sell/i.test(val)) {
+        } else if (/hackathon|techquiz|bgmi|free fire|treasure hunt|photography|killer game|impossible to sell/i.test(val)) {
           eventName = val;
         } else if (/agriculture|medtech|clean & green|automation|agentic|general/i.test(val)) {
           theme = val;

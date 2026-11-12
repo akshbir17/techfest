@@ -19,13 +19,6 @@ export const EVENT_SCHEDULE_DATA = {
     venue: 'Seminar Hall 1 & Main Stage, GNDEC Campus, Bidar',
     description: 'Test your algorithmic acumen, CS fundamentals, and tech trivia. Round 1 Written Prelims at 1:00 PM; Round 2 Stage Finals at 4:00 PM.\n\nWebsite: https://spectrum10.vercel.app',
   },
-  mock_interview: {
-    title: 'Spectrum 1.0: Mock Interview',
-    start: '2026-12-07T10:00:00+05:30',
-    end: '2026-12-07T13:00:00+05:30',
-    venue: 'Training & Placement Cell, GNDEC Campus, Bidar',
-    description: 'Simulate high-stakes corporate HR & Technical interviews with industry evaluators. Formal business attire required. Bring 2 hard copies of your CV.\n\nWebsite: https://spectrum10.vercel.app',
-  },
   photo_booth: {
     title: 'Spectrum 1.0: Photography Contest',
     start: '2026-12-07T09:00:00+05:30',

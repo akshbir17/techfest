@@ -260,7 +260,6 @@ const RegistrationSection = () => {
                         </p>
                         <ul style={{ fontSize: '0.78rem', color: 'rgba(244, 234, 204, 0.55)', paddingLeft: '1.1rem', marginBottom: '1.25rem', lineHeight: '1.5' }}>
                           <li>Photography (₹100)</li>
-                          <li>Mock Interview (₹100)</li>
                           <li>Impossible to Sell (₹100)</li>
                           <li>Killer Game (₹50)</li>
                         </ul>

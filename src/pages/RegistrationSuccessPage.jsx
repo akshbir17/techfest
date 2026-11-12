@@ -23,6 +23,7 @@ const RegistrationSuccessPage = () => {
   const orderId = searchParams.get('order_id') || 'N/A';
   const paymentId = searchParams.get('payment_id') || 'N/A';
   const registrationId = searchParams.get('reg_id') || '';
+  const uniqueIdFromQuery = searchParams.get('unique_id') || '';
   const rawEventName = searchParams.get('event') || 'Official Event';
   const participantName = searchParams.get('name') || '';
   const teamName = searchParams.get('team') || '';
@@ -31,6 +32,15 @@ const RegistrationSuccessPage = () => {
   const accommodation = searchParams.get('accommodation') || searchParams.get('accom') || '';
 
   const eventName = decodeURIComponent(rawEventName);
+  const eventPrefix = String(eventName || 'SPEC').replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || 'SPEC';
+  const uniqueRegId = uniqueIdFromQuery ||
+    (registrationId && registrationId.startsWith('SPEC-') 
+      ? registrationId 
+      : (registrationId 
+          ? `SPEC-${eventPrefix}-${registrationId.replace(/[^a-zA-Z0-9]/g, '').slice(0, 6).toUpperCase()}` 
+          : (orderId && orderId !== 'N/A' 
+              ? `SPEC-${eventPrefix}-${orderId.replace(/[^a-zA-Z0-9]/g, '').slice(-6).toUpperCase()}` 
+              : `SPEC-${eventPrefix}-PASS`)));
   const [copiedKey, setCopiedKey] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -346,12 +356,13 @@ const RegistrationSuccessPage = () => {
 
       y += 17.5;
 
-      // Database Registration UUID Card
-      if (registrationId) {
+      // Database Registration UUID & Unique Registration ID
+      if (registrationId || uniqueRegId) {
+        // Left: Database UUID
         doc.setFillColor(9, 9, 9);
         doc.setDrawColor(38, 38, 46);
         doc.setLineWidth(0.25);
-        doc.roundedRect(m, y, cw, 14.5, 1.5, 1.5, 'FD');
+        doc.roundedRect(m, y, halfW, 14.5, 1.5, 1.5, 'FD');
         doc.setFillColor(227, 27, 63);
         doc.rect(m, y + 0.5, 1.4, 13.5, 'F');
 
@@ -361,9 +372,27 @@ const RegistrationSuccessPage = () => {
         doc.text('DATABASE REGISTRATION ID (UUID)', m + 5, y + 5.2);
 
         doc.setFont('courier', 'bold');
-        doc.setFontSize(8.8);
+        doc.setFontSize(7.2);
         doc.setTextColor(255, 255, 255);
-        doc.text(registrationId, m + 5, y + 11);
+        doc.text(registrationId || 'N/A', m + 5, y + 11);
+
+        // Right: Unique Registration ID
+        doc.setFillColor(9, 9, 9);
+        doc.setDrawColor(38, 38, 46);
+        doc.setLineWidth(0.25);
+        doc.roundedRect(rightX, y, halfW, 14.5, 1.5, 1.5, 'FD');
+        doc.setFillColor(0, 230, 118);
+        doc.rect(rightX, y + 0.5, 1.4, 13.5, 'F');
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(6.5);
+        doc.setTextColor(191, 192, 197);
+        doc.text('UNIQUE REGISTRATION ID', rightX + 5, y + 5.2);
+
+        doc.setFont('courier', 'bold');
+        doc.setFontSize(8.8);
+        doc.setTextColor(0, 230, 118);
+        doc.text(uniqueRegId, rightX + 5, y + 11);
 
         y += 22.5;
       } else {
@@ -854,7 +883,13 @@ const RegistrationSuccessPage = () => {
 
           {/* Credentials & Identification Block */}
           <div style={{ padding: '1.25rem 1.75rem 1.75rem 1.75rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1rem',
+              }}
+            >
               
               {/* Order ID */}
               <div
@@ -918,90 +953,139 @@ const RegistrationSuccessPage = () => {
                       Razorpay Payment ID
                     </span>
                     <button
-                      onClick={() => handleCopy(paymentId, 'payment')}
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: copiedKey === 'payment' ? '#00e676' : 'rgba(244, 234, 204, 0.8)',
-                        cursor: 'pointer',
-                        fontSize: '0.72rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.25rem',
-                        padding: 0,
-                      }}
-                    >
-                      {copiedKey === 'payment' ? <Check size={12} /> : <Copy size={12} />}
-                      {copiedKey === 'payment' ? 'Copied' : 'Copy'}
-                    </button>
-                  </div>
-                  <div
+                    onClick={() => handleCopy(paymentId, 'payment')}
                     style={{
-                      fontFamily: 'monospace',
-                      fontSize: '0.92rem',
-                      color: 'var(--color-star-white, #f4eacc)',
-                      background: 'rgba(0, 0, 0, 0.55)',
-                      padding: '0.55rem 0.85rem',
-                      borderRadius: '4px',
-                      border: '1px solid rgba(211, 47, 47, 0.25)',
-                      wordBreak: 'break-all',
+                      background: 'transparent',
+                      border: 'none',
+                      color: copiedKey === 'payment' ? '#00e676' : 'rgba(244, 234, 204, 0.8)',
+                      cursor: 'pointer',
+                      fontSize: '0.72rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      padding: 0,
                     }}
                   >
-                    {paymentId}
-                  </div>
+                    {copiedKey === 'payment' ? <Check size={12} /> : <Copy size={12} />}
+                    {copiedKey === 'payment' ? 'Copied' : 'Copy'}
+                  </button>
                 </div>
-              )}
-
-              {/* Database Registration ID (UUID) */}
-              {registrationId && (
                 <div
                   style={{
-                    background: 'rgba(255, 255, 255, 0.03)',
-                    border: '1px solid rgba(244, 234, 204, 0.15)',
-                    borderRadius: '6px',
-                    padding: '0.85rem 1rem',
+                    fontFamily: 'monospace',
+                    fontSize: '0.92rem',
+                    color: 'var(--color-star-white, #f4eacc)',
+                    background: 'rgba(0, 0, 0, 0.55)',
+                    padding: '0.55rem 0.85rem',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(211, 47, 47, 0.25)',
+                    wordBreak: 'break-all',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                    <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#d32f2f', fontWeight: 'bold' }}>
-                      Database Registration ID
-                    </span>
-                    <button
-                      onClick={() => handleCopy(registrationId, 'reg')}
-                      style={{
-                        background: 'transparent',
-                        border: 'none',
-                        color: copiedKey === 'reg' ? '#00e676' : 'rgba(244, 234, 204, 0.8)',
-                        cursor: 'pointer',
-                        fontSize: '0.72rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.25rem',
-                        padding: 0,
-                      }}
-                    >
-                      {copiedKey === 'reg' ? <Check size={12} /> : <Copy size={12} />}
-                      {copiedKey === 'reg' ? 'Copied' : 'Copy'}
-                    </button>
-                  </div>
-                  <div
+                  {paymentId}
+                </div>
+              </div>
+            )}
+
+            {/* Database Registration ID (UUID) */}
+            {registrationId && (
+              <div
+                style={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(244, 234, 204, 0.15)',
+                  borderRadius: '6px',
+                  padding: '0.85rem 1rem',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                  <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#d32f2f', fontWeight: 'bold' }}>
+                    Database Registration ID (UUID)
+                  </span>
+                  <button
+                    onClick={() => handleCopy(registrationId, 'reg')}
                     style={{
-                      fontFamily: 'monospace',
-                      fontSize: '0.85rem',
-                      color: 'rgba(244, 234, 204, 0.85)',
-                      background: 'rgba(0, 0, 0, 0.55)',
-                      padding: '0.55rem 0.85rem',
-                      borderRadius: '4px',
-                      border: '1px solid rgba(211, 47, 47, 0.25)',
-                      wordBreak: 'break-all',
+                      background: 'transparent',
+                      border: 'none',
+                      color: copiedKey === 'reg' ? '#00e676' : 'rgba(244, 234, 204, 0.8)',
+                      cursor: 'pointer',
+                      fontSize: '0.72rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      padding: 0,
                     }}
                   >
-                    {registrationId}
-                  </div>
+                    {copiedKey === 'reg' ? <Check size={12} /> : <Copy size={12} />}
+                    {copiedKey === 'reg' ? 'Copied' : 'Copy'}
+                  </button>
                 </div>
-              )}
+                <div
+                  style={{
+                    fontFamily: 'monospace',
+                    fontSize: '0.85rem',
+                    color: 'rgba(244, 234, 204, 0.85)',
+                    background: 'rgba(0, 0, 0, 0.55)',
+                    padding: '0.55rem 0.85rem',
+                    borderRadius: '4px',
+                    border: '1px solid rgba(211, 47, 47, 0.25)',
+                    wordBreak: 'break-all',
+                  }}
+                >
+                  {registrationId}
+                </div>
+              </div>
+            )}
+
+            {/* Unique Registration ID */}
+            <div
+              style={{
+                background: 'rgba(0, 230, 118, 0.03)',
+                border: '1px solid rgba(0, 230, 118, 0.3)',
+                borderRadius: '6px',
+                padding: '0.85rem 1rem',
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                <span style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#00e676', fontWeight: 'bold' }}>
+                  Unique Registration ID
+                </span>
+                <button
+                  onClick={() => handleCopy(uniqueRegId, 'unique')}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: copiedKey === 'unique' ? '#00e676' : 'rgba(244, 234, 204, 0.8)',
+                    cursor: 'pointer',
+                    fontSize: '0.72rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem',
+                    padding: 0,
+                  }}
+                >
+                  {copiedKey === 'unique' ? <Check size={12} /> : <Copy size={12} />}
+                  {copiedKey === 'unique' ? 'Copied' : 'Copy'}
+                </button>
+              </div>
+              <div
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: '0.92rem',
+                  fontWeight: '700',
+                  letterSpacing: '1px',
+                  color: '#00e676',
+                  background: 'rgba(0, 0, 0, 0.55)',
+                  padding: '0.55rem 0.85rem',
+                  borderRadius: '4px',
+                  border: '1px solid rgba(0, 230, 118, 0.3)',
+                  wordBreak: 'break-all',
+                }}
+              >
+                {uniqueRegId}
+              </div>
             </div>
           </div>
+        </div>
         </motion.div>
 
         {/* Action Buttons: Mandatory Form, Download PDF & Back Home */}
