@@ -1,0 +1,20 @@
+{
+  "name": "SPECTRUM 1.0 - Technical and Cultural Fest",
+  "short_name": "Spectrum 1.0",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#080808",
+  "background_color": "#080808",
+  "display": "standalone",
+  "start_url": "/"
+}
