@@ -609,7 +609,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                       textTransform: 'uppercase',
                     }}
                   >
-                    Campus Accommodation Needed? <span style={{ color: 'var(--color-neon-cyan)' }}>*</span>
+                    Restroom Needed? <span style={{ color: 'var(--color-neon-cyan)' }}>*</span>
                   </label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                     <button
@@ -683,7 +683,7 @@ const TeamRegModal = ({ onClose, initialEventId }) => {
                     </button>
                   </div>
                   <div style={{ fontSize: '0.72rem', color: 'rgba(244, 234, 204, 0.55)', marginTop: '0.35rem' }}>
-                    Campus hostel accommodation & meals are provided by GNDEC for hackathon participants.
+                    Campus rest room facilities & meals are provided by GNDEC for hackathon participants.
                   </div>
                 </div>
               )}
