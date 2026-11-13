@@ -5,6 +5,21 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useScrollLock, unlockScroll } from '../hooks/useScrollLock';
 import AddToCalendarButton from './AddToCalendarButton';
 
+const renderFormattedText = (text) => {
+  if (typeof text !== 'string') return text;
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={index} style={{ color: 'var(--color-star-white)', fontWeight: 700 }}>
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return part;
+  });
+};
+
 const EventRulesModal = ({ event, onClose }) => {
   useScrollLock(true);
   const navigate = useNavigate();
@@ -256,7 +271,7 @@ const EventRulesModal = ({ event, onClose }) => {
               <ShieldCheck size={16} color="var(--color-neon-cyan)" /> Overview
             </h3>
             <p style={{ color: 'rgba(244, 234, 204, 0.75)', fontSize: '0.9rem', lineHeight: '1.6', margin: 0 }}>
-              {event.description}
+              {renderFormattedText(event.description)}
             </p>
           </div>
 
