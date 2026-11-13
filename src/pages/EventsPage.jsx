@@ -376,7 +376,7 @@ const EventsPage = ({ isEmbedded = false }) => {
             transition={{ duration: 0.6, ease: "easeOut" }}
             style={{ width: '100%' }}
           >
-            <GlassCard style={{ textAlign: 'center', padding: 'clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 3.5vw, 2.5rem)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <GlassCard style={{ textAlign: 'center', padding: 'clamp(1.75rem, 5vw, 3.5rem) clamp(1rem, 3.5vw, 2.5rem)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ display: 'inline-block', padding: '0.35rem 1rem', background: 'rgba(211, 47, 47, 0.15)', border: '1px solid rgba(211, 47, 47, 0.4)', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '700', letterSpacing: '0.12em', color: 'var(--color-bright-crimson)', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
                   Flagship Technical Event
@@ -421,36 +421,46 @@ const EventsPage = ({ isEmbedded = false }) => {
                     REGISTER FOR HACKATHON
                   </NeonButton>
 
-                  <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(135px, 1fr))',
+                      gap: '0.65rem',
+                      width: '100%',
+                      boxSizing: 'border-box',
+                    }}
+                  >
                     <button
                       id="events-hackathon-rules-btn"
                       onClick={() => setSelectedRuleEvent(technicalEvents[0])}
                       style={{
-                        flex: 1,
-                        padding: '0.75rem 1rem',
+                        width: '100%',
+                        padding: '0.65rem 0.65rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '0.45rem',
+                        gap: '0.4rem',
                         border: '1px solid var(--color-neon-cyan)',
                         borderRadius: '4px',
                         backgroundColor: 'transparent',
                         color: 'var(--color-star-white)',
                         fontFamily: 'var(--font-primary)',
                         fontWeight: 'bold',
-                        fontSize: '0.85rem',
-                        letterSpacing: '0.08em',
+                        fontSize: 'clamp(0.75rem, 2vw, 0.82rem)',
+                        letterSpacing: '0.06em',
                         cursor: 'pointer',
                         transition: 'all 0.25s ease',
+                        boxSizing: 'border-box',
+                        whiteSpace: 'nowrap',
                       }}
                       onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(211, 47, 47, 0.15)'; }}
                       onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                     >
-                      <Eye size={16} />
+                      <Eye size={15} />
                       Rules & Details
                     </button>
 
-                    <div style={{ flex: 1 }}>
+                    <div style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
                       <AddToCalendarButton event={technicalEvents[0]} variant="compact" />
                     </div>
                   </div>
