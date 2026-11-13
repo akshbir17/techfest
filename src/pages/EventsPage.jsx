@@ -356,7 +356,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       )}
 
       {!SHOW_ALL_EVENTS ? (
-        <div className="mb-20 w-full max-w-2xl mx-auto px-4">
+        <div style={{ width: '100%', maxWidth: '980px', margin: '0 auto 5rem auto', padding: '0 1rem' }}>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -374,39 +374,40 @@ const EventsPage = ({ isEmbedded = false }) => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6, ease: "easeOut" }}
+            style={{ width: '100%' }}
           >
-            <GlassCard style={{ textAlign: 'center', padding: 'clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 3vw, 2rem)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <GlassCard style={{ textAlign: 'center', padding: 'clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 3.5vw, 2.5rem)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ display: 'inline-block', padding: '0.35rem 1rem', background: 'rgba(211, 47, 47, 0.15)', border: '1px solid rgba(211, 47, 47, 0.4)', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '700', letterSpacing: '0.12em', color: 'var(--color-bright-crimson)', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
                   Flagship Technical Event
                 </div>
 
                 <h2 className="text-3xl md:text-4xl font-extrabold mb-3" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-star-white)', letterSpacing: '0.05em' }}>
-                  24-Hour Hackathon
+                  Hackathon Participation
                 </h2>
                 
-                <p className="mb-6 font-light leading-relaxed max-w-lg" style={{ color: 'rgba(244, 234, 204, 0.8)', fontSize: '0.95rem' }}>
+                <p className="mb-6 font-light leading-relaxed max-w-xl" style={{ color: 'rgba(244, 234, 204, 0.8)', fontSize: '1rem', minHeight: '3rem' }}>
                   Register your team for the flagship 24-Hour Hackathon. Build breakthrough solutions, collaborate with peers, and compete for victory.
                 </p>
 
                 {/* Highlights Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem', width: '100%', marginBottom: '2rem', textAlign: 'left' }}>
-                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.75rem 0.9rem' }}>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Prize Pool</div>
-                    <div style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--color-star-white)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>₹40,000</div>
-                    <div style={{ fontSize: '0.72rem', color: 'rgba(244, 234, 204, 0.6)' }}>Cash prizes + trophies</div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.85rem', width: '100%', marginBottom: '2.25rem', textAlign: 'left' }}>
+                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Prize Pool</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-star-white)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>₹40,000</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>Cash prizes + trophies</div>
                   </div>
 
-                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.75rem 0.9rem' }}>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Team Size</div>
-                    <div style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--color-star-white)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>2 – 4 Members</div>
-                    <div style={{ fontSize: '0.72rem', color: 'rgba(244, 234, 204, 0.6)' }}>Inter-college welcome</div>
+                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Team Size</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-star-white)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>2 – 4 Members</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>Inter-college welcome</div>
                   </div>
 
-                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.75rem 0.9rem' }}>
-                    <div style={{ fontSize: '0.7rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Registration Fee</div>
-                    <div style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--color-bright-crimson)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>₹500 / Team</div>
-                    <div style={{ fontSize: '0.72rem', color: 'rgba(244, 234, 204, 0.6)' }}>Stay & meals included</div>
+                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Registration Fee</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-bright-crimson)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>₹500 / Team</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>Stay & meals included</div>
                   </div>
                 </div>
 
