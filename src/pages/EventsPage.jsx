@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from '../components/ui/GlassCard';
+import NeonButton from '../components/ui/NeonButton';
+import TeamRegModal from '../components/sections/TeamRegModal';
 import { Calendar, Users, Eye } from 'lucide-react';
 import EventRulesModal from '../components/EventRulesModal';
 import AddToCalendarButton from '../components/AddToCalendarButton';
@@ -104,6 +106,7 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
 
 const EventsPage = ({ isEmbedded = false }) => {
   const [selectedRuleEvent, setSelectedRuleEvent] = useState(null);
+  const [showTeamModal, setShowTeamModal] = useState(false);
   
 
   useEffect(() => {
@@ -352,14 +355,105 @@ const EventsPage = ({ isEmbedded = false }) => {
         </motion.div>
       )}
 
-      <EventCategory
-        title="Technical Events"
-        events={SHOW_ALL_EVENTS ? technicalEvents : technicalEvents.filter((e) => e.id === 'hackathon')}
-        delay={0.2}
-        onOpenRules={(event) => setSelectedRuleEvent(event)}
-      />
-      {SHOW_ALL_EVENTS && (
+      {!SHOW_ALL_EVENTS ? (
+        <div className="mb-20 w-full max-w-4xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <GlassCard style={{ textAlign: 'center', padding: 'clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 3.5vw, 2.5rem)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ display: 'inline-block', padding: '0.35rem 1rem', background: 'rgba(211, 47, 47, 0.15)', border: '1px solid rgba(211, 47, 47, 0.4)', borderRadius: '20px', fontSize: '0.78rem', fontWeight: '700', letterSpacing: '0.12em', color: 'var(--color-bright-crimson)', textTransform: 'uppercase', marginBottom: '1.25rem' }}>
+                  Flagship Technical Event
+                </div>
+
+                <h2 className="text-3xl md:text-4xl font-extrabold mb-3" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-star-white)', letterSpacing: '0.05em' }}>
+                  24-Hour Hackathon
+                </h2>
+                
+                <p className="mb-6 font-light leading-relaxed max-w-xl" style={{ color: 'rgba(244, 234, 204, 0.8)', fontSize: '1rem' }}>
+                  Register your team for the flagship 24-Hour Hackathon. Build breakthrough solutions, collaborate with peers, and compete for victory.
+                </p>
+
+                {/* Highlights Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.85rem', width: '100%', marginBottom: '2.25rem', textAlign: 'left' }}>
+                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Prize Pool</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-star-white)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>Revealing Soon</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>Cash prizes + trophies</div>
+                  </div>
+
+                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Team Size</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-star-white)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>2 – 4 Members</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>Inter-college welcome</div>
+                  </div>
+
+                  <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Registration Fee</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-bright-crimson)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>₹500 / Team</div>
+                    <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>Stay & meals included</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%', maxWidth: '380px' }}>
+                  <NeonButton
+                    id="events-hackathon-register-btn"
+                    type="button"
+                    style={{ width: '100%', padding: '1rem 2rem', fontSize: '1rem' }}
+                    onClick={() => setShowTeamModal(true)}
+                  >
+                    REGISTER FOR HACKATHON
+                  </NeonButton>
+
+                  <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
+                    <button
+                      id="events-hackathon-rules-btn"
+                      onClick={() => setSelectedRuleEvent(technicalEvents[0])}
+                      style={{
+                        flex: 1,
+                        padding: '0.75rem 1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.45rem',
+                        border: '1px solid var(--color-neon-cyan)',
+                        borderRadius: '4px',
+                        backgroundColor: 'transparent',
+                        color: 'var(--color-star-white)',
+                        fontFamily: 'var(--font-primary)',
+                        fontWeight: 'bold',
+                        fontSize: '0.85rem',
+                        letterSpacing: '0.08em',
+                        cursor: 'pointer',
+                        transition: 'all 0.25s ease',
+                      }}
+                      onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(211, 47, 47, 0.15)'; }}
+                      onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+                    >
+                      <Eye size={16} />
+                      Rules & Details
+                    </button>
+
+                    <div style={{ flex: 1 }}>
+                      <AddToCalendarButton event={technicalEvents[0]} variant="compact" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </GlassCard>
+          </motion.div>
+        </div>
+      ) : (
         <>
+          <EventCategory
+            title="Technical Events"
+            events={technicalEvents}
+            delay={0.2}
+            onOpenRules={(event) => setSelectedRuleEvent(event)}
+          />
           <EventCategory
             title="Creative Events"
             events={creativeEvents}
@@ -377,15 +471,26 @@ const EventsPage = ({ isEmbedded = false }) => {
 
       {/* Modals portalled to document.body so they stay above all stacking contexts */}
       {typeof document !== 'undefined' && createPortal(
-        <AnimatePresence>
-          {selectedRuleEvent && (
-            <EventRulesModal
-              key="rules-modal"
-              event={selectedRuleEvent}
-              onClose={() => setSelectedRuleEvent(null)}
-            />
-          )}
-        </AnimatePresence>,
+        <>
+          <AnimatePresence>
+            {selectedRuleEvent && (
+              <EventRulesModal
+                key="rules-modal"
+                event={selectedRuleEvent}
+                onClose={() => setSelectedRuleEvent(null)}
+              />
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {showTeamModal && (
+              <TeamRegModal
+                key="hackathon-modal"
+                initialEventId="hackathon"
+                onClose={() => setShowTeamModal(false)}
+              />
+            )}
+          </AnimatePresence>
+        </>,
         document.body
       )}
 
