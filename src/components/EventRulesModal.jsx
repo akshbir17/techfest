@@ -362,62 +362,64 @@ const EventRulesModal = ({ event, onClose }) => {
 
           <div className="rules-modal-actions">
             <AddToCalendarButton event={event} variant="modal" />
-            <button
-              onClick={onClose}
-              style={{
-                padding: '0.75rem 1.25rem',
-                background: 'transparent',
-                border: '1px solid rgba(244, 234, 204, 0.25)',
-                color: 'var(--color-star-white)',
-                borderRadius: '4px',
-                fontFamily: 'var(--font-primary)',
-                fontWeight: '600',
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseOver={(e) => { e.currentTarget.style.borderColor = 'rgba(244, 234, 204, 0.6)'; }}
-              onMouseOut={(e) => { e.currentTarget.style.borderColor = 'rgba(244, 234, 204, 0.25)'; }}
-            >
-              Close
-            </button>
+            <div className="rules-modal-actions-btns">
+              <button
+                onClick={onClose}
+                style={{
+                  padding: '0.75rem 1.25rem',
+                  background: 'transparent',
+                  border: '1px solid rgba(244, 234, 204, 0.25)',
+                  color: 'var(--color-star-white)',
+                  borderRadius: '4px',
+                  fontFamily: 'var(--font-primary)',
+                  fontWeight: '600',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.borderColor = 'rgba(244, 234, 204, 0.6)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.borderColor = 'rgba(244, 234, 204, 0.25)'; }}
+              >
+                Close
+              </button>
 
-            <button
-              id={`rules-goto-reg-btn-${event.id || 'btn'}`}
-              onClick={handleGoToRegistration}
-              style={{
-                padding: '0.75rem 1.4rem',
-                background: 'var(--color-neon-cyan)',
-                border: '1px solid var(--color-neon-cyan)',
-                color: 'var(--color-space-black)',
-                borderRadius: '4px',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: '800',
-                fontSize: '0.85rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.4rem',
-                boxShadow: '3px 3px 0px 0px rgba(244, 234, 204, 0.4)',
-                transition: 'all 0.2s',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translateY(-1px) translateX(-1px)';
-                e.currentTarget.style.boxShadow = '5px 5px 0px 0px rgba(244, 234, 204, 0.4)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.boxShadow = '3px 3px 0px 0px rgba(244, 234, 204, 0.4)';
-              }}
-            >
-              Go to Registration
-              <ArrowRight size={16} />
-            </button>
+              <button
+                id={`rules-goto-reg-btn-${event.id || 'btn'}`}
+                onClick={handleGoToRegistration}
+                style={{
+                  padding: '0.75rem 1.2rem',
+                  background: 'var(--color-neon-cyan)',
+                  border: '1px solid var(--color-neon-cyan)',
+                  color: 'var(--color-space-black)',
+                  borderRadius: '4px',
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: '800',
+                  fontSize: '0.85rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                  boxShadow: '3px 3px 0px 0px rgba(244, 234, 204, 0.4)',
+                  transition: 'all 0.2s',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-1px) translateX(-1px)';
+                  e.currentTarget.style.boxShadow = '5px 5px 0px 0px rgba(244, 234, 204, 0.4)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.boxShadow = '3px 3px 0px 0px rgba(244, 234, 204, 0.4)';
+                }}
+              >
+                Register
+                <ArrowRight size={16} />
+              </button>
+            </div>
           </div>
         </div>
       </motion.div>
