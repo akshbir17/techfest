@@ -16,8 +16,8 @@ const HeroSection = () => {
           style={{ marginBottom: '1rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
           <span className="hero-subtitle">
-            GURU NANAK DEV ENGINEERING COLLEGE BIDAR
-            <span style={{ display: 'block', fontSize: '0.74em', letterSpacing: '0.24em', opacity: 0.85, marginTop: '0.35rem' }}>
+            <span style={{ color: '#F4EACC' }}>GURU NANAK DEV ENGINEERING COLLEGE BIDAR</span>
+            <span style={{ display: 'block', fontSize: '0.74em', letterSpacing: '0.24em', color: '#D4AF37', marginTop: '0.35rem', fontWeight: 800, textShadow: '0 1px 8px rgba(0, 0, 0, 0.95), 0 0 12px rgba(212, 175, 55, 0.5)' }}>
               PRESENTS
             </span>
           </span>
@@ -29,7 +29,8 @@ const HeroSection = () => {
           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
           transition={{ duration: 1.5, delay: 0.4, ease: "easeOut" }}
         >
-          <span className="text-gradient">SPECTRUM</span> 1.0
+          <span className="text-gradient" style={{ color: '#D32F2F', textShadow: '0 0 25px rgba(211, 47, 47, 0.75), 0 0 50px rgba(183, 28, 28, 0.5)' }}>SPECTRUM</span>{' '}
+          <span style={{ color: '#F4EACC', textShadow: '0 0 20px rgba(244, 234, 204, 0.35)' }}>1.0</span>
         </motion.h1>
 
         {/* Organizing Bodies */}
@@ -40,12 +41,12 @@ const HeroSection = () => {
           style={{ marginBottom: '1.75rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
           <p className="hero-organized-by">
-            Organized By
+            ORGANIZED BY
           </p>
 
           <div className="hero-departments">
             <div className="hero-dept-item" style={{ maxWidth: '520px' }}>
-              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35', textAlign: 'center' }}>
+              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35', textAlign: 'center', color: '#F4EACC' }}>
                 GURU NANAK JHIRA ENTREPRENEURSHIP<br />
                 RESEARCH AND BUSINESS INCUBATION<br />
                 FOUNDATION
@@ -56,12 +57,12 @@ const HeroSection = () => {
                   fontSize: 'clamp(1.15rem, 3.4vw, 1.45rem)',
                   fontWeight: '900',
                   letterSpacing: '0.1em',
-                  color: 'var(--color-neon-cyan)',
+                  color: '#D32F2F',
                   marginTop: '0.4rem',
                   textTransform: 'uppercase',
                   lineHeight: '1.25',
                   textAlign: 'center',
-                  textShadow: '0 2px 12px rgba(0, 0, 0, 0.95), 0 0 16px rgba(0, 240, 255, 0.65)',
+                  textShadow: '0 2px 12px rgba(0, 0, 0, 0.95), 0 0 18px rgba(211, 47, 47, 0.75)',
                 }}
               >
                 NIDHI DST iTBI CENTER
@@ -73,7 +74,7 @@ const HeroSection = () => {
             </span>
 
             <div className="hero-dept-item" style={{ maxWidth: '380px' }}>
-              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35' }}>
+              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35', color: '#F4EACC' }}>
                 INSTITUTION INNOVATION COUNCIL
               </div>
             </div>
@@ -88,12 +89,12 @@ const HeroSection = () => {
           style={{ marginBottom: '2rem', width: '100%', maxWidth: '100%', padding: '0 0.5rem' }}
         >
           <p className="hero-organized-by">
-            In Association With
+            IN ASSOCIATION WITH
           </p>
 
           <div className="hero-departments">
             <div className="hero-dept-item">
-              <div className="hero-dept-title">
+              <div className="hero-dept-title" style={{ color: '#F4EACC' }}>
                 DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING
               </div>
               <div className="hero-dept-sub">
@@ -106,7 +107,7 @@ const HeroSection = () => {
             </span>
 
             <div className="hero-dept-item">
-              <div className="hero-dept-title">
+              <div className="hero-dept-title" style={{ color: '#F4EACC' }}>
                 DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING
               </div>
               <div className="hero-dept-sub">
