@@ -3,6 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useScrollLock } from '../hooks/useScrollLock';
 
+// Set to true when schedule is ready to be displayed
+const SHOW_SCHEDULE = false;
+
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -124,12 +127,14 @@ const Navbar = () => {
             THEMES
           </button>
 
-          <button 
-            className="nav-link"
-            onClick={() => scrollTo('schedule')}
-          >
-            SCHEDULE
-          </button>
+          {SHOW_SCHEDULE && (
+            <button 
+              className="nav-link"
+              onClick={() => scrollTo('schedule')}
+            >
+              SCHEDULE
+            </button>
+          )}
 
           <button 
             className="nav-link"

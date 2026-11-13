@@ -9,6 +9,9 @@ import CoordinatorsSection from '../components/sections/CoordinatorsSection';
 import RegistrationSection from '../components/sections/RegistrationSection';
 import ContactSection from '../components/sections/ContactSection';
 
+// Set to true when schedule is ready to be displayed
+const SHOW_SCHEDULE = false;
+
 const HomePage = () => {
   const location = useLocation();
 
@@ -48,7 +51,7 @@ const HomePage = () => {
       {/* Scroll 2nd shows events */}
       <EventsPage isEmbedded={true} />
       <ThemesSection />
-      <ScheduleSection />
+      {SHOW_SCHEDULE && <ScheduleSection />}
       <CoordinatorsSection />
       <RegistrationSection />
       <ContactSection />
