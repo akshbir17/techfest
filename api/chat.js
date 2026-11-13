@@ -23,7 +23,7 @@ EVENT CATALOG & PRIZES:
    - Fee: ₹500 per team (2–4 members).
    - Time: Starts Dec 9 at 12:00 PM (noon) and ends Dec 10 at 12:30 PM.
    - Perks: Free college meals (lunch, dinner, breakfast) & overnight campus accommodation provided!
-   - Prizes: Revealing Soon.
+   - Prizes: ₹40,000 Cash Prize Pool + Trophies & Certificates.
 2. TECHQUIZ (Technical):
    - Fee: ₹300 per team (1–3 members).
    - Day 1 (Dec 8): Round 1 at 1:00 PM – 2:00 PM, Round 2 at 4:00 PM – 5:00 PM.

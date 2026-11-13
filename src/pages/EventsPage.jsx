@@ -126,7 +126,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       teamSize: '2 to 4 Members',
       date: '9th to 10th Dec 2026',
       venue: 'CSE Advanced Computing Lab',
-      prize: 'Revealing Soon',
+      prize: '₹40,000',
       description: 'Flagship event — build something amazing in 24 hours of rapid innovation & coding. Kickoff at 12:00 PM on 9 Dec, Evaluation at 12:30 PM on 10 Dec. College-provided lunch, dinner, breakfast & accommodation included.',
       rules: [
         'Teams must consist of 2 to 4 members. Inter-college and inter-branch teams are fully permitted.',
@@ -381,7 +381,7 @@ const EventsPage = ({ isEmbedded = false }) => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.85rem', width: '100%', marginBottom: '2.25rem', textAlign: 'left' }}>
                   <div style={{ background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(244, 234, 204, 0.15)', borderRadius: '6px', padding: '0.85rem 1rem' }}>
                     <div style={{ fontSize: '0.72rem', color: 'var(--color-neon-cyan)', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 'bold' }}>Prize Pool</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-star-white)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>Revealing Soon</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-star-white)', fontFamily: 'var(--font-heading)', marginTop: '0.2rem' }}>₹40,000</div>
                     <div style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.6)' }}>Cash prizes + trophies</div>
                   </div>
 

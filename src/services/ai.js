@@ -13,7 +13,7 @@ const getOfflineResponse = (query) => {
 
   // Hackathon
   if (q.includes('hackathon') || q.includes('24 hour') || q.includes('coding')) {
-    return "The 24-Hour Hackathon runs from Dec 9, 12:00 PM to Dec 10, 12:30 PM. Team size: 2–4 members (₹500/team). Food & overnight accommodation are provided! Prizes are Revealing Soon.";
+    return "The 24-Hour Hackathon runs from Dec 9, 12:00 PM to Dec 10, 12:30 PM. Team size: 2–4 members (₹500/team). Food & overnight accommodation are provided! Prize Pool is ₹40,000 cash prizes + trophies & certificates.";
   }
 
   // BGMI / PUBG
