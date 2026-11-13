@@ -276,8 +276,8 @@ const generalGuidelines = [
   },
   {
     icon: Building,
-    title: 'Accommodation Facilities',
-    description: 'Food and accommodation for the 24-hour hackathon will be arranged and provided on campus by the college.',
+    title: 'Rest Room Facilities',
+    description: 'Food and dedicated rest room facilities for the 24-hour hackathon will be arranged and provided on campus by the college.',
   },
   {
     icon: Gamepad2,

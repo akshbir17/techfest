@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Flame, Gamepad2, UtensilsCrossed, BedDouble, Sparkles } from 'lucide-react';
+import { Flame, UtensilsCrossed, Building2, Sparkles } from 'lucide-react';
 
 const highlights = [
   {
@@ -9,19 +9,14 @@ const highlights = [
     description: 'Our flagship event, where teams collaborate, build innovative solutions, and turn ideas into reality through coding, creativity, and problem-solving.',
   },
   {
-    icon: Gamepad2,
-    title: 'Gaming Competitions',
-    description: 'Put your gaming skills to the test, challenge fellow participants, and compete for victory.',
-  },
-  {
     icon: UtensilsCrossed,
     title: 'Stalls & Canteen Facilities',
     description: 'Explore various stalls and enjoy food, refreshments, and a lively event atmosphere.',
   },
   {
-    icon: BedDouble,
-    title: 'Accommodation Facilities',
-    description: 'Accommodation will be available for participants travelling from outside the local area. Contact the organising team for availability and booking details.',
+    icon: Building2,
+    title: 'Rest Room Facilities',
+    description: 'Rest room and refreshment facilities will be provided on campus for all participants.',
   },
 ];
 
@@ -75,7 +70,7 @@ const AboutSection = () => {
             <strong style={{ color: 'var(--color-neon-cyan)' }}>Spectrum 1.0</strong> is a college-level technical and cultural event centred around innovation, creativity, and problem-solving. At the heart of the event is our <strong style={{ color: 'var(--color-neon-cyan)' }}>Hackathon</strong>—an opportunity for aspiring developers, innovators, and tech enthusiasts to collaborate, transform ideas into solutions, and showcase their technical skills.
           </p>
           <p className="about-intro-text" style={{ marginTop: '1rem' }}>
-            Alongside the hackathon, Spectrum 1.0 features exciting gaming competitions, interactive activities, and engaging experiences that bring students together in a vibrant atmosphere of technology, teamwork, and entertainment.
+            Alongside the hackathon, Spectrum 1.0 features interactive activities, creative technical challenges, and engaging experiences that bring students together in a vibrant atmosphere of technology, teamwork, and innovation.
           </p>
         </motion.div>
 
