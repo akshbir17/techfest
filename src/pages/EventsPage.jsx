@@ -383,7 +383,7 @@ const EventsPage = ({ isEmbedded = false }) => {
                 </div>
 
                 <h2 className="text-3xl md:text-4xl font-extrabold mb-3" style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-star-white)', letterSpacing: '0.05em' }}>
-                  Hackathon Participation
+                  24-Hour Hackathon
                 </h2>
                 
                 <p className="mb-6 font-light leading-relaxed max-w-xl" style={{ color: 'rgba(244, 234, 204, 0.8)', fontSize: '1rem', minHeight: '3rem' }}>
