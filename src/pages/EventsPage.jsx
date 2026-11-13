@@ -16,6 +16,9 @@ const formatPrice = (price) => {
   return `₹${cleaned}`;
 };
 
+// Set to true to reveal all fest events (TechQuiz, Photography, Games)
+const SHOW_ALL_EVENTS = false;
+
 const EventCategory = ({ title, events, delay, onOpenRules }) => {
   return (
     <div className="mb-20 w-full max-w-6xl mx-auto">
@@ -351,22 +354,26 @@ const EventsPage = ({ isEmbedded = false }) => {
 
       <EventCategory
         title="Technical Events"
-        events={technicalEvents}
+        events={SHOW_ALL_EVENTS ? technicalEvents : technicalEvents.filter((e) => e.id === 'hackathon')}
         delay={0.2}
         onOpenRules={(event) => setSelectedRuleEvent(event)}
       />
-      <EventCategory
-        title="Creative Events"
-        events={creativeEvents}
-        delay={0.4}
-        onOpenRules={(event) => setSelectedRuleEvent(event)}
-      />
-      <EventCategory
-        title="Games & Fun"
-        events={gamesEvents}
-        delay={0.6}
-        onOpenRules={(event) => setSelectedRuleEvent(event)}
-      />
+      {SHOW_ALL_EVENTS && (
+        <>
+          <EventCategory
+            title="Creative Events"
+            events={creativeEvents}
+            delay={0.4}
+            onOpenRules={(event) => setSelectedRuleEvent(event)}
+          />
+          <EventCategory
+            title="Games & Fun"
+            events={gamesEvents}
+            delay={0.6}
+            onOpenRules={(event) => setSelectedRuleEvent(event)}
+          />
+        </>
+      )}
 
       {/* Modals portalled to document.body so they stay above all stacking contexts */}
       {typeof document !== 'undefined' && createPortal(
