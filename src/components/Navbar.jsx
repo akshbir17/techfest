@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -8,12 +9,15 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Prevent background scrolling and pause Lenis while mobile menu is open
+  useScrollLock(isMenuOpen);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
     
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -29,15 +33,18 @@ const Navbar = () => {
     if (location.pathname !== '/') {
       navigate(`/#${id}`);
     } else {
-      const el = document.getElementById(id);
-      if (el) {
-        if (window.lenis) {
-          window.lenis.resize();
-          window.lenis.scrollTo(el, { offset: -70 });
-        } else {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (window.lenis) {
+            window.lenis.start();
+            window.lenis.resize();
+            window.lenis.scrollTo(el, { offset: -70 });
+          } else {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         }
-      }
+      }, 40);
     }
   };
 
@@ -82,8 +89,15 @@ const Navbar = () => {
             to="/" 
             className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
             onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
               setIsMenuOpen(false);
+              setTimeout(() => {
+                if (window.lenis) {
+                  window.lenis.start();
+                  window.lenis.scrollTo(0, { immediate: false });
+                } else {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }, 40);
             }}
           >
             HOME
