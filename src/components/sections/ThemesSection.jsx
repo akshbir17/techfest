@@ -215,31 +215,7 @@ const ThemesSection = () => {
                       </p>
                     </div>
 
-                    {/* Winning Project Ideas Section */}
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.78rem', fontWeight: '800', letterSpacing: '0.1em', color: 'var(--color-star-white)', textTransform: 'uppercase', marginBottom: '0.85rem' }}>
-                        <Lightbulb size={16} color="var(--color-bright-crimson)" /> Winning Project Ideas
-                      </div>
-
-                      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        {theme.ideas.map((idea, idx) => (
-                          <li 
-                            key={idx} 
-                            style={{ 
-                              display: 'flex', 
-                              alignItems: 'flex-start', 
-                              gap: '0.65rem', 
-                              fontSize: '0.86rem', 
-                              color: 'rgba(244, 234, 204, 0.75)', 
-                              lineHeight: '1.5' 
-                            }}
-                          >
-                            <CheckCircle2 size={16} color={theme.accentColor} style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-                            <span>{idea}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    {/* Winning Project Ideas Section - Hidden */}
                   </div>
                 </GlassCard>
               </motion.div>
