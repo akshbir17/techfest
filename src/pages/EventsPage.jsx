@@ -464,6 +464,16 @@ const EventsPage = ({ isEmbedded = false }) => {
                   <div style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
                     <AddToCalendarButton event={technicalEvents[0]} variant="compact" />
                   </div>
+
+                  <p style={{
+                    fontSize: '0.8rem',
+                    color: 'rgba(244, 234, 204, 0.7)',
+                    textAlign: 'center',
+                    margin: '0.5rem 0 0 0',
+                    lineHeight: '1.5',
+                  }}>
+                    Note: Registrations will close on <strong style={{ color: 'var(--color-bright-crimson)' }}>29th November</strong>. Make sure to complete your registration before the deadline!
+                  </p>
                 </div>
               </div>
             </GlassCard>
