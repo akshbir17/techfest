@@ -411,7 +411,7 @@ const EventsPage = ({ isEmbedded = false }) => {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%', maxWidth: '380px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.85rem', width: '100%', maxWidth: '380px' }}>
                   <NeonButton
                     id="events-hackathon-register-btn"
                     type="button"
@@ -421,48 +421,48 @@ const EventsPage = ({ isEmbedded = false }) => {
                     REGISTER FOR HACKATHON
                   </NeonButton>
 
-                  <div
+                  <button
+                    id="events-hackathon-rules-btn"
+                    type="button"
+                    onClick={() => setSelectedRuleEvent(technicalEvents[0])}
                     style={{
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(135px, 1fr))',
-                      gap: '0.65rem',
                       width: '100%',
+                      padding: '0.9rem 1.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.55rem',
+                      border: '1.5px solid var(--color-neon-cyan)',
+                      borderRadius: '4px',
+                      backgroundColor: 'rgba(211, 47, 47, 0.08)',
+                      color: 'var(--color-star-white)',
+                      fontFamily: 'var(--font-heading)',
+                      fontWeight: '700',
+                      fontSize: '0.92rem',
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      cursor: 'pointer',
+                      transition: 'all 0.25s ease',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.35)',
                       boxSizing: 'border-box',
                     }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(211, 47, 47, 0.22)';
+                      e.currentTarget.style.borderColor = 'var(--color-bright-crimson)';
+                      e.currentTarget.style.boxShadow = '0 0 15px rgba(211, 47, 47, 0.35)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(211, 47, 47, 0.08)';
+                      e.currentTarget.style.borderColor = 'var(--color-neon-cyan)';
+                      e.currentTarget.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.35)';
+                    }}
                   >
-                    <button
-                      id="events-hackathon-rules-btn"
-                      onClick={() => setSelectedRuleEvent(technicalEvents[0])}
-                      style={{
-                        width: '100%',
-                        padding: '0.65rem 0.65rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.4rem',
-                        border: '1px solid var(--color-neon-cyan)',
-                        borderRadius: '4px',
-                        backgroundColor: 'transparent',
-                        color: 'var(--color-star-white)',
-                        fontFamily: 'var(--font-primary)',
-                        fontWeight: 'bold',
-                        fontSize: 'clamp(0.75rem, 2vw, 0.82rem)',
-                        letterSpacing: '0.06em',
-                        cursor: 'pointer',
-                        transition: 'all 0.25s ease',
-                        boxSizing: 'border-box',
-                        whiteSpace: 'nowrap',
-                      }}
-                      onMouseOver={(e) => { e.currentTarget.style.backgroundColor = 'rgba(211, 47, 47, 0.15)'; }}
-                      onMouseOut={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
-                    >
-                      <Eye size={15} />
-                      Rules & Details
-                    </button>
+                    <Eye size={18} color="var(--color-neon-cyan)" />
+                    Rules & Details
+                  </button>
 
-                    <div style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
-                      <AddToCalendarButton event={technicalEvents[0]} variant="compact" />
-                    </div>
+                  <div style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+                    <AddToCalendarButton event={technicalEvents[0]} variant="compact" />
                   </div>
                 </div>
               </div>
