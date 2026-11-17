@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sprout, HeartPulse, Leaf, Bot, Target, Lightbulb, CheckCircle2 } from 'lucide-react';
+import { Sprout, HeartPulse, Leaf, Bot, Target, Sparkles, Info } from 'lucide-react';
 import GlassCard from '../ui/GlassCard';
 
 const HACKATHON_THEMES = [
@@ -222,6 +222,107 @@ const ThemesSection = () => {
             );
           })}
         </div>
+
+        {/* Open Innovation Track Box */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-50px" }}
+          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+          style={{ marginTop: '2.5rem', width: '100%' }}
+        >
+          <GlassCard
+            style={{
+              padding: 'clamp(1.5rem, 3.5vw, 2.25rem)',
+              borderRadius: '8px',
+              border: '1px solid rgba(211, 47, 47, 0.45)',
+              background: 'linear-gradient(135deg, rgba(211, 47, 47, 0.08) 0%, rgba(8, 8, 8, 0.9) 100%)',
+              boxShadow: '0 4px 25px rgba(211, 47, 47, 0.15)',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Top glowing accent line */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '2px',
+                background: 'linear-gradient(90deg, transparent, #d32f2f, #f4eacc, #d32f2f, transparent)',
+              }}
+            />
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+              {/* Header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.75rem',
+                    fontWeight: '800',
+                    color: 'var(--color-star-white)',
+                    background: 'rgba(211, 47, 47, 0.25)',
+                    border: '1px solid rgba(211, 47, 47, 0.5)',
+                    padding: '0.2rem 0.65rem',
+                    borderRadius: '4px',
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  TRACK 05
+                </span>
+                <h3
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: 'clamp(1.15rem, 2.2vw, 1.45rem)',
+                    fontWeight: 800,
+                    color: 'var(--color-star-white)',
+                    margin: 0,
+                    letterSpacing: '0.05em',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <Sparkles size={22} color="var(--color-bright-crimson, #d32f2f)" />
+                  OPEN <span className="text-gradient">INNOVATION</span>
+                </h3>
+              </div>
+
+              {/* Description */}
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: '0.95rem',
+                  color: 'rgba(244, 234, 204, 0.88)',
+                  lineHeight: '1.6',
+                }}
+              >
+                Want to work on an idea outside the given themes? You can do that! First, select any one of the four themes during registration. You can then work on your own idea under Open Innovation.
+              </p>
+
+              {/* Note Callout */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '0.65rem',
+                  padding: '0.75rem 1.1rem',
+                  background: 'rgba(211, 47, 47, 0.1)',
+                  border: '1px solid rgba(211, 47, 47, 0.35)',
+                  borderRadius: '6px',
+                  marginTop: '0.35rem',
+                }}
+              >
+                <Info size={18} color="var(--color-bright-crimson, #d32f2f)" style={{ flexShrink: 0, marginTop: '0.15rem' }} />
+                <p style={{ margin: 0, fontSize: '0.88rem', color: 'rgba(244, 234, 204, 0.85)', lineHeight: '1.5' }}>
+                  <strong style={{ color: 'var(--color-star-white)' }}>Note:</strong> Please confirm your Open Innovation choice at the Help Desk on the day of the hackathon.
+                </p>
+              </div>
+            </div>
+          </GlassCard>
+        </motion.div>
 
       </div>
     </section>
