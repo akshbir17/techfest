@@ -481,7 +481,7 @@ const RegistrationSuccessPage = () => {
         {
           num: '1',
           title: 'Entry Gate',
-          desc: 'GNDEC Bidar Main Gate. Reporting begins at 8:30 AM on Day 1.',
+          desc: 'Entry Gate 1, GNDEC Bidar Main Gate. Reporting timings will be informed in the WhatsApp group.',
         },
         {
           num: '2',
