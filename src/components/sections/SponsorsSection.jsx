@@ -6,36 +6,12 @@ import GlassCard from '../ui/GlassCard';
 // Official sponsors list for SPECTRUM 1.0
 const SPONSORS_LIST = [
   {
-    id: 'dst-nidhi',
-    name: 'DST NIDHI',
-    category: 'Startup Support',
-    description: 'Start-To-Scale Startup Support',
-    logo: '/sponsors/dst-nidhi.png',
-    featured: true,
-  },
-  {
-    id: 'gnjerbi',
-    name: 'GNJERBI Foundation',
-    category: 'Incubation Partner',
-    description: 'Research & Business Incubation',
-    logo: '/sponsors/gnjerbi-foundation.jpg',
-    featured: true,
-  },
-  {
-    id: 'iic',
-    name: "Institution's Innovation Council",
-    category: 'Innovation Partner',
-    description: 'Ministry of Education / HRD Initiative',
-    logo: '/sponsors/iic.jpg',
-    featured: true,
-  },
-  {
     id: 'sv-traders',
     name: 'SV Traders',
     category: 'Associate Sponsor',
     description: 'Prop: Veeresh B.',
     logo: '/sponsors/sv-traders.jpg',
-    featured: false,
+    featured: true,
   },
 ];
 
@@ -75,11 +51,13 @@ const SponsorsSection = ({ sponsors = SPONSORS_LIST }) => {
           </p>
         </motion.div>
 
-        {/* 4-Box Sponsors Grid */}
+        {/* Sponsors Grid / Cards */}
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'stretch',
+            flexWrap: 'wrap',
             gap: '1.75rem',
             width: '100%',
           }}
@@ -93,7 +71,7 @@ const SponsorsSection = ({ sponsors = SPONSORS_LIST }) => {
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
                 whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                style={{ height: '100%' }}
+                style={{ width: '100%', maxWidth: '340px' }}
               >
                 <GlassCard
                   style={{
