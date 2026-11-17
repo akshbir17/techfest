@@ -33,7 +33,7 @@ const RegistrationSuccessPage = () => {
   const queryTeamName = searchParams.get('team') || '';
   const queryAmount = searchParams.get('amount') || '';
   const queryTheme = searchParams.get('theme') || '';
-  const queryAccommodation = searchParams.get('accommodation') || searchParams.get('accom') || '';
+  // const queryAccommodation = searchParams.get('accommodation') || searchParams.get('accom') || '';
 
   const [verificationStatus, setVerificationStatus] = useState(
     queryOrderId && queryPaymentId ? 'checking' : 'unverified'
@@ -52,7 +52,7 @@ const RegistrationSuccessPage = () => {
   const teamName = verifiedReg?.teamName ?? queryTeamName;
   const amount = verifiedReg?.amount !== undefined && verifiedReg?.amount !== '' ? String(verifiedReg.amount) : queryAmount;
   const theme = verifiedReg?.theme || queryTheme;
-  const accommodation = verifiedReg?.accommodation || queryAccommodation;
+  // const accommodation = verifiedReg?.accommodation || queryAccommodation;
 
   const eventPrefix = String(eventName || 'SPEC').replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase() || 'SPEC';
   const uniqueRegId =
@@ -346,13 +346,7 @@ const RegistrationSuccessPage = () => {
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(6.6);
         doc.setTextColor(191, 192, 197);
-        const accomText = accommodation ? `  |  ACCOMMODATION: ${accommodation.toUpperCase()}` : '';
-        doc.text(`THEME: ${theme.toUpperCase()}${accomText}`, m + 7, cardY + 38.5);
-      } else if (accommodation) {
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(6.6);
-        doc.setTextColor(191, 192, 197);
-        doc.text(`ACCOMMODATION: ${accommodation.toUpperCase()}`, m + 7, cardY + 38.5);
+        doc.text(`THEME: ${theme.toUpperCase()}`, m + 7, cardY + 38.5);
       }
 
       // Right Zone: Registration Fee & Event Details
@@ -964,24 +958,7 @@ const RegistrationSuccessPage = () => {
                   <span>{theme}</span>
                 </div>
               )}
-              {accommodation && (
-                <div
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.45rem',
-                    padding: '0.35rem 0.85rem',
-                    background: 'rgba(46, 125, 50, 0.15)',
-                    border: '1px solid rgba(46, 125, 50, 0.4)',
-                    borderRadius: '4px',
-                    fontSize: '0.8rem',
-                    color: 'var(--color-star-white, #f4eacc)',
-                  }}
-                >
-                  <span style={{ color: '#4caf50', fontWeight: 800, letterSpacing: '0.05em' }}>ACCOMMODATION:</span>
-                  <span>{accommodation.toUpperCase() === 'YES' ? 'YES (STAY & MEALS INCLUDED)' : 'NO (SELF ARRANGED)'}</span>
-                </div>
-              )}
+              {/* Accommodation badge hidden */}
             </div>
 
             {/* Quick Meta Grid matching Registration Highlights */}
