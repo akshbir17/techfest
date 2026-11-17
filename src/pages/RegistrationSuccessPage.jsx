@@ -491,7 +491,7 @@ const RegistrationSuccessPage = () => {
         {
           num: '3',
           title: 'Hackathon Teams',
-          desc: 'College lunch, dinner, breakfast and overnight accommodation provided.',
+          desc: 'Be ensure with your team members and food, facilities are provided.',
         },
       ];
 
