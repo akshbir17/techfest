@@ -4,6 +4,7 @@ import HeroSection from '../components/sections/HeroSection';
 import AboutSection from '../components/sections/AboutSection';
 import EventsPage from './EventsPage';
 import ThemesSection from '../components/sections/ThemesSection';
+import SponsorsSection from '../components/sections/SponsorsSection';
 import ScheduleSection from '../components/sections/ScheduleSection';
 import CoordinatorsSection from '../components/sections/CoordinatorsSection';
 import RegistrationSection from '../components/sections/RegistrationSection';
@@ -51,6 +52,7 @@ const HomePage = () => {
       {/* Scroll 2nd shows events */}
       <EventsPage isEmbedded={true} />
       <ThemesSection />
+      <SponsorsSection />
       {SHOW_SCHEDULE && <ScheduleSection />}
       <CoordinatorsSection />
       <RegistrationSection />
