@@ -627,16 +627,26 @@ const FindPassModal = ({ isOpen: controlledIsOpen, onClose: controlledOnClose })
                   textAlign: 'center',
                   fontSize: '0.78rem',
                   color: 'rgba(244, 234, 204, 0.6)',
+                  lineHeight: 1.6,
                 }}
               >
-                Need assistance? WhatsApp or call our registration coordinators at{' '}
+                <div>Need assistance? WhatsApp or call our registration coordinators at</div>
                 <a
-                  href="https://wa.me/919481339488"
+                  href="https://wa.me/919833337788"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: 'var(--color-neon-cyan)', textDecoration: 'underline', fontWeight: 600 }}
+                  style={{
+                    display: 'inline-block',
+                    marginTop: '0.25rem',
+                    color: 'var(--color-neon-cyan)',
+                    textDecoration: 'underline',
+                    fontWeight: 700,
+                    whiteSpace: 'nowrap',
+                    fontSize: '0.84rem',
+                    letterSpacing: '0.04em',
+                  }}
                 >
-                  +91 9481339488
+                  +91 9833337788
                 </a>
               </div>
             </div>
