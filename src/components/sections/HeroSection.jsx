@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Ticket } from 'lucide-react';
 import NeonButton from '../ui/NeonButton';
 import LiveCountdownTracker from '../LiveCountdownTracker';
 
@@ -137,7 +138,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.5, ease: "easeOut" }}
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.85rem' }}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.1rem' }}
         >
           <NeonButton onClick={() => {
             const el = document.getElementById('registration');
@@ -152,41 +153,46 @@ const HeroSection = () => {
             ENTER THE REALM
           </NeonButton>
 
-          {/* Already registered retrieve pass pill */}
+          {/* Already registered retrieve pass box button matching red-black site theme */}
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent('open-find-pass'))}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.45rem',
-              padding: '0.45rem 1.15rem',
-              background: 'rgba(0, 243, 255, 0.08)',
-              border: '1px solid rgba(0, 243, 255, 0.35)',
-              borderRadius: '30px',
-              color: 'var(--color-neon-cyan)',
-              fontSize: 'clamp(0.8rem, 1.4vw, 0.88rem)',
-              fontWeight: 600,
-              letterSpacing: '0.04em',
+              gap: '0.55rem',
+              padding: '0.6rem 1.35rem',
+              background: 'rgba(8, 8, 8, 0.92)',
+              border: '1px solid var(--color-neon-cyan)',
+              borderRadius: '4px',
+              color: 'var(--color-star-white)',
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'clamp(0.72rem, 1.25vw, 0.82rem)',
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
               cursor: 'pointer',
-              backdropFilter: 'blur(6px)',
               transition: 'all 0.25s ease',
-              boxShadow: '0 0 12px rgba(0, 243, 255, 0.1)',
+              boxShadow: '4px 4px 0px 0px rgba(211, 47, 47, 0.85)',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(0, 243, 255, 0.18)';
-              e.currentTarget.style.borderColor = 'var(--color-neon-cyan)';
-              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 243, 255, 0.35)';
-              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.background = 'rgba(211, 47, 47, 0.18)';
+              e.currentTarget.style.borderColor = 'var(--color-star-white)';
+              e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(211, 47, 47, 0.95)';
+              e.currentTarget.style.transform = 'translate(-2px, -2px)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(0, 243, 255, 0.08)';
-              e.currentTarget.style.borderColor = 'rgba(0, 243, 255, 0.35)';
-              e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 243, 255, 0.1)';
-              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.background = 'rgba(8, 8, 8, 0.92)';
+              e.currentTarget.style.borderColor = 'var(--color-neon-cyan)';
+              e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(211, 47, 47, 0.85)';
+              e.currentTarget.style.transform = 'translate(0, 0)';
             }}
           >
-            <span>🎫 Already registered? Retrieve Pass</span>
+            <Ticket size={16} color="var(--color-neon-cyan)" style={{ flexShrink: 0 }} />
+            <span>
+              Already Registered?{' '}
+              <span style={{ color: 'var(--color-neon-cyan)' }}>Retrieve Pass</span>
+            </span>
           </button>
         </motion.div>
 

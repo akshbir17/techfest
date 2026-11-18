@@ -167,7 +167,6 @@ const Navbar = () => {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.35rem',
-              color: 'var(--color-neon-cyan)',
             }}
           >
             <Ticket size={15} /> FIND PASS
