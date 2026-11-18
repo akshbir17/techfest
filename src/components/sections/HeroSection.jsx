@@ -137,6 +137,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.5, ease: "easeOut" }}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.85rem' }}
         >
           <NeonButton onClick={() => {
             const el = document.getElementById('registration');
@@ -150,6 +151,43 @@ const HeroSection = () => {
           }}>
             ENTER THE REALM
           </NeonButton>
+
+          {/* Already registered retrieve pass pill */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-find-pass'))}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.45rem',
+              padding: '0.45rem 1.15rem',
+              background: 'rgba(0, 243, 255, 0.08)',
+              border: '1px solid rgba(0, 243, 255, 0.35)',
+              borderRadius: '30px',
+              color: 'var(--color-neon-cyan)',
+              fontSize: 'clamp(0.8rem, 1.4vw, 0.88rem)',
+              fontWeight: 600,
+              letterSpacing: '0.04em',
+              cursor: 'pointer',
+              backdropFilter: 'blur(6px)',
+              transition: 'all 0.25s ease',
+              boxShadow: '0 0 12px rgba(0, 243, 255, 0.1)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(0, 243, 255, 0.18)';
+              e.currentTarget.style.borderColor = 'var(--color-neon-cyan)';
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(0, 243, 255, 0.35)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(0, 243, 255, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(0, 243, 255, 0.35)';
+              e.currentTarget.style.boxShadow = '0 0 12px rgba(0, 243, 255, 0.1)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+          >
+            <span>🎫 Already registered? Retrieve Pass</span>
+          </button>
         </motion.div>
 
         {/* Live Countdown & Happening Now Indicator */}

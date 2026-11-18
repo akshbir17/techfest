@@ -8,6 +8,7 @@ import HomePage from './pages/HomePage';
 import EventsPage from './pages/EventsPage';
 import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
 import CrimsonChat from './components/CrimsonChat';
+import FindPassModal from './components/FindPassModal';
 
 function NotFoundPage() {
   return (
@@ -101,12 +102,14 @@ function App() {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/find-pass" element={<HomePage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/registration-success" element={<RegistrationSuccessPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
 
         <CrimsonChat />
+        <FindPassModal />
       </div>
     </BrowserRouter>
   );

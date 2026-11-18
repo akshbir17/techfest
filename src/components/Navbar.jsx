@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Ticket } from 'lucide-react';
 import { useScrollLock } from '../hooks/useScrollLock';
 
 // Set to true when schedule is ready to be displayed
@@ -155,6 +155,22 @@ const Navbar = () => {
             onClick={() => scrollTo('registration')}
           >
             REGISTER
+          </button>
+
+          <button 
+            className="nav-link"
+            onClick={() => {
+              setIsMenuOpen(false);
+              window.dispatchEvent(new CustomEvent('open-find-pass'));
+            }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              color: 'var(--color-neon-cyan)',
+            }}
+          >
+            <Ticket size={15} /> FIND PASS
           </button>
 
           <button 
