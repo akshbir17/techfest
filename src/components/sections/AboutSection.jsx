@@ -67,7 +67,7 @@ const AboutSection = () => {
           </div>
 
           <p className="about-intro-text">
-            <strong style={{ color: 'var(--color-neon-cyan)' }}>Spectrum 1.0</strong> is a college-level technical and cultural event centred around innovation, creativity, and problem-solving. At the heart of the event is our <strong style={{ color: 'var(--color-neon-cyan)' }}>Hackathon</strong>—an opportunity for aspiring developers, innovators, and tech enthusiasts to collaborate, transform ideas into solutions, and showcase their technical skills.
+            <strong style={{ color: 'var(--color-neon-cyan)' }}>Spectrum 1.0</strong> is a national-level technical and cultural event centred around innovation, creativity, and problem-solving. At the heart of the event is our <strong style={{ color: 'var(--color-neon-cyan)' }}>Hackathon</strong>—an opportunity for aspiring developers, innovators, and tech enthusiasts to collaborate, transform ideas into solutions, and showcase their technical skills.
           </p>
           <p className="about-intro-text" style={{ marginTop: '1rem' }}>
             Alongside the hackathon, Spectrum 1.0 features interactive activities, creative technical challenges, and engaging experiences that bring students together in a vibrant atmosphere of technology, teamwork, and innovation.
