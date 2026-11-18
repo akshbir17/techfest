@@ -221,7 +221,7 @@ const EventRulesModal = ({ event, onClose }) => {
                 <Calendar size={14} /> <span>DATE</span>
               </div>
               <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-star-white)' }}>
-                {event.date || 'Dec 8–10, 2026'}
+                {event.date || 'Dec 9–10, 2026'}
               </span>
             </div>
 

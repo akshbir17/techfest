@@ -56,7 +56,7 @@ const EventsPreviewSection = () => {
                 <div className="mt-auto mb-4" style={{ color: 'var(--color-star-white)', opacity: 0.8, fontSize: '0.875rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                     <Calendar size={16} color="var(--color-neon-cyan)" />
-                    <span>{event.date || 'Dec 8 – 10, 2026'}</span>
+                    <span>{event.date || 'Dec 9 – 10, 2026'}</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <Users size={16} color="var(--color-neon-cyan)" />

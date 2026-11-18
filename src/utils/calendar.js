@@ -62,11 +62,11 @@ export const EVENT_SCHEDULE_DATA = {
     description: 'Stealth elimination and social deduction mystery challenge. Runs 1:00 PM – 2:00 PM on Day 1 in parallel with TechQuiz Round 1.\n\nWebsite: https://spectrum10.vercel.app',
   },
   full_fest: {
-    title: 'Spectrum 1.0: National TechFest (All 3 Days)',
-    start: '2026-12-08T09:00:00+05:30',
+    title: 'Spectrum 1.0: National TechFest (Dec 9–10)',
+    start: '2026-12-09T09:00:00+05:30',
     end: '2026-12-10T17:00:00+05:30',
     venue: 'Guru Nanak Dev Engineering College (GNDEC), Mailoor Road, Bidar, Karnataka 585403',
-    description: 'Spectrum 1.0 — 3 Days of Technical, Esports, & Creative Excellence at GNDEC Bidar. 24-Hour Hackathon, BGMI, Free Fire, TechQuiz, Treasure Hunt, and more!\n\nWebsite: https://spectrum10.vercel.app',
+    description: 'Spectrum 1.0 — 2 Days of Technical, Esports, & Creative Excellence at GNDEC Bidar. 24-Hour Hackathon, TechQuiz, Treasure Hunt, and more!\n\nWebsite: https://spectrum10.vercel.app',
   },
 };
 
@@ -107,7 +107,7 @@ export function resolveEventData(event) {
   // Fallback to generic fest timing if specific event isn't matched
   return {
     title: `Spectrum 1.0: ${event?.name || 'Fest Event'}`,
-    start: new Date('2026-12-08T09:00:00+05:30'),
+    start: new Date('2026-12-09T09:00:00+05:30'),
     end: new Date('2026-12-10T17:00:00+05:30'),
     venue: event?.venue || 'Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka',
     description: (event?.description || 'Spectrum 1.0 National Level Technical & Cultural Fest.') + '\n\nWebsite: https://spectrum10.vercel.app',

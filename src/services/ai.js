@@ -58,7 +58,7 @@ const getOfflineResponse = (query) => {
 
   // Dates & Venue / Location
   if (q.includes('when') || q.includes('date') || q.includes('time') || q.includes('where') || q.includes('venue') || q.includes('location') || q.includes('college')) {
-    return "SPECTRUM 1.0 is held from December 8 to December 10, 2026 at Guru Nanak Dev Engineering College (GNDEC), Mailoor Road, Bidar, Karnataka - 585403.";
+    return "SPECTRUM 1.0 is held from December 9 to December 10, 2026 at Guru Nanak Dev Engineering College (GNDEC), Mailoor Road, Bidar, Karnataka - 585403.";
   }
 
   // Coordinators / Contact / Phone
@@ -68,7 +68,7 @@ const getOfflineResponse = (query) => {
 
   // Schedule
   if (q.includes('schedule') || q.includes('timeline') || q.includes('itinerary') || q.includes('day 1') || q.includes('day 2') || q.includes('day 3')) {
-    return "Day 1 (Dec 8): Esports & Creative Events. Day 2 (Dec 9): 24-Hr Hackathon Kickoff (12 PM). Day 3 (Dec 10): Evaluations, Valedictory Ceremony & Prize Distribution (4 PM). Check the Schedule section for detailed times!";
+    return "Day 1 (Dec 9): 24-Hr Hackathon Kickoff (12 PM). Day 2 (Dec 10): Evaluations (12:30 PM), Valedictory Ceremony & Prize Distribution (4 PM).";
   }
 
   // Support / Donate

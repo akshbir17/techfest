@@ -13,7 +13,7 @@ YOUR PERSONALITY & TONE:
 KEY FESTIVAL DETAILS:
 - Festival: SPECTRUM 1.0
 - Venue: Guru Nanak Dev Engineering College (GNDEC), Mailoor Road, Bidar, Karnataka - 585403.
-- Dates: December 8 – 10, 2026.
+- Dates: December 9 – 10, 2026.
 - Registration Deadline: Registrations close on 29th November.
 - Entry Gate & Reporting: Entry Gate 1, GNDEC Bidar Main Gate. Exact reporting timings will be informed in the official WhatsApp group.
 - Mandatory: Valid physical College / Institution ID card is required for entry.

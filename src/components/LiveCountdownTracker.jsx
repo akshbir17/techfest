@@ -4,51 +4,7 @@ import { Clock, MapPin, Radio, Calendar, Sparkles } from 'lucide-react';
 
 // Official Schedule with exact timestamps (IST: UTC+5:30)
 const EVENT_SCHEDULE = [
-  // Day 1 — 8 Dec 2026
-  {
-    title: 'BGMI & Free Fire Tournaments',
-    venue: 'Esports Arena (CC Lab 2 & 3)',
-    category: 'Esports',
-    start: new Date('2026-12-08T09:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T11:00:00+05:30').getTime(),
-  },
-  {
-    title: 'Official SPECTRUM 1.0 Poster Reveal',
-    venue: 'Main Campus & Central Stage',
-    category: 'Ceremony',
-    start: new Date('2026-12-08T11:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T11:30:00+05:30').getTime(),
-  },
-  {
-    title: 'Treasure Hunt',
-    venue: 'GNDEC Campus Grounds',
-    category: 'Games & Adventure',
-    start: new Date('2026-12-08T11:30:00+05:30').getTime(),
-    end: new Date('2026-12-08T13:00:00+05:30').getTime(),
-  },
-  {
-    title: 'TechQuiz — Round 1 & Killer Game',
-    venue: 'Seminar Hall 1 & Open Lawn',
-    category: 'Technical / Fun',
-    start: new Date('2026-12-08T13:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T14:00:00+05:30').getTime(),
-  },
-  {
-    title: 'Impossible to Sell',
-    venue: 'Main Stage / Seminar Hall 2',
-    category: 'Creative Pitch',
-    start: new Date('2026-12-08T14:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T16:00:00+05:30').getTime(),
-  },
-  {
-    title: 'TechQuiz — Round 2 (Stage Finals)',
-    venue: 'Main Auditorium / Seminar Hall 1',
-    category: 'Technical Finals',
-    start: new Date('2026-12-08T16:00:00+05:30').getTime(),
-    end: new Date('2026-12-08T17:00:00+05:30').getTime(),
-  },
-
-  // Day 2 — 9 Dec 2026
+  // Day 1 — 9 Dec 2026
   {
     title: 'ID Card Distribution (Closes at 11:00 AM)',
     venue: 'Central Registration Desk',
@@ -137,7 +93,7 @@ const EVENT_SCHEDULE = [
   },
 ];
 
-const FEST_START_TIME = new Date('2026-12-08T09:00:00+05:30').getTime();
+const FEST_START_TIME = new Date('2026-12-09T09:00:00+05:30').getTime();
 const FEST_END_TIME = new Date('2026-12-10T17:00:00+05:30').getTime();
 
 const LiveCountdownTracker = () => {
@@ -389,7 +345,7 @@ const LiveCountdownTracker = () => {
                   </span>
                 </div>
                 <span style={{ fontSize: '0.75rem', color: 'rgba(244, 234, 204, 0.65)' }}>
-                  Tuesday, 8 Dec 2026 • 9:00 AM
+                  Wednesday, 9 Dec 2026 • 9:00 AM
                 </span>
               </div>
 

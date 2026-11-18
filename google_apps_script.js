@@ -1,7 +1,7 @@
 /* ============================================================
    SPECTRUM 1.0
    GOOGLE APPS SCRIPT REGISTRATION & EMAIL ENGINE
-   GNDEC BIDAR | DECEMBER 8-10, 2026
+   GNDEC BIDAR | DECEMBER 9-10, 2026
    ============================================================ */
 
 var HEADERS = [
@@ -658,7 +658,7 @@ function buildHtmlPass(data) {
   html += '    <h1>Spectrum 1.0</h1>';
   html += '    <p>Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka</p>';
   html += '    <div style="margin-top:18px;">';
-  html += '      <span style="background:#FBBF24;color:#0F172A;padding:8px 15px;border-radius:20px;font-weight:bold;">Dec 8 - 10, 2026</span>&nbsp;';
+  html += '      <span style="background:#FBBF24;color:#0F172A;padding:8px 15px;border-radius:20px;font-weight:bold;">Dec 9 - 10, 2026</span>&nbsp;';
   html += '      <span style="background:#10B981;color:#ffffff;padding:8px 15px;border-radius:20px;font-weight:bold;">&#10003; Payment Verified</span>';
   html += '    </div>';
   html += '  </div>';
@@ -686,7 +686,7 @@ function buildHtmlPass(data) {
   html += '    </div>';
   html += '    <div style="margin-top:28px;" class="section">■ Campus instructions</div>';
   html += '    <div class="steps">';
-  html += '      <p><strong>1. Dates and reporting:</strong> December 8 - 10, 2026. Reporting starts at 8:30 AM on Day 1 (Dec 8).</p>';
+  html += '      <p><strong>1. Dates and reporting:</strong> December 9 - 10, 2026. Entry Gate 1, GNDEC Bidar Main Gate. Reporting timings will be informed in the WhatsApp group.</p>';
   html += '      <p><strong>2. Venue:</strong> GNDEC Bidar, Main Gate, Bidar, Karnataka.</p>';
   html += '      <p><strong>3. ID required:</strong> Carry a valid physical college or institution ID card. It is compulsory for entry.</p>';
   html += '      <p><strong>4. Hackathon teams:</strong> Overnight accommodation and meals are provided for registered teams that have confirmed accommodation.</p>';
@@ -719,7 +719,7 @@ function sendConfirmationEmail(data) {
   var plainText =
     "SPECTRUM 1.0 REGISTRATION CONFIRMED\n" +
     "Guru Nanak Dev Engineering College, Bidar\n" +
-    "December 8 - 10, 2026\n\n" +
+    "December 9 - 10, 2026\n\n" +
     "Reg ID: " + (data.registration_id || "N/A") + "\n" +
     "Participant: " + (data.participant_name || "N/A") + "\n" +
     "Event: " + (data.event_name || "N/A") + "\n" +
@@ -732,7 +732,7 @@ function sendConfirmationEmail(data) {
     "Payment ID: " + (data.razorpay_payment_id || "N/A") + "\n\n" +
     "VENUE & REPORTING:\n" +
     "GNDEC Bidar, Mailoor Road, Bidar, Karnataka 585403\n" +
-    "Reporting: 8:30 AM, December 8, 2026\n" +
+    "Reporting: December 9, 2026 (Entry Gate 1, GNDEC Bidar Main Gate — timings informed in WhatsApp group)\n" +
     "Bring your valid college ID card.\n\n" +
     "HELP DESK:\n" +
     "Armaandeep Singh: +91 8427027540\n" +

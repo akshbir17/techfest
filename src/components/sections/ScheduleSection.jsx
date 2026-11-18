@@ -310,7 +310,7 @@ const ScheduleSection = () => {
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
             <Calendar size={18} color="var(--color-neon-cyan)" />
             <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--color-neon-cyan)', fontWeight: 700 }}>
-              Official Event Schedule (Revised) • 8–10 December 2026
+              Official Event Schedule (Revised) • 9–10 December 2026
             </span>
           </div>
 

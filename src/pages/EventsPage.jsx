@@ -63,7 +63,7 @@ const EventCategory = ({ title, events, delay, onOpenRules }) => {
               <div className="text-sm mb-6" style={{ color: 'var(--color-star-white)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <Calendar size={18} color="var(--color-neon-cyan)" />
-                  <span style={{ opacity: 0.8 }}>{event.date || 'Dec 8 – 10, 2026'}</span>
+                  <span style={{ opacity: 0.8 }}>{event.date || 'Dec 9 – 10, 2026'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <Users size={18} color="var(--color-neon-cyan)" />
