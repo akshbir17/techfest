@@ -1,7 +1,7 @@
 import { applyCors, checkRateLimit } from './_lib/security.js';
 
 // Serverless Backend API Route for Crimson AI Concierge
-// Keeps the Gemini API key 100% hidden and secure on the server (never exposed to browser)
+// Keeps AI API keys 100% hidden and secure on the server (never exposed to browser)
 
 const SYSTEM_INSTRUCTION = `You are Crimson, the official AI Concierge and Sentinel of SPECTRUM 1.0 — the premier National Level Technical & Cultural Festival at Guru Nanak Dev Engineering College (GNDEC), Bidar, Karnataka.
 
@@ -14,43 +14,39 @@ KEY FESTIVAL DETAILS:
 - Festival: SPECTRUM 1.0
 - Venue: Guru Nanak Dev Engineering College (GNDEC), Mailoor Road, Bidar, Karnataka - 585403.
 - Dates: December 8 – 10, 2026.
-- Reporting: Reporting begins at 8:30 AM on Day 1 (Dec 8) at the Main Gate.
+- Registration Deadline: Registrations close on 29th November.
+- Entry Gate & Reporting: Entry Gate 1, GNDEC Bidar Main Gate. Exact reporting timings will be informed in the official WhatsApp group.
 - Mandatory: Valid physical College / Institution ID card is required for entry.
 - Official Website: https://spectrum10.vercel.app
+- Associate Sponsor: SV Traders.
+
+HACKATHON THEMES & OPEN INNOVATION:
+- Theme 01: Agriculture, FoodTech & Rural Development
+- Theme 02: MedTech, HealthTech & Workplace Wellbeing
+- Theme 03: Clean & Green Technology (Sustainability)
+- Theme 04: Smart Automation & Agentic AI
+- Open Innovation: Want to work on an idea outside the four given themes? Select any one of the four themes during registration, then work on your own idea under Open Innovation — and confirm your Open Innovation choice at the Help Desk on hackathon day.
 
 EVENT CATALOG & PRIZES:
 1. 24-HOUR HACKATHON (Flagship Technical):
    - Fee: ₹500 per team (2–4 members).
-   - Time: Starts Dec 9 at 12:00 PM (noon) and ends Dec 10 at 12:30 PM.
-   - Perks: Free college meals (lunch, dinner, breakfast) & overnight campus accommodation provided!
+   - Time: Starts Dec 9 at 12:00 PM (noon) and evaluation at Dec 10 at 12:30 PM.
+   - Perks: College-provided lunch, dinner, breakfast, and restroom/stay facilities included!
    - Prizes: ₹40,000 Cash Prize Pool + Trophies & Certificates.
 2. TECHQUIZ (Technical):
-   - Fee: ₹300 per team (1–3 members).
-   - Day 1 (Dec 8): Round 1 at 1:00 PM – 2:00 PM, Round 2 at 4:00 PM – 5:00 PM.
-   - Prizes: Revealing Soon.
+   - Fee: ₹300 per team (1–3 members). Prizes: Revealing Soon.
 3. BGMI TOURNAMENT (Esports):
-   - Fee: ₹400 per squad (4 members).
-   - Day 1 (Dec 8): 9:00 AM – 11:00 AM.
-   - Prizes: Revealing Soon.
+   - Fee: ₹400 per squad (4 members). Prizes: Revealing Soon.
 4. FREE FIRE TOURNAMENT (Esports):
-   - Fee: ₹400 per squad (4 members).
-   - Day 1 (Dec 8): 9:00 AM – 11:00 AM (runs in parallel with BGMI).
-   - Prizes: Revealing Soon.
+   - Fee: ₹400 per squad (4 members). Prizes: Revealing Soon.
 5. TREASURE HUNT (Campus Exploration):
-   - Fee: ₹600 per team (1–4 members).
-   - Day 1 (Dec 8): 11:30 AM – 1:00 PM across GNDEC campus.
-   - Prizes: Revealing Soon.
+   - Fee: ₹600 per team (1–4 members). Prizes: Revealing Soon.
 6. IMPOSSIBLE TO SELL (Creative Pitching):
-   - Fee: ₹100 per entry (1–2 members).
-   - Day 1 (Dec 8): 2:00 PM – 4:00 PM.
-   - Prizes: Revealing Soon.
+   - Fee: ₹100 per entry (1–2 members). Prizes: Revealing Soon.
 7. PHOTOGRAPHY (Creative):
-   - Fee: ₹100 per entry (up to 3 submissions).
-   - Google Drive link shared on Dec 10 at 12:00 PM. Prizes: Revealing Soon.
+   - Fee: ₹100 per entry (up to 3 submissions). Prizes: Revealing Soon.
 8. KILLER GAME (Social Stealth & Deduction):
-   - Fee: ₹50 per player.
-   - Day 1 (Dec 8): 1:00 PM – 2:00 PM.
-   - Prizes: Revealing Soon.
+   - Fee: ₹50 per player. Prizes: Revealing Soon.
 
 OFFICIAL COORDINATORS (HELP DESK):
 - Faculty Coordinator: Dr. Praveen Reddy (Head, CSE - AIML): +91 99165 42332
@@ -61,8 +57,8 @@ OFFICIAL COORDINATORS (HELP DESK):
 - Student Coordinator: Abdul Aziz: +91 8296683831
 
 HOW TO REGISTER:
-- Participants can register directly on the website by navigating to the "Event Registration" section or clicking "Register" on any event.
-- Secure instant payment is processed via Razorpay, with instant automated digital pass dispatch directly to their email.`;
+- Participants can register directly on the website by navigating to the "Event Registration" section or clicking "Register" on the 24-Hour Hackathon card.
+- Secure instant payment is processed via Razorpay, with instant digital pass download and confirmation email.`;
 
 export default async function handler(req, res) {
   applyCors(req, res, 'POST, OPTIONS');
@@ -90,11 +86,12 @@ export default async function handler(req, res) {
 
     const userMessage = message.trim().slice(0, 500); // Safety limit
 
-    // Authoritative Server-side API key only (never accept client-exposed VITE_ fallback)
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Authoritative Server-side API keys only (never accept client-exposed VITE_ fallbacks)
+    const groqKey = (process.env.GROQ_API_KEY || '').trim();
+    const geminiKey = (process.env.GEMINI_API_KEY || '').trim();
 
-    if (!apiKey) {
-      return res.status(500).json({ error: 'Gemini API key is not configured on server' });
+    if (!groqKey && !geminiKey) {
+      return res.status(500).json({ error: 'AI API key is not configured on server' });
     }
 
     const safeHistory = Array.isArray(history)
@@ -110,45 +107,71 @@ export default async function handler(req, res) {
           .slice(-4)
       : [];
 
-    // 1. Google Gemini API
-    if (!apiKey.startsWith('sk-or-')) {
-      const contents = [];
-
-      // Last 4 turns of validated history
-      safeHistory.forEach((msg) => {
-        if (msg.sender === 'user') {
-          contents.push({ role: 'user', parts: [{ text: msg.text.trim().slice(0, 500) }] });
-        } else {
-          contents.push({ role: 'model', parts: [{ text: msg.text.trim().slice(0, 500) }] });
-        }
+    const openAiMessages = [{ role: 'system', content: SYSTEM_INSTRUCTION }];
+    safeHistory.forEach((msg) => {
+      openAiMessages.push({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        content: msg.text.trim().slice(0, 500),
       });
+    });
+    openAiMessages.push({ role: 'user', content: userMessage });
 
-      // Current prompt
+    // 1. Groq API (primary - ultra-fast inference)
+    if (groqKey) {
+      const groqModels = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
+      for (const model of groqModels) {
+        try {
+          const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${groqKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model,
+              messages: openAiMessages,
+              reasoning_effort: 'low',
+              temperature: 0.7,
+              max_completion_tokens: 450,
+            }),
+          });
+
+          if (groqRes.ok) {
+            const data = await groqRes.json();
+            const reply = data?.choices?.[0]?.message?.content;
+            if (reply && reply.trim()) {
+              return res.status(200).json({ reply: reply.trim() });
+            }
+          }
+        } catch (groqErr) {
+          console.warn(`Groq model ${model} failed, trying next:`, groqErr.message);
+        }
+      }
+    }
+
+    // 2. Google Gemini API (fallback if GEMINI_API_KEY is configured)
+    if (geminiKey && !geminiKey.startsWith('sk-or-')) {
+      const contents = [];
+      safeHistory.forEach((msg) => {
+        contents.push({
+          role: msg.sender === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.text.trim().slice(0, 500) }],
+        });
+      });
       contents.push({ role: 'user', parts: [{ text: userMessage }] });
 
-      // Call Google Gemini API (gemini-2.5-flash / gemini-2.0-flash / gemini-1.5-flash fallback)
-      const modelsToTry = [
-        'gemini-2.5-flash',
-        'gemini-2.0-flash',
-        'gemini-1.5-flash',
-      ];
-
+      const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
       for (const model of modelsToTry) {
         try {
           const geminiRes = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                system_instruction: {
-                  parts: [{ text: SYSTEM_INSTRUCTION }],
-                },
-                contents: contents,
-                generationConfig: {
-                  temperature: 0.7,
-                  maxOutputTokens: 250,
-                },
+                system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+                contents,
+                generationConfig: { temperature: 0.7, maxOutputTokens: 250 },
               }),
             }
           );
@@ -161,50 +184,40 @@ export default async function handler(req, res) {
             }
           }
         } catch (modelErr) {
-          console.warn(`Model ${model} failed, trying next:`, modelErr.message);
+          console.warn(`Gemini model ${model} failed, trying next:`, modelErr.message);
         }
       }
-
-      return res.status(502).json({ error: 'Failed to generate response from Gemini' });
     }
 
-    // 2. OpenRouter Fallback (if key is sk-or-...)
-    const messages = [{ role: 'system', content: SYSTEM_INSTRUCTION }];
-    safeHistory.forEach((msg) => {
-      messages.push({
-        role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: msg.text.trim().slice(0, 500),
+    // 3. OpenRouter Fallback (if key is sk-or-...)
+    if (geminiKey && geminiKey.startsWith('sk-or-')) {
+      const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${geminiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://spectrum10.vercel.app',
+          'X-Title': 'SPECTRUM 1.0',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.0-flash-001',
+          messages: openAiMessages,
+          max_tokens: 250,
+        }),
       });
-    });
-    messages.push({ role: 'user', content: userMessage });
 
-    const openRouterRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://spectrum10.vercel.app',
-        'X-Title': 'SPECTRUM 1.0',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.0-flash-001',
-        messages: messages,
-        max_tokens: 250,
-      }),
-    });
-
-    if (openRouterRes.ok) {
-      const data = await openRouterRes.json();
-      const reply = data?.choices?.[0]?.message?.content;
-      if (reply && reply.trim()) {
-        return res.status(200).json({ reply: reply.trim() });
+      if (openRouterRes.ok) {
+        const data = await openRouterRes.json();
+        const reply = data?.choices?.[0]?.message?.content;
+        if (reply && reply.trim()) {
+          return res.status(200).json({ reply: reply.trim() });
+        }
       }
     }
 
-    return res.status(502).json({ error: 'Failed to generate response from OpenRouter' });
+    return res.status(502).json({ error: 'Failed to generate AI response' });
   } catch (err) {
     console.error('Chat endpoint error:', err);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
-
