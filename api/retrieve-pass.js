@@ -103,13 +103,13 @@ export default async function handler(req, res) {
     // Digits only version for phone lookup
     const digits = query.replace(/\D/g, '');
 
-    // Search by email, phone, or inside team_members json string
+    // Search by email, phone, or team_name
     let builder = supabase.from('registrations').select('*');
 
     if (query.includes('@')) {
-      builder = builder.or(`email.ilike.%${query}%,team_members.ilike.%${query}%`);
+      builder = builder.ilike('email', `%${query}%`);
     } else if (digits.length >= 6) {
-      builder = builder.or(`phone.ilike.%${digits}%,team_members.ilike.%${digits}%`);
+      builder = builder.ilike('phone', `%${digits}%`);
     } else {
       builder = builder.or(`email.ilike.%${query}%,team_name.ilike.%${query}%`);
     }
@@ -117,8 +117,8 @@ export default async function handler(req, res) {
     const { data: records, error } = await builder.order('created_at', { ascending: false }).limit(5);
 
     if (error) {
-      console.error('Supabase query error in retrieve-pass:', error);
-      return res.status(500).json({ error: 'Failed to search registrations.' });
+      console.error('Supabase query error in retrieve-pass:', error?.message || error);
+      return res.status(500).json({ error: 'Failed to search registrations: ' + (error?.message || '') });
     }
 
     if (!records || records.length === 0) {
