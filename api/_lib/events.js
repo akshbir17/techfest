@@ -35,10 +35,18 @@ export function formatUniqueRegId(rawId, eventLabel, fallbackHex = '') {
 }
 
 export function formatTeamMembers(rawMembers) {
-  if (!Array.isArray(rawMembers) || rawMembers.length === 0) {
+  let parsedMembers = rawMembers;
+  if (typeof parsedMembers === 'string') {
+    try {
+      parsedMembers = JSON.parse(parsedMembers);
+    } catch {
+      return parsedMembers.trim() || 'N/A';
+    }
+  }
+  if (!Array.isArray(parsedMembers) || parsedMembers.length === 0) {
     return 'N/A';
   }
-  return rawMembers
+  return parsedMembers
     .map((m, i) => {
       if (typeof m === 'string') return m;
       let phoneStr = '';

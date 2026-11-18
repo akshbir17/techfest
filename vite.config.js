@@ -5,5 +5,13 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: process.env.GITHUB_PAGES === 'true' ? '/techfest/' : '/',
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://spectrum10.vercel.app',
+        changeOrigin: true,
+      },
+    },
+  },
 })
 

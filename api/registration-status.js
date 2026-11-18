@@ -1,12 +1,69 @@
 import Razorpay from 'razorpay';
-import { formatUniqueRegId } from './_lib/events.js';
+import {
+  formatTeamMembers,
+  formatUniqueRegId,
+  isTeamEventName,
+  postToSheetsWebhook,
+} from './_lib/events.js';
 import {
   applyCors,
   checkRateLimit,
   clampString,
   getSupabaseAdmin,
+  updateRegistrationSafe,
   verifyPassToken,
 } from './_lib/security.js';
+
+async function syncRecordToSheets(supabase, record, orderId, paymentId) {
+  const sheetsWebhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK_URL;
+  const sheetsSecret = process.env.GOOGLE_SHEETS_WEBHOOK_SECRET || '';
+  if (!sheetsWebhookUrl || !record || record.synced_to_sheets) {
+    return Boolean(record?.synced_to_sheets);
+  }
+
+  try {
+    const eventName = record.event_name || 'Official Event';
+    const uniqueRegId = formatUniqueRegId(record.unique_id || record.id, eventName);
+    const rawTeamName = record.team_name || 'N/A';
+    const isTeamEvent = isTeamEventName(eventName, rawTeamName);
+    const membersFormatted = formatTeamMembers(record.team_members);
+
+    const payload = {
+      secret: sheetsSecret,
+      registration_id: uniqueRegId,
+      order_id: orderId || record.razorpay_order_id || record.id || 'N/A',
+      participant_name: record.participant_name || record.name || '',
+      email: record.email || '',
+      phone: record.phone || '',
+      college: record.college || 'N/A',
+      event_name: eventName,
+      theme: record.theme || 'General',
+      accommodation:
+        record.accommodation || (String(eventName).toLowerCase().includes('hackathon') ? 'Yes' : 'N/A'),
+      team_name: isTeamEvent ? String(rawTeamName).trim() : 'N/A',
+      team_members: isTeamEvent ? membersFormatted : 'N/A',
+      amount_paid: Number(record.amount || record.fee || 0),
+      razorpay_payment_id: paymentId || record.razorpay_payment_id || 'N/A',
+      payment_status: 'PAID',
+    };
+
+    const sheetResult = await postToSheetsWebhook(sheetsWebhookUrl, payload);
+    if (sheetResult.ok) {
+      if (supabase && record.id) {
+        await supabase
+          .from('registrations')
+          .update({ synced_to_sheets: true, updated_at: new Date().toISOString() })
+          .eq('id', record.id);
+      }
+      return true;
+    }
+    console.warn('Sheets reconciliation webhook error:', sheetResult.status, sheetResult.error);
+  } catch (err) {
+    console.error('Sheets reconciliation exception:', err.message);
+  }
+
+  return false;
+}
 
 export default async function handler(req, res) {
   applyCors(req, res, 'GET, OPTIONS');
@@ -39,21 +96,19 @@ export default async function handler(req, res) {
     if (supabase) {
       const { data: record, error } = await supabase
         .from('registrations')
-        .select(
-          'id, unique_id, participant_name, event_name, team_name, amount, theme, accommodation, razorpay_order_id, razorpay_payment_id, payment_status'
-        )
+        .select('*')
         .eq('razorpay_order_id', orderId)
         .eq('razorpay_payment_id', paymentId)
         .eq('payment_status', 'paid')
         .maybeSingle();
 
-      // Handle fallback if optional columns (unique_id, theme, accommodation) aren't migrated yet
+      // Handle fallback if optional columns aren't migrated yet
       let verifiedRecord = record;
       if (error && (error.code === 'PGRST204' || /column|schema cache/i.test(String(error.message || '')))) {
         const retry = await supabase
           .from('registrations')
           .select(
-            'id, participant_name, event_name, team_name, amount, razorpay_order_id, razorpay_payment_id, payment_status'
+            'id, participant_name, email, phone, college, event_name, team_name, team_members, amount, razorpay_order_id, razorpay_payment_id, payment_status, synced_to_sheets'
           )
           .eq('razorpay_order_id', orderId)
           .eq('razorpay_payment_id', paymentId)
@@ -63,12 +118,14 @@ export default async function handler(req, res) {
       }
 
       if (verifiedRecord) {
+        const sheetsSynced = await syncRecordToSheets(supabase, verifiedRecord, orderId, paymentId);
         const uniqueId = formatUniqueRegId(
           verifiedRecord.unique_id || verifiedRecord.id,
           verifiedRecord.event_name
         );
         return res.status(200).json({
           verified: true,
+          sheetsSynced,
           registration: {
             uniqueId,
             orderId: verifiedRecord.razorpay_order_id,
@@ -84,7 +141,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // 2. Secondary check: Direct Razorpay API lookup (if DB missed or unavailable)
+    // 2. Secondary check: Direct Razorpay API lookup & automatic reconciliation if callback was missed
     const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     if (keyId && keySecret) {
@@ -96,6 +153,72 @@ export default async function handler(req, res) {
           payment.order_id === orderId &&
           (payment.status === 'captured' || payment.status === 'authorized')
         ) {
+          // Reconcile pending Supabase record and sync to Google Sheets
+          if (supabase) {
+            const { data: pendingRecord } = await supabase
+              .from('registrations')
+              .select('*')
+              .eq('razorpay_order_id', orderId)
+              .maybeSingle();
+
+            if (pendingRecord) {
+              const expectedFee = Number(pendingRecord.amount || 0);
+              const amountMatches =
+                expectedFee <= 0 || payment.amount === Math.round(expectedFee * 100);
+
+              if (amountMatches) {
+                const { data: updated, error: updateErr } = await updateRegistrationSafe(
+                  supabase,
+                  orderId,
+                  {
+                    payment_status: 'paid',
+                    razorpay_payment_id: paymentId,
+                    updated_at: new Date().toISOString(),
+                  }
+                );
+
+                if (updateErr) {
+                  console.error('Supabase reconciliation update error:', updateErr.message);
+                }
+
+                const reconciledRecord = updated || {
+                  ...pendingRecord,
+                  payment_status: 'paid',
+                  razorpay_payment_id: paymentId,
+                };
+
+                const sheetsSynced = await syncRecordToSheets(
+                  supabase,
+                  reconciledRecord,
+                  orderId,
+                  paymentId
+                );
+
+                const uniqueId = formatUniqueRegId(
+                  reconciledRecord.unique_id || reconciledRecord.id,
+                  reconciledRecord.event_name
+                );
+
+                return res.status(200).json({
+                  verified: true,
+                  reconciled: true,
+                  sheetsSynced,
+                  registration: {
+                    uniqueId,
+                    orderId,
+                    paymentId,
+                    eventName: reconciledRecord.event_name || 'Official Event',
+                    participantName: reconciledRecord.participant_name || '',
+                    teamName: reconciledRecord.team_name || '',
+                    amount: reconciledRecord.amount ?? Math.round(Number(payment.amount) / 100),
+                    theme: reconciledRecord.theme || '',
+                    accommodation: reconciledRecord.accommodation || '',
+                  },
+                });
+              }
+            }
+          }
+
           const order = await razorpay.orders.fetch(orderId);
           const notes = order?.notes || {};
           const eventName = notes.eventName || 'Official Event';
@@ -144,4 +267,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
