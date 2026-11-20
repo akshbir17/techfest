@@ -491,23 +491,24 @@ const FindPassModal = ({ isOpen: controlledIsOpen, onClose: controlledOnClose })
                               >
                                 {item.uniqueId}
                               </span>
-                              {item.createdAt && (
+                              {isPaid && (
                                 <span
                                   style={{
-                                    fontSize: '0.68rem',
                                     fontFamily: 'var(--font-heading)',
-                                    color: 'rgba(244, 234, 204, 0.45)',
-                                    letterSpacing: '0.03em',
+                                    fontSize: '0.65rem',
+                                    fontWeight: 700,
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.08em',
+                                    padding: '0.2rem 0.5rem',
+                                    borderRadius: '4px',
+                                    background: 'rgba(211, 47, 47, 0.15)',
+                                    color: 'var(--color-neon-cyan)',
+                                    border: '1px solid rgba(211, 47, 47, 0.45)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
                                   }}
                                 >
-                                  {new Date(item.createdAt).toLocaleString('en-IN', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true,
-                                  })}
+                                  Latest Record
                                 </span>
                               )}
                             </div>
