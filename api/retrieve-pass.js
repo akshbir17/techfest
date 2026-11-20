@@ -168,10 +168,8 @@ export default async function handler(req, res) {
             record.payment_status = 'paid';
             record.razorpay_payment_id = paymentId;
 
-            // Sync to sheets asynchronously
-            syncRecordToSheets(supabase, record, orderId, paymentId).catch((e) =>
-              console.error('Auto-reconcile sheets error:', e)
-            );
+            // Sync to sheets reliably before responding
+            await syncRecordToSheets(supabase, record, orderId, paymentId);
           }
         } catch (rzpFetchErr) {
           console.warn('Razorpay order payments fetch error in retrieve-pass:', rzpFetchErr?.message);
