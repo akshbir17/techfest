@@ -21,7 +21,7 @@ const EVENT_SCHEDULE = [
   },
   {
     title: '24-Hour Hackathon Begins',
-    venue: 'CSE Advanced Computing Lab',
+    venue: 'Will be revealed',
     category: 'Flagship Championship',
     start: new Date('2026-12-09T12:00:00+05:30').getTime(),
     end: new Date('2026-12-10T12:00:00+05:30').getTime(),

@@ -125,7 +125,7 @@ const EventsPage = ({ isEmbedded = false }) => {
       price: '₹500 per team',
       teamSize: '2 to 4 Members',
       date: '9th to 10th Dec 2026',
-      venue: 'CSE Advanced Computing Lab',
+      venue: 'Will be revealed',
       prize: '₹40,000',
       description: 'The **24-Hour Hackathon**, the flagship event of **SPECTRUM 1.0** at Guru Nanak Dev Engineering College, Bidar, brings together developers, designers, and innovators to build creative, technology-driven solutions to real-world challenges. Experience 24 hours of rapid innovation, teamwork, and coding, culminating in prototype presentations before an expert judging panel. The event kicks off at **12:00 PM on 9 December**, with evaluation at **12:30 PM on 10 December**. College-provided lunch, dinner, breakfast, and accommodation are included.',
       rules: [

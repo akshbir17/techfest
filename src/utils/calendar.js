@@ -9,7 +9,7 @@ export const EVENT_SCHEDULE_DATA = {
     title: 'Spectrum 1.0: 24-Hour Hackathon',
     start: '2026-12-09T12:00:00+05:30',
     end: '2026-12-10T12:00:00+05:30',
-    venue: 'CSE Advanced Computing Lab, GNDEC Campus, Bidar',
+    venue: 'GNDEC Campus, Bidar (Will be revealed)',
     description: 'Flagship 24-Hour Hackathon at Spectrum 1.0. Rapid innovation & coding. Kickoff at 12:00 PM on 9 Dec. ID Card distribution closes at 11:00 AM sharp. College-provided lunch, dinner, breakfast & accommodation included.\n\nWebsite: https://spectrum10.vercel.app',
   },
   tech_quiz: {
