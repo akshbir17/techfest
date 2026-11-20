@@ -3,6 +3,7 @@ export const HACKATHON_THEMES = [
   'MedTech, HealthTech & Workplace Wellbeing',
   'Clean & Green Technology (Sustainability)',
   'Smart Automation & Agentic AI',
+  'Open Innovation',
 ];
 
 export const INDIAN_PHONE_REGEX = /^(\+91|0)?[6-9]\d{9}$/;

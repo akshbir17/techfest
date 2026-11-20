@@ -25,7 +25,7 @@ HACKATHON THEMES & OPEN INNOVATION:
 - Theme 02: MedTech, HealthTech & Workplace Wellbeing
 - Theme 03: Clean & Green Technology (Sustainability)
 - Theme 04: Smart Automation & Agentic AI
-- Open Innovation: Want to work on an idea outside the four given themes? Select any one of the four themes during registration, then work on your own idea under Open Innovation — and confirm your Open Innovation choice at the Help Desk on hackathon day.
+- Open Innovation: Want to work on an idea outside the four given themes? You can now directly select "Open Innovation" as your theme during registration! Build anything you're passionate about.
 
 EVENT CATALOG & PRIZES:
 1. 24-HOUR HACKATHON (Flagship Technical):
