@@ -491,6 +491,25 @@ const FindPassModal = ({ isOpen: controlledIsOpen, onClose: controlledOnClose })
                               >
                                 {item.uniqueId}
                               </span>
+                              {item.createdAt && (
+                                <span
+                                  style={{
+                                    fontSize: '0.68rem',
+                                    fontFamily: 'var(--font-heading)',
+                                    color: 'rgba(244, 234, 204, 0.45)',
+                                    letterSpacing: '0.03em',
+                                  }}
+                                >
+                                  {new Date(item.createdAt).toLocaleString('en-IN', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true,
+                                  })}
+                                </span>
+                              )}
                             </div>
 
                             <h3
