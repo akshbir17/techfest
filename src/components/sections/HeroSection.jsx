@@ -46,39 +46,111 @@ const HeroSection = () => {
             ORGANIZED BY
           </p>
 
-          <div className="hero-departments">
-            <div className="hero-dept-item" style={{ maxWidth: '520px' }}>
-              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35', textAlign: 'center', color: '#F4EACC' }}>
-                GURU NANAK JHIRA ENTREPRENEURSHIP<br />
-                RESEARCH AND BUSINESS INCUBATION<br />
-                FOUNDATION
-              </div>
-              <div
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: 'clamp(0.6rem, 1.6vw, 1rem)',
+              marginTop: '0.65rem',
+            }}
+          >
+            {/* GN JERBI Foundation */}
+            <div
+              className="hero-organizer-badge"
+              style={{
+                background: '#ffffff',
+                borderRadius: '6px',
+                padding: '0.35rem 0.75rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid rgba(211, 47, 47, 0.45)',
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.45), 0 0 10px rgba(211, 47, 47, 0.2)',
+                transition: 'all 0.25s ease',
+              }}
+            >
+              <img
+                src="/organizers/gnjerbi.png"
+                alt="Guru Nanak Jhira Entrepreneurship Research and Business Incubation Foundation (GN JERBI)"
+                title="GN JERBI Foundation"
                 style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: 'clamp(1.15rem, 3.4vw, 1.45rem)',
-                  fontWeight: '900',
-                  letterSpacing: '0.1em',
-                  color: '#D32F2F',
-                  marginTop: '0.4rem',
-                  textTransform: 'uppercase',
-                  lineHeight: '1.25',
-                  textAlign: 'center',
-                  textShadow: '0 2px 12px rgba(0, 0, 0, 0.95), 0 0 18px rgba(211, 47, 47, 0.75)',
+                  height: 'clamp(34px, 4.4vw, 46px)',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
                 }}
-              >
-                NIDHI DST iTBI CENTER
-              </div>
+              />
             </div>
 
-            <span className="hero-dept-amp">
+            {/* DST NIDHI */}
+            <div
+              className="hero-organizer-badge"
+              style={{
+                background: '#ffffff',
+                borderRadius: '6px',
+                padding: '0.35rem 0.75rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid rgba(211, 47, 47, 0.45)',
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.45), 0 0 10px rgba(211, 47, 47, 0.2)',
+                transition: 'all 0.25s ease',
+              }}
+            >
+              <img
+                src="/organizers/dst-nidhi.png"
+                alt="DST NIDHI - START-TO-SCALE STARTUP SUPPORT"
+                title="DST NIDHI iTBI Center"
+                style={{
+                  height: 'clamp(34px, 4.4vw, 46px)',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+              />
+            </div>
+
+            <span
+              className="hero-dept-amp"
+              style={{
+                color: '#D4AF37',
+                fontWeight: 800,
+                fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
+                padding: '0 0.25rem',
+                lineHeight: 1,
+              }}
+            >
               &
             </span>
 
-            <div className="hero-dept-item" style={{ maxWidth: '380px' }}>
-              <div className="hero-dept-title" style={{ whiteSpace: 'normal', lineHeight: '1.35', color: '#F4EACC' }}>
-                INSTITUTION INNOVATION COUNCIL
-              </div>
+            {/* Institution's Innovation Council */}
+            <div
+              className="hero-organizer-badge"
+              style={{
+                background: '#ffffff',
+                borderRadius: '6px',
+                padding: '0.35rem 0.75rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid rgba(211, 47, 47, 0.45)',
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.45), 0 0 10px rgba(211, 47, 47, 0.2)',
+                transition: 'all 0.25s ease',
+              }}
+            >
+              <img
+                src="/organizers/iic.png"
+                alt="Institution's Innovation Council (Ministry of HRD Initiative)"
+                title="Institution's Innovation Council (IIC)"
+                style={{
+                  height: 'clamp(34px, 4.4vw, 46px)',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
+              />
             </div>
           </div>
         </motion.div>

@@ -557,6 +557,15 @@ html.lenis { height: auto; }
   }
 }
 
+.hero-organizer-badge {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.hero-organizer-badge:hover {
+  transform: translateY(-2px);
+  border-color: #d32f2f !important;
+  box-shadow: 0 6px 20px rgba(211, 47, 47, 0.45) !important;
+}
+
 .hero-dept-item {
   text-align: center;
   background: transparent;
