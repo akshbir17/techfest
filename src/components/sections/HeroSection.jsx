@@ -52,8 +52,8 @@ const HeroSection = () => {
               alignItems: 'center',
               justifyContent: 'center',
               flexWrap: 'wrap',
-              gap: 'clamp(0.6rem, 1.6vw, 1rem)',
-              marginTop: '0.65rem',
+              gap: 'clamp(0.75rem, 2vw, 1.35rem)',
+              marginTop: '0.75rem',
             }}
           >
             {/* GN JERBI Foundation */}
@@ -61,13 +61,13 @@ const HeroSection = () => {
               className="hero-organizer-badge"
               style={{
                 background: '#ffffff',
-                borderRadius: '6px',
-                padding: '0.35rem 0.75rem',
+                borderRadius: '8px',
+                padding: '0.45rem 1rem',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 border: '1px solid rgba(211, 47, 47, 0.45)',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.45), 0 0 10px rgba(211, 47, 47, 0.2)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.45), 0 0 12px rgba(211, 47, 47, 0.25)',
                 transition: 'all 0.25s ease',
               }}
             >
@@ -76,7 +76,7 @@ const HeroSection = () => {
                 alt="Guru Nanak Jhira Entrepreneurship Research and Business Incubation Foundation (GN JERBI)"
                 title="GN JERBI Foundation"
                 style={{
-                  height: 'clamp(34px, 4.4vw, 46px)',
+                  height: 'clamp(44px, 5.8vw, 58px)',
                   width: 'auto',
                   objectFit: 'contain',
                   display: 'block',
@@ -89,13 +89,13 @@ const HeroSection = () => {
               className="hero-organizer-badge"
               style={{
                 background: '#ffffff',
-                borderRadius: '6px',
-                padding: '0.35rem 0.75rem',
+                borderRadius: '8px',
+                padding: '0.45rem 1rem',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 border: '1px solid rgba(211, 47, 47, 0.45)',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.45), 0 0 10px rgba(211, 47, 47, 0.2)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.45), 0 0 12px rgba(211, 47, 47, 0.25)',
                 transition: 'all 0.25s ease',
               }}
             >
@@ -104,7 +104,7 @@ const HeroSection = () => {
                 alt="DST NIDHI - START-TO-SCALE STARTUP SUPPORT"
                 title="DST NIDHI iTBI Center"
                 style={{
-                  height: 'clamp(34px, 4.4vw, 46px)',
+                  height: 'clamp(44px, 5.8vw, 58px)',
                   width: 'auto',
                   objectFit: 'contain',
                   display: 'block',
@@ -112,31 +112,18 @@ const HeroSection = () => {
               />
             </div>
 
-            <span
-              className="hero-dept-amp"
-              style={{
-                color: '#D4AF37',
-                fontWeight: 800,
-                fontSize: 'clamp(1.1rem, 2vw, 1.4rem)',
-                padding: '0 0.25rem',
-                lineHeight: 1,
-              }}
-            >
-              &
-            </span>
-
             {/* Institution's Innovation Council */}
             <div
               className="hero-organizer-badge"
               style={{
                 background: '#ffffff',
-                borderRadius: '6px',
-                padding: '0.35rem 0.75rem',
+                borderRadius: '8px',
+                padding: '0.45rem 1rem',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 border: '1px solid rgba(211, 47, 47, 0.45)',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.45), 0 0 10px rgba(211, 47, 47, 0.2)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.45), 0 0 12px rgba(211, 47, 47, 0.25)',
                 transition: 'all 0.25s ease',
               }}
             >
@@ -145,7 +132,7 @@ const HeroSection = () => {
                 alt="Institution's Innovation Council (Ministry of HRD Initiative)"
                 title="Institution's Innovation Council (IIC)"
                 style={{
-                  height: 'clamp(34px, 4.4vw, 46px)',
+                  height: 'clamp(44px, 5.8vw, 58px)',
                   width: 'auto',
                   objectFit: 'contain',
                   display: 'block',
