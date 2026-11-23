@@ -20,6 +20,7 @@ const SPONSORS_LIST = [
     description: 'Building Communities',
     logo: '/sponsors/eventopia.jpg',
     featured: true,
+    fill: true,
   },
 ];
 
@@ -140,17 +141,17 @@ const SponsorsSection = ({ sponsors = SPONSORS_LIST }) => {
                     </span>
                   </div>
 
-                  {/* Clean White Card for Logo to ensure perfect contrast & visibility */}
+                  {/* Clean Logo Card */}
                   <div
                     style={{
                       width: '100%',
-                      height: '115px',
+                      height: sponsor.fill ? '135px' : '115px',
                       backgroundColor: '#ffffff',
                       borderRadius: '6px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      padding: '0.85rem 1rem',
+                      padding: sponsor.fill ? '0' : '0.85rem 1rem',
                       boxShadow: 'inset 0 0 8px rgba(0, 0, 0, 0.04), 0 3px 12px rgba(0, 0, 0, 0.35)',
                       boxSizing: 'border-box',
                       overflow: 'hidden',
@@ -161,9 +162,12 @@ const SponsorsSection = ({ sponsors = SPONSORS_LIST }) => {
                       src={sponsor.logo}
                       alt={sponsor.name}
                       style={{
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        objectFit: 'contain',
+                        width: sponsor.fill ? '100%' : 'auto',
+                        height: sponsor.fill ? '100%' : 'auto',
+                        maxWidth: sponsor.fill ? 'none' : '100%',
+                        maxHeight: sponsor.fill ? 'none' : '100%',
+                        objectFit: sponsor.fill ? 'cover' : 'contain',
+                        objectPosition: sponsor.objectPosition || 'center',
                         display: 'block',
                       }}
                     />
