@@ -43,7 +43,7 @@ const SponsorsSection = ({ sponsors = SPONSORS_LIST }) => {
           </div>
 
           <h2 className="rules-title" style={{ margin: '0 auto 1rem auto' }}>
-            OUR <span className="text-gradient">SPONSORS</span>
+            OUR <span className="text-gradient">SPONSORS & PARTNERS</span>
           </h2>
           <div className="rules-divider" style={{ marginBottom: '1.25rem' }}></div>
           <p style={{ maxWidth: '640px', margin: '0 auto', color: 'rgba(244, 234, 204, 0.75)', fontSize: '0.95rem', lineHeight: '1.6' }}>
