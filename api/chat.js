@@ -19,6 +19,7 @@ KEY FESTIVAL DETAILS:
 - Mandatory: Valid physical College / Institution ID card is required for entry.
 - Official Website: https://spectrum10.vercel.app
 - Associate Sponsor: SV Traders.
+- Media Partner: Eventopia.
 
 HACKATHON THEMES & OPEN INNOVATION:
 - Theme 01: Agriculture, FoodTech & Rural Development

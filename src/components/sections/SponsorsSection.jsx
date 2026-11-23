@@ -13,6 +13,14 @@ const SPONSORS_LIST = [
     logo: '/sponsors/sv-traders.jpg',
     featured: true,
   },
+  {
+    id: 'eventopia',
+    name: 'Eventopia',
+    category: 'Media Partner',
+    description: 'Building Communities',
+    logo: '/sponsors/eventopia.jpg',
+    featured: true,
+  },
 ];
 
 const SponsorsSection = ({ sponsors = SPONSORS_LIST }) => {
