@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Handshake } from 'lucide-react';
+import { Handshake, ExternalLink } from 'lucide-react';
 import GlassCard from '../ui/GlassCard';
 
 // Official sponsors list for SPECTRUM 1.0
@@ -18,7 +18,8 @@ const SPONSORS_LIST = [
     name: 'Eventopia',
     category: 'Media Partner',
     description: 'Building Communities',
-    logo: '/sponsors/eventopia.jpg',
+    logo: '/sponsors/eventopia.png',
+    url: 'https://eventopia.in/',
     featured: true,
     fill: true,
   },
@@ -142,36 +143,90 @@ const SponsorsSection = ({ sponsors = SPONSORS_LIST }) => {
                   </div>
 
                   {/* Clean Logo Card */}
-                  <div
-                    style={{
-                      width: '100%',
-                      height: sponsor.fill ? '135px' : '115px',
-                      backgroundColor: '#ffffff',
-                      borderRadius: '6px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: sponsor.fill ? '0' : '0.85rem 1rem',
-                      boxShadow: 'inset 0 0 8px rgba(0, 0, 0, 0.04), 0 3px 12px rgba(0, 0, 0, 0.35)',
-                      boxSizing: 'border-box',
-                      overflow: 'hidden',
-                      transition: 'transform 0.3s ease',
-                    }}
-                  >
-                    <img
-                      src={sponsor.logo}
-                      alt={sponsor.name}
+                  {sponsor.url ? (
+                    <a
+                      href={sponsor.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={`Visit ${sponsor.name} (${sponsor.url})`}
                       style={{
-                        width: sponsor.fill ? '100%' : 'auto',
-                        height: sponsor.fill ? '100%' : 'auto',
-                        maxWidth: sponsor.fill ? 'none' : '100%',
-                        maxHeight: sponsor.fill ? 'none' : '100%',
-                        objectFit: sponsor.fill ? 'cover' : 'contain',
-                        objectPosition: sponsor.objectPosition || 'center',
+                        width: '100%',
+                        textDecoration: 'none',
                         display: 'block',
+                        cursor: 'pointer',
                       }}
-                    />
-                  </div>
+                    >
+                      <div
+                        style={{
+                          width: '100%',
+                          height: sponsor.fill ? '115px' : '115px',
+                          backgroundColor: '#ffffff',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          padding: sponsor.fill ? '0' : '0.85rem 1rem',
+                          boxShadow: 'inset 0 0 8px rgba(0, 0, 0, 0.04), 0 3px 12px rgba(0, 0, 0, 0.35)',
+                          boxSizing: 'border-box',
+                          overflow: 'hidden',
+                          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.02)';
+                          e.currentTarget.style.boxShadow = '0 6px 20px rgba(211, 47, 47, 0.3)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'none';
+                          e.currentTarget.style.boxShadow = 'inset 0 0 8px rgba(0, 0, 0, 0.04), 0 3px 12px rgba(0, 0, 0, 0.35)';
+                        }}
+                      >
+                        <img
+                          src={sponsor.logo}
+                          alt={sponsor.name}
+                          style={{
+                            width: sponsor.fill ? '100%' : 'auto',
+                            height: sponsor.fill ? '100%' : 'auto',
+                            maxWidth: sponsor.fill ? 'none' : '100%',
+                            maxHeight: sponsor.fill ? 'none' : '100%',
+                            objectFit: sponsor.fill ? 'cover' : 'contain',
+                            objectPosition: sponsor.objectPosition || 'center',
+                            display: 'block',
+                          }}
+                        />
+                      </div>
+                    </a>
+                  ) : (
+                    <div
+                      style={{
+                        width: '100%',
+                        height: sponsor.fill ? '115px' : '115px',
+                        backgroundColor: '#ffffff',
+                        borderRadius: '6px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: sponsor.fill ? '0' : '0.85rem 1rem',
+                        boxShadow: 'inset 0 0 8px rgba(0, 0, 0, 0.04), 0 3px 12px rgba(0, 0, 0, 0.35)',
+                        boxSizing: 'border-box',
+                        overflow: 'hidden',
+                        transition: 'transform 0.3s ease',
+                      }}
+                    >
+                      <img
+                        src={sponsor.logo}
+                        alt={sponsor.name}
+                        style={{
+                          width: sponsor.fill ? '100%' : 'auto',
+                          height: sponsor.fill ? '100%' : 'auto',
+                          maxWidth: sponsor.fill ? 'none' : '100%',
+                          maxHeight: sponsor.fill ? 'none' : '100%',
+                          objectFit: sponsor.fill ? 'cover' : 'contain',
+                          objectPosition: sponsor.objectPosition || 'center',
+                          display: 'block',
+                        }}
+                      />
+                    </div>
+                  )}
 
                   {/* Sponsor Name & Subtitle */}
                   <div style={{ marginTop: '1.1rem', width: '100%' }}>
@@ -198,6 +253,44 @@ const SponsorsSection = ({ sponsors = SPONSORS_LIST }) => {
                       >
                         {sponsor.description}
                       </p>
+                    )}
+
+                    {/* Official Website Link */}
+                    {sponsor.url && (
+                      <div style={{ marginTop: '0.75rem' }}>
+                        <a
+                          href={sponsor.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.35rem',
+                            color: 'var(--color-bright-crimson, #d32f2f)',
+                            fontSize: '0.74rem',
+                            fontFamily: 'var(--font-heading)',
+                            fontWeight: 700,
+                            letterSpacing: '0.06em',
+                            textDecoration: 'none',
+                            padding: '0.3rem 0.75rem',
+                            background: 'rgba(211, 47, 47, 0.1)',
+                            border: '1px solid rgba(211, 47, 47, 0.4)',
+                            borderRadius: '4px',
+                            transition: 'all 0.2s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(211, 47, 47, 0.25)';
+                            e.currentTarget.style.borderColor = 'var(--color-bright-crimson, #d32f2f)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(211, 47, 47, 0.1)';
+                            e.currentTarget.style.borderColor = 'rgba(211, 47, 47, 0.4)';
+                          }}
+                        >
+                          <span>VISIT WEBSITE</span>
+                          <ExternalLink size={12} />
+                        </a>
+                      </div>
                     )}
                   </div>
                 </GlassCard>
