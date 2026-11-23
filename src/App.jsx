@@ -9,6 +9,7 @@ import EventsPage from './pages/EventsPage';
 import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
 import CrimsonChat from './components/CrimsonChat';
 import FindPassModal from './components/FindPassModal';
+import ShareModal from './components/ShareModal';
 
 function NotFoundPage() {
   return (
@@ -110,6 +111,7 @@ function App() {
 
         <CrimsonChat />
         <FindPassModal />
+        <ShareModal />
       </div>
     </BrowserRouter>
   );

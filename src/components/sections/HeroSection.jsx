@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Ticket } from 'lucide-react';
+import { Ticket, Share2 } from 'lucide-react';
 import NeonButton from '../ui/NeonButton';
 import LiveCountdownTracker from '../LiveCountdownTracker';
+import { triggerShare } from '../../utils/share';
 
 const HeroSection = () => {
   return (
@@ -153,47 +154,99 @@ const HeroSection = () => {
             ENTER THE REALM
           </NeonButton>
 
-          {/* Already registered retrieve pass box button matching red-black site theme */}
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent('open-find-pass'))}
+          {/* Action Buttons Row */}
+          <div
             style={{
-              display: 'inline-flex',
+              display: 'flex',
+              gap: '0.75rem',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
               alignItems: 'center',
-              gap: '0.55rem',
-              padding: '0.6rem 1.35rem',
-              background: 'rgba(8, 8, 8, 0.92)',
-              border: '1px solid var(--color-neon-cyan)',
-              borderRadius: '4px',
-              color: 'var(--color-star-white)',
-              fontFamily: 'var(--font-heading)',
-              fontSize: 'clamp(0.72rem, 1.25vw, 0.82rem)',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              transition: 'all 0.25s ease',
-              boxShadow: '4px 4px 0px 0px rgba(211, 47, 47, 0.85)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(211, 47, 47, 0.18)';
-              e.currentTarget.style.borderColor = 'var(--color-star-white)';
-              e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(211, 47, 47, 0.95)';
-              e.currentTarget.style.transform = 'translate(-2px, -2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(8, 8, 8, 0.92)';
-              e.currentTarget.style.borderColor = 'var(--color-neon-cyan)';
-              e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(211, 47, 47, 0.85)';
-              e.currentTarget.style.transform = 'translate(0, 0)';
+              width: '100%',
+              maxWidth: '580px',
             }}
           >
-            <Ticket size={16} color="var(--color-neon-cyan)" style={{ flexShrink: 0 }} />
-            <span>
-              Already Registered?{' '}
-              <span style={{ color: 'var(--color-neon-cyan)' }}>Retrieve Pass</span>
-            </span>
-          </button>
+            {/* Already registered retrieve pass box button matching red-black site theme */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-find-pass'))}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.55rem',
+                padding: '0.6rem 1.25rem',
+                background: 'rgba(8, 8, 8, 0.92)',
+                border: '1px solid var(--color-neon-cyan)',
+                borderRadius: '4px',
+                color: 'var(--color-star-white)',
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(0.72rem, 1.25vw, 0.82rem)',
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                transition: 'all 0.25s ease',
+                boxShadow: '4px 4px 0px 0px rgba(211, 47, 47, 0.85)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(211, 47, 47, 0.18)';
+                e.currentTarget.style.borderColor = 'var(--color-star-white)';
+                e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(211, 47, 47, 0.95)';
+                e.currentTarget.style.transform = 'translate(-2px, -2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(8, 8, 8, 0.92)';
+                e.currentTarget.style.borderColor = 'var(--color-neon-cyan)';
+                e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(211, 47, 47, 0.85)';
+                e.currentTarget.style.transform = 'translate(0, 0)';
+              }}
+            >
+              <Ticket size={16} color="var(--color-neon-cyan)" style={{ flexShrink: 0 }} />
+              <span>
+                Already Registered?{' '}
+                <span style={{ color: 'var(--color-neon-cyan)' }}>Retrieve Pass</span>
+              </span>
+            </button>
+
+            {/* Share Fest Button */}
+            <button
+              type="button"
+              onClick={() => triggerShare()}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.55rem',
+                padding: '0.6rem 1.25rem',
+                background: 'rgba(8, 8, 8, 0.92)',
+                border: '1px solid rgba(244, 234, 204, 0.35)',
+                borderRadius: '4px',
+                color: 'var(--color-star-white)',
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(0.72rem, 1.25vw, 0.82rem)',
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                transition: 'all 0.25s ease',
+                boxShadow: '4px 4px 0px 0px rgba(244, 234, 204, 0.25)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(211, 47, 47, 0.18)';
+                e.currentTarget.style.borderColor = 'var(--color-neon-cyan)';
+                e.currentTarget.style.boxShadow = '6px 6px 0px 0px rgba(211, 47, 47, 0.85)';
+                e.currentTarget.style.transform = 'translate(-2px, -2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(8, 8, 8, 0.92)';
+                e.currentTarget.style.borderColor = 'rgba(244, 234, 204, 0.35)';
+                e.currentTarget.style.boxShadow = '4px 4px 0px 0px rgba(244, 234, 204, 0.25)';
+                e.currentTarget.style.transform = 'translate(0, 0)';
+              }}
+            >
+              <Share2 size={15} color="var(--color-star-white)" style={{ flexShrink: 0 }} />
+              <span>Share Fest</span>
+            </button>
+          </div>
         </motion.div>
 
         {/* Live Countdown & Happening Now Indicator */}
