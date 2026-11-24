@@ -210,7 +210,7 @@ const HeroSection = () => {
               }
             }
           }}>
-            ENTER THE REALM
+            JOIN THE EXPERIENCE
           </NeonButton>
 
           {/* Action Buttons Row */}
