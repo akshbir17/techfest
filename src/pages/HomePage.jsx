@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import HeroSection from '../components/sections/HeroSection';
+import LiveTickerBar from '../components/LiveTickerBar';
 import AboutSection from '../components/sections/AboutSection';
 import EventsPage from './EventsPage';
 import ThemesSection from '../components/sections/ThemesSection';
@@ -48,6 +49,7 @@ const HomePage = () => {
   return (
     <main className="content-layer">
       <HeroSection />
+      <LiveTickerBar />
       <AboutSection />
       {/* Scroll 2nd shows events */}
       <EventsPage isEmbedded={true} />
