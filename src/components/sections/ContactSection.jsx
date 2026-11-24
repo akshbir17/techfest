@@ -53,6 +53,7 @@ const ContactSection = () => {
                 <h3 className="info-label">MYSTIC THREADS</h3>
                 <div className="social-links">
                   <a href="https://www.instagram.com/spectrum.1.0?utm_source=ig_web_button_share_sheet&obrf=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className="social-link">INSTAGRAM</a>
+                  <a href="https://discord.gg/Dk9NyYj5bN" target="_blank" rel="noopener noreferrer" className="social-link">DISCORD</a>
                 </div>
               </div>
             </div>
