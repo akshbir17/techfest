@@ -7,6 +7,7 @@ import TeamRegModal from '../components/sections/TeamRegModal';
 import { Calendar, Users, Eye } from 'lucide-react';
 import EventRulesModal from '../components/EventRulesModal';
 import AddToCalendarButton from '../components/AddToCalendarButton';
+import MandatoryFormBanner from '../components/MandatoryFormBanner';
 
 // Robust helper to ensure clean Indian Rupee symbol formatting
 const formatPrice = (price) => {
@@ -463,6 +464,10 @@ const EventsPage = ({ isEmbedded = false }) => {
 
                   <div style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
                     <AddToCalendarButton event={technicalEvents[0]} variant="compact" />
+                  </div>
+
+                  <div style={{ width: '100%', marginTop: '0.35rem' }}>
+                    <MandatoryFormBanner buttonId="events-mandatory-form-register-btn" />
                   </div>
 
                   <p style={{
