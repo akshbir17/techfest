@@ -108,7 +108,17 @@ const FindPassModal = ({ isOpen: controlledIsOpen, onClose: controlledOnClose })
         setErrorMsg(data.message || data.error || 'No matching registration found.');
         setResults(null);
       } else {
-        setResults(data.passes || []);
+        const allPasses = data.passes || [];
+        const verifiedPasses = allPasses.filter((item) => item.paymentStatus === 'paid' && item.passUrl);
+
+        if (verifiedPasses.length > 0) {
+          setResults([verifiedPasses[0]]);
+        } else {
+          setResults(null);
+          setErrorMsg(
+            'Payment confirmation is still pending for this registration. If money was debited from your bank, please wait a minute and search again, or contact the GNDEC Help Desk.'
+          );
+        }
       }
     } catch (err) {
       console.error('Find pass error:', err);
