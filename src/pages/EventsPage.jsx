@@ -477,7 +477,7 @@ const EventsPage = ({ isEmbedded = false }) => {
                     margin: '0.5rem 0 0 0',
                     lineHeight: '1.5',
                   }}>
-                    Note: Registrations will close on <strong style={{ color: 'var(--color-bright-crimson)' }}>29th November</strong>. Make sure to complete your registration before the deadline!
+                    Note: Registrations will close on <strong style={{ color: 'var(--color-bright-crimson)' }}>5th December</strong>. Make sure to complete your registration before the deadline!
                   </p>
                 </div>
               </div>
