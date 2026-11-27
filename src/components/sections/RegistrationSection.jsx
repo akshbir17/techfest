@@ -93,7 +93,8 @@ const RegistrationSection = () => {
             </GlassCard>
           </motion.div>
 
-          {/* 2. Fest Event Participation Card (Matching Elevated Design) */}
+          {/* 2. Fest Event Participation Card (Hidden until FEST_EVENTS_OPEN is true) */}
+          {FEST_EVENTS_OPEN && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -192,6 +193,7 @@ const RegistrationSection = () => {
               )}
             </GlassCard>
           </motion.div>
+          )}
 
         </div>
       </div>
